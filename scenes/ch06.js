@@ -300,8 +300,10 @@ export default {
     const ai = text(root, 'disp cut-text', 'AI GỢI Ý.', { size: 170, color: C.orange });
     const ng = text(root, 'disp cut-text', 'NGƯỜI QUYẾT ĐỊNH.', { size: 170, color: C.cream });
     // The caption (one sentence, broken where the shotlist breaks it) as its two lines, so each can land in turn.
-    const CAP_LH = Math.round(34 * 1.3);
-    const cap = ['AI có bước tự kiểm tra · ảnh và thông tin cá nhân', 'cư dân không gửi cho AI'].map((s) => text(root, 'label', s, { size: 34, color: C.cream, lh: 1.3 }).el);
+    // Without a voice this sentence is story text, not a source line, so it is set at 48 px (guide: ≥ 40 px).
+    const CAP_SIZE = 48;
+    const CAP_LH = Math.round(CAP_SIZE * 1.3);
+    const cap = ['AI có bước tự kiểm tra · ảnh và thông tin cá nhân', 'cư dân không gửi cho AI'].map((s) => text(root, 'label', s, { size: CAP_SIZE, color: C.cream, lh: 1.3 }).el);
     const ni = ink('NGƯỜI QUYẾT ĐỊNH.', 'disp', 170, 1.1);
     const gap = 50;
     const capGap = Math.round(ni.bottom - ng.h + 30 + 40);
