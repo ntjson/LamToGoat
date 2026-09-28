@@ -16,6 +16,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
 | ch03 Market | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
+| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 
 ## Gate 1: style frames (2026-09-28)
 
@@ -138,3 +139,15 @@ in on their strings; pain tags and answers read on the phone sheet; the doors ex
 Accepted deviations: role names at 72 px (not 64) for the phone; answer 3 takes an extra line break to fit the 520 px
 panel; pain 3 lands one syllable early, on "nhưng", so it gets about 1 s before its flip. Text check: 18 texts, none
 under 28 px.
+
+### ch05 Demo 1
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch05 v3 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | logo + line; navy façade, push into one window where the app screens change on the voice (5.3a-c, 5.4); AI suggestion with orange brackets under the words; named manager "Kawaibu", confirm panel and the accountability chain revealed step by step |
+
+Director's check: ch04's doors part onto ch05's cream by 63.1 s and the logo lands on "Làm Tổ". Every plate comes from
+`docs/crops.json` via `kit.plate` (5.3a-5.6d), straight, on hard navy backings or in the window. Brackets sit under the
+UI words, never on them, and no test string appears. Text check: 10 texts, none under 28 px. Notes: the logo sits on
+`ctx.top` so its pixels match the file exactly. The shotlist's LABEL 52-64 lines pass the phone sheet, but only "AI GỢI Ý"
+is 100 px or larger; revisit sizes at gate 6 if the phone test disagrees.
