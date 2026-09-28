@@ -62,11 +62,14 @@ Every chapter scored 8 or higher on all seven criteria (summary table at the top
    Gate 6 needs them.
 3. **Script length vs brief:** 444 syllables / 1,924 characters against the brief's 2,400-2,600. The user asked for
    a lean script; judge pacing at gate 6.
-4. **Readability to judge with the voice at gate 6:**
-   - The shotlist's 36-48 px supporting labels are legible but weak on the 360 px phone sheet: ch03's B2B2C tags,
-     ch04's role descriptors, ch08's column labels (the builder suggests 48 px), ch11's credits.
-   - ch03's navy card is nearly blank for about 1.5 s after the flip.
-5. **Shotlist additions to record (made by chapter builders, accepted at integration):**
+4. **Readability to judge with the voice at gate 6:** the shotlist's 36-48 px supporting labels are legible but weak
+   on the 360 px phone sheet: ch03's B2B2C tags, ch04's role descriptors, ch08's column labels (the builder suggests
+   48 px), ch11's credits.
+5. **The user's gate-6 notes on the silent rough cut are fixed** (see the end of `docs/review_log.md`):
+   - "59,2%" (ch09) and "CÓ CẢ HAI." (ch08)
+   - the 129/745 source (ch02) and "08/2027" (ch09) are complete sooner
+   - ch03's card counts as soon as it lands
+6. **Shotlist additions to record (made by chapter builders, accepted at integration):**
    - ch02: the report sheet is black paper, and its red tag is DISPLAY 100.
    - ch04: role names are 72 px.
    - ch06: an orange layer bar (6.2) and a navy strip under "NGƯỜI QUYẾT ĐỊNH." (6.5).
@@ -74,20 +77,21 @@ Every chapter scored 8 or higher on all seven criteria (summary table at the top
    - ch09: the hard cut lands on "hai"; the break-even date is typed on the syllables.
    - ch11's credits come from deck slides 7 and 15.
    - Details are in each chapter's section of `docs/review_log.md`.
-6. **Builders' proposals for shared code:**
+7. **Builders' proposals for shared code:**
    - A no-overshoot `count` preset. Several chapters use `{ f: 1.3, z: 0.9 }` locally.
-   - An odometer "carry" option and a separate unit stamp.
+   - An odometer "carry" option and a separate unit stamp. `kit.odometer().place()` now lets a chapter drive each
+     digit slot with its own spring (ch03 uses it).
    - `kit.logo()`, measured on the visible artwork (ch05 and ch11 each carry a copy).
    - A plate scroll helper (ch07 drives `plate().win/.img` for 7.3a → 7.3b).
    - A "first time a spring reaches its target" helper.
    - Exported beat times for the sound pass.
    None of them is needed for gate 6.
-7. **Not built yet** (all gate 7):
+8. **Not built yet** (all gate 7):
    - the music bed, sound effects, voice sidechain ducking, and loudness (−14 LUFS, true peak ≤ −1 dBTP)
    - audio muxing in `render.mjs`
    - the SRT writer (display text in `vo_lines.json`: ` / ` is a line break, ` // ` starts the next subtitle)
    - `out/poster.png` (candidate: ch11's final frame), `out/contact.png`, `README.md` credits
-8. **Render cost:** 1080p frames take about 0.5-0.8 s each per worker (ch02's skyline is the heaviest). The final
+9. **Render cost:** 1080p frames take about 0.5-0.8 s each per worker (ch02's skyline is the heaviest). The final
    1080p60 render is 10,800 frames, so plan on 10 workers and about 15-20 minutes.
 
 ## Gate 6: what to do

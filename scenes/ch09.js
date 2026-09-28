@@ -5,8 +5,8 @@
 //     "/THÁNG" stamps on "mỗi tháng". The revenue bar under the figure is cut at 59,2 %: the profit piece flips over
 //     to CREAM ("lợi nhuận ròng"), the rest stays ORANGE, and "59,2%" counts digit by digit with the voice.
 // 9.3 HARD CUT to CREAM. The capital strip "200 TRIỆU" slams on "hai trăm triệu"; "cho 8 tháng đầu" slides out from
-//     under it; the timeline band slides in from 10/2026; the ORANGE flag snaps up at 08/2027 on "hòa vốn", and the
-//     date types itself as the voice reads it.
+//     under it; the timeline band slides in from 10/2026; the ORANGE flag snaps up at 08/2027 on "hòa vốn", the
+//     date types itself on as the flag lands and pulses as the voice reads it.
 // 9.4 9.3's paper slides away left; four NAVY façades rise left to right, one per beat (GĐ3 on "ba"), their windows
 //     lighting; "20–25 TÒA" slams on the top step; the ORANGE MRR banner slides across GĐ3 and counts with the voice.
 // Exit (EXIT.ch09): the CREAM ground and the staircase slide out left together, the ground's right edge hand-cut,
@@ -166,7 +166,10 @@ export default {
     T.cut93 = T.slam;
     T.bar = T.land10 - slideHit; // the revenue bar slides in under the figure and lands with the count
     T.part = T.snip + 0.3; // the two pieces part; the profit piece flips over
-    T.date = [12, 13, 14, 15, 16, 17, 18].map((k) => s31(k) - 0.03); // "0","8","/","2","0","2","7" as they're read
+    // "08/2027" types on fast as the flag lands on "hòa", so it's complete and readable through the push; it pulses
+    // when the voice reads it ("tháng tám…").
+    T.date = [0, 1, 2, 3, 4, 5, 6].map((k) => s31(8) + 0.02 + 0.05 * k);
+    T.dateSay = s31(12) - 0.03;
     // The steps land one per syllable on "Giai", "đoạn", "ba", "hai"; the last (GĐ3) brings the goal with it. The first
     // rises only once 9.3's paper has cleared the frame.
     T.land = [Math.max(T.out93 + 0.35 + firstHit(RISE), s32(0)), s32(1), s32(2), s32(3)];
@@ -174,10 +177,11 @@ export default {
     // starts later so it rolls over at the end, like an odometer carrying, and both lock together.
     const P10 = tuned(0.9, 10, T.land10 - T.count);
     const d10 = settle(P10, 10) - settle(P10, 1);
-    // "59,2%" counts with the voice: "5" locks on "năm", "2" on "hai", "9" in between (near "chín"); "%" on "phần".
+    // "59,2%" counts with the voice: "5" locks on "năm", "2" on "hai", "9" in between (near "chín"). The "%" is part of
+    // the figure from its first frame (a margin never reads without its unit); the whole figure stamps on "phần".
     T.pct = s30(11) + 0.02 - settle(COUNT, 5);
     T.pctSt = (s30(15) + 0.02 - settle(COUNT, 12) - T.pct) / 2;
-    T.pctSign = s30(16) - 0.03;
+    T.pctStamp = s30(16) - 0.03;
     // "160" locks "1" on "một" and "0" on "mươi" ("6" near "sáu"); "200" locks "2" on "hai" and the zeros on "trăm".
     T.mrrA = s32(10) + 0.02 - settle(COUNT, 1);
     T.mrrASt = (s32(13) + 0.02 - settle(COUNT, 10) - T.mrrA) / 2;
@@ -230,10 +234,9 @@ export default {
     el(pieceR, '', { width: `${BAR.w}px`, height: `${BAR.h}px`, background: C.orange, clipPath: outer });
     const snip = stroke(svg(barBox, BAR.w, BAR.h), cutLine, { color: C.cream, width: 8 });
 
-    // "59,2" counts with the voice; its "%" stamps on "phần trăm", like "/THÁNG" on "mỗi tháng".
-    const pctBox = el(navy, '', { left: `${X0}px`, top: '644px' });
-    const pct = odometer(pctBox, '59,2', { cls: 'disp cut-text', size: 150, color: C.cream, lh: 1 });
-    const pctSign = text(pctBox, 'disp cut-text', '%', { size: 150, color: C.cream, left: `${pct.w}px`, top: `${bO - bT}px`, transformOrigin: '0 75%' });
+    // "59,2%" counts with the voice (the "%" is a fixed slot of the odometer) and stamps on "phần trăm".
+    const pctBox = el(navy, '', { left: `${X0}px`, top: '644px', transformOrigin: '0 75%' });
+    const pct = odometer(pctBox, '59,2%', { cls: 'disp cut-text', size: 150, color: C.cream, lh: 1 });
 
     // ================= 9.3-9.4: one CREAM sheet. Its right edge is hand-cut; it only shows when the sheet leaves.
     const cream = el(root, '', { width: `${W}px`, height: `${H}px` });
@@ -274,7 +277,7 @@ export default {
     const monoTop = BAND.y + 26;
     text(band, 'mono', '10/2026', { size: 40, color: C.cream, left: `${BAND.x + 4}px`, top: `${monoTop}px` });
     const XF = BAND.x + 10 * BAND.month; // 08/2027
-    const dateEl = el(band, 'mono', { left: `${XF + 4}px`, top: `${monoTop}px`, fontSize: '40px', lineHeight: 1.2, color: C.cream, whiteSpace: 'nowrap' });
+    const dateEl = el(band, 'mono', { left: `${XF + 4}px`, top: `${monoTop}px`, fontSize: '40px', lineHeight: 1.2, color: C.cream, whiteSpace: 'nowrap', transformOrigin: '0 60%' });
     const dateCh = [...'08/2027'].map((ch) => {
       const sp = document.createElement('span');
       sp.textContent = ch;
@@ -375,8 +378,8 @@ export default {
 
     return {
       T, dur: ctx.dur, navy, fac, facFrom: H - F.y + 30, sweep, lab, labFrom: W - X0 + 40, fig, odo10, P10, d10, thang,
-      barBox, barFrom: W - X0 + 40, whole, pieceL, frontL, backL, pieceR, snip, pctBox, pct, pctSign,
-      cream, g93, pushK: PIV.k, cap, forLab, band, bandFrom: W + 100, dateCh, flagG, flagFrom,
+      barBox, barFrom: W - X0 + 40, whole, pieceL, frontL, backL, pieceR, snip, pctBox, pct,
+      cream, g93, pushK: PIV.k, cap, forLab, band, bandFrom: W + 100, dateEl, dateCh, flagG, flagFrom,
       steps, goal, banner, bannerFrom: W + 40 - (g3.x + BN.x), odoA, odoB,
     };
   },
@@ -413,8 +416,10 @@ export default {
         s.pieceR.style.transform = `translate(${(30 * d).toFixed(2)}px, ${(18 * d).toFixed(2)}px) rotate(${(3 * d).toFixed(3)}deg)`;
         if (vis(s.snip, t >= T.snip && t < T.part + 0.06)) drawOn(s.snip, step(t - T.snip, { f: 3, z: 1 }));
       }
-      if (vis(s.pctBox, t >= T.pct)) s.pct.roll(t, T.pct, { preset: COUNT, stagger: T.pctSt });
-      if (vis(s.pctSign.el, t >= T.pctSign)) s.pctSign.el.style.transform = `scale(${spring(t, T.pctSign, 1.25, 1, 'slam')})`;
+      if (vis(s.pctBox, t >= T.pct)) {
+        s.pct.roll(t, T.pct, { preset: COUNT, stagger: T.pctSt });
+        s.pctBox.style.transform = `scale(${t >= T.pctStamp ? spring(t, T.pctStamp, 1.1, 1, 'slam') : 1})`;
+      }
       return;
     }
 
@@ -433,6 +438,7 @@ export default {
       s.dateCh.forEach((sp, k) => {
         if (vis(sp, t >= T.date[k])) sp.style.transform = `scale(${spring(t, T.date[k], 1.45, 1, 'snap')})`;
       });
+      s.dateEl.style.transform = `scale(${t >= T.dateSay ? spring(t, T.dateSay, 1.25, 1, 'snap') : 1})`;
       if (vis(s.flagG, t >= T.flag)) s.flagG.style.transform = `translateY(${spring(t, T.flag, s.flagFrom, 0, 'snap').toFixed(2)}px)`;
     }
 

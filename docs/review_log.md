@@ -13,14 +13,14 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Rounds | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | ch01 Hook | 8 | 9 | 8 | 9 | 8 | 8 | 8 | 3 | approved at gate 4; frames unchanged by gate 5 (0 px) |
-| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
-| ch03 Market | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
+| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 5 | integrated; gate 6 notes fixed |
+| ch03 Market | 9 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated; gate 6 notes fixed |
 | ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
 | ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch06 USP 1: before approval | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
 | ch07 USP 2: after publication | 8 | 9 | 8 | 8 | 8 | 9 | 9 | 4 | integrated |
-| ch08 Competition | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
-| ch09 Business | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
+| ch08 Competition | 8 | 9 | 9 | 8 | 8 | 8 | 8 | 5 | integrated; gate 6 notes fixed |
+| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 4 | integrated; gate 6 notes fixed |
 | ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
 | ch11 Close | 8 | 9 | 8 | 8 | 9 | 8 | 8 | 4 | integrated |
 
@@ -254,3 +254,17 @@ loaded. Checks:
 - **For gate 6** (with the real voice): phone readability of the shotlist's 36-48 px supporting labels (ch03 tags,
   ch04 descriptors, ch08 column labels, ch11 credits); ch03's nearly blank card for 1.5 s after the flip; and every
   voice-anchored beat, which will re-flow when the takes are measured.
+
+## Gate 6 notes on the silent rough cut (2026-09-28)
+
+The user's notes on `out/roughcut.mp4`, fixed before the voice arrives. Each changed chapter was re-rendered with
+`node tools/review.mjs chNN` (contact sheet, 360 px phone sheet, strips around the change) and re-scored; every
+score is 8 or higher. Details are in each chapter's review file.
+
+| Note | Chapter | Fix | Scores after |
+|---|---|---|---|
+| ~145 s: margin reads "59,2" without "%" | ch09 | "59,2%" is one odometer, the "%" a fixed slot; the figure stamps on "phần trăm" | 8/9/9/8/8/9/8 |
+| ~137 s: only "LÀM TỔ" before the cut | ch08 | "CÓ CẢ HAI." lands no later than 1.3 s before the exit; the full claim holds ~1.35 s | 8/9/9/8/8/8/8 |
+| ~18-20 s: source still typing at the cut | ch02 | the source types in 0.4 s from "thương mại", complete 2 s before the cut | 8/9/8/8/8/9/8 |
+| ~150-152 s: "08/2027" still typing | ch09 | the date types on in 0.3 s as the flag lands and pulses when it is read | (as above) |
+| ~34 s: navy card sits blank | ch03 | the 20.000đ count starts as the card lands and locks on "hai" (…19.999 → 20.000) | 9/9/8/8/8/9/8 |
