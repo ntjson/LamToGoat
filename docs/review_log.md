@@ -4,6 +4,17 @@ Scores are 1-10. **Hook**, **VN** (Vietnamese correctness: accents, line breaks)
 1080p and in the 360 px phone test), **Motion**, **Brand**, **Voice** (voice sync), **Variety**.
 Target: every applicable score 8 or higher before anything is shown.
 
+## Summary: final scores per chapter
+
+The last round of each chapter, re-checked by the director at integration: the review sheets (contact and 360 px
+phone), full-resolution stills where needed, and the cut from the previous chapter (`node tools/boundary.mjs chNN`).
+Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 below.
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Rounds | Status |
+|---|---|---|---|---|---|---|---|---|---|
+| ch01 Hook | 8 | 9 | 8 | 9 | 8 | 8 | 8 | 3 | approved at gate 4; frames unchanged by gate 5 (0 px) |
+| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
+
 ## Gate 1: style frames (2026-09-28)
 
 All three frames show the same beat so they compare like for like: ch07, the moment an edited record
@@ -83,3 +94,22 @@ matches a standalone still (37.4 dB PSNR; the difference is draft compression).
 The tear was on screen for about 0.1 s before black took the frame, so the signature torn-paper beat went by unseen.
 It now starts in the breath after L02 and opens in two stages: the ragged hole with its cream fringe eats through the
 figure for about 0.4 s, then swallows the frame, then a beat of black before the slam. Scores unchanged (motion 8 → 9).
+
+## Gate 5: chapters ch02-ch11 (2026-09-28)
+
+Each chapter was built by its own builder against `docs/ANIMATION_GUIDE.md` and reviewed in rounds until every score
+was 8 or higher (`docs/review/chNN.md`). Timing is still the 3 syllables/s estimate. At integration the director
+re-ran `node tools/review.mjs chNN --workers 2` (with `--tail` for chapters that own an exit), viewed the sheets, and
+checked the cut from the previous chapter with `node tools/boundary.mjs chNN`.
+
+### ch04 Who hurts
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch04 v3 | 8 | 9 | 8 | 8 | 8 | 8 | 8 | three orange panels with cut-paper figures; each pain flips to its navy answer on the voice; doors exit into ch05 |
+
+Director's check: the black curtain (three strips) covers ch03's held TAM/SAM/SOM frame by +0.5 s and the panels swing
+in on their strings; pain tags and answers read on the phone sheet; the doors exit cleanly onto ch05's cream by +0.7 s.
+Accepted deviations: role names at 72 px (not 64) for the phone; answer 3 takes an extra line break to fit the 520 px
+panel; pain 3 lands one syllable early, on "nhưng", so it gets about 1 s before its flip. Text check: 18 texts, none
+under 28 px.
