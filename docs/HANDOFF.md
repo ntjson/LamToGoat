@@ -32,7 +32,14 @@ The film is **music and sound effects only**; the on-screen text carries the who
   `docs/onscreen.json`, under `added`).
 - **The voice pipeline is kept for a possible later voice** (`tools/vo.py`, `docs/vo_lines.json`,
   `docs/vo_script.md`, `docs/vo_timings.json`). `tools/timeline.py --voice` puts the timeline back on it.
-- **Sound:** a ch01 sketch first. The whole film waits for the user's OK on it.
+- **All eleven chapters are updated** for the reading timeline and the added text, each passing its review loop
+  (8+ on every criterion, with "Sync" in place of "Voice"); `out/roughcut.mp4` is 188.9 s.
+- **Sound:** a ch01 sketch is done and waits for the user's OK.
+  - `tools/cues.mjs` collects the scenes' `cues()`; so far ch01, ch06 and ch07 export them.
+  - `tools/sound.py` synthesizes the music and effects and masters to -14 LUFS / -1.2 dBTP.
+  - The sketch is `out/ch01_sound.mp4` (1080p60 with sound). After the OK: charts for ch02-ch11 (major and
+    vibraphone for ch05-ch07, driving for ch08-ch09, resolving for ch10-ch11), a shared cue vocabulary for every
+    chapter, then the whole film.
 
 ## Decisions the user made in chat (still in force)
 

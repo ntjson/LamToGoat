@@ -10,22 +10,23 @@ The last round of each chapter, re-checked by the director at integration: the r
 phone), full-resolution stills where needed, and the cut from the previous chapter (`node tools/boundary.mjs chNN`).
 Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 below.
 
-| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Rounds | Status |
+| Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Rounds | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| ch01 Hook | 8 | 9 | 8 | 9 | 8 | 8 | 8 | 3 | approved at gate 4; frames unchanged by gate 5 (0 px) |
-| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 5 | integrated; gate 6 notes fixed |
-| ch03 Market | 9 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated; gate 6 notes fixed |
-| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
-| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
-| ch06 USP 1: before approval | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
-| ch07 USP 2: after publication | 8 | 9 | 8 | 8 | 8 | 9 | 9 | 4 | integrated |
-| ch08 Competition | 8 | 9 | 9 | 8 | 8 | 8 | 8 | 5 | integrated; gate 6 notes fixed |
-| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 4 | integrated; gate 6 notes fixed |
-| ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
-| ch11 Close | 8 | 9 | 8 | 8 | 9 | 8 | 8 | 4 | integrated |
+| ch01 Hook | 8 | 9 | 9 | 8 | 8 | 8 | 8 | 4 | no voice: captions added, on the grid |
+| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 8 | no voice: re-timed on the grid |
+| ch03 Market | 9 | 9 | 8 | 8 | 8 | 8 | 8 | 7 | no voice: re-timed on the grid |
+| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 | no voice: text added, on the grid |
+| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 | no voice: text added, on the grid |
+| ch06 USP 1: before approval | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 | no voice: text added, on the grid |
+| ch07 USP 2: after publication | 9 | 9 | 8 | 8 | 8 | 9 | 9 | 6 | no voice: text added, on the grid |
+| ch08 Competition | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 | no voice: text added, on the grid |
+| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 6 | no voice: text added, on the grid |
+| ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 8 | no voice: text added, on the grid |
+| ch11 Close | 9 | 9 | 8 | 8 | 9 | 9 | 8 | 7 | no voice: text added, on the grid |
 
-Whole film: `out/roughcut.mp4` (960×540, 30 fps, 5,400 frames, 180.0 s), rendered in one pass with every chapter
-loaded strictly. Continuity checks are at the end of gate 5 below.
+Since 2026-09-28 the film has no voice-over, so the **Voice** column (voice sync) became **Sync**: cuts and SLAMs
+on the 108 BPM grid, and every text holds long enough to read. Whole film: `out/roughcut.mp4` (960×540, 30 fps,
+5,667 frames, 188.9 s). Its checks are in the last section below.
 
 ## Gate 1: style frames (2026-09-28)
 
@@ -268,3 +269,45 @@ score is 8 or higher. Details are in each chapter's review file.
 | ~18-20 s: source still typing at the cut | ch02 | the source types in 0.4 s from "thương mại", complete 2 s before the cut | 8/9/8/8/8/9/8 |
 | ~150-152 s: "08/2027" still typing | ch09 | the date types on in 0.3 s as the flag lands and pulses when it is read | (as above) |
 | ~34 s: navy card sits blank | ch03 | the 20.000đ count starts as the card lands and locks on "hai" (…19.999 → 20.000) | 9/9/8/8/8/9/8 |
+
+## No voice-over: text on screen, reading timeline, beat grid (2026-09-29)
+
+The film is now music and sound effects only.
+- **Timeline:** `docs/timeline.json` is built from on-screen reading time (`tools/timeline.py`,
+  `docs/onscreen.json`) on a 108 BPM grid. The film is **188.9 s (3:08.9), 85 bars**, at a reading pace of about
+  17 characters/s. 3:00 would need about 20 characters/s.
+- **Text check:** every story beat L01-L35 was checked against the frame. Where the message was only spoken, text
+  was added as DISPLAY type or a caption strip in the Bass style, never as a bottom subtitle:
+
+| Beat | Chapter | Added on screen | Why |
+|---|---|---|---|
+| L01 | ch01 | "PHẢN ÁNH GỬI VÀO / NHÓM CHAT," + "RỒI TRÔI MẤT." (ORANGE strips on the chat, DISPLAY 96/140) | the chat showed a lost message, but no words said it |
+| L02 | ch01 | "SỐ DƯ QUỸ LẶNG LẼ THAY ĐỔI." (BLACK strip over the balance, DISPLAY 112) | the change was shown; "quietly" was only spoken |
+| L14 | ch04 | pain tag "Đóng phí, nhưng / không rõ tiền đi đâu" | the tag dropped "residents pay fees" |
+| L16 | ch05 | "CƯ DÂN GỬI / PHẢN ÁNH" (DISPLAY 120) | the frame showed what, not who |
+| L17 | ch05 | tags "nhóm sự cố", "mức khẩn", "hạn xử lý" under the brackets | the UI words were too small for the phone |
+| L20 | ch06 | "AI đưa ra khung giá hợp lý / từ những việc tương tự đã làm" | the band didn't say AI makes it, or from what |
+| L23 | ch07 | "khoản chi được niêm phong, / không thể chỉnh sửa" | only in the UI's small text |
+| L24 | ch07 | "Cư dân" + "từ khoản chi / về phản ánh ban đầu" around "LẦN / NGƯỢC" | who traces, from what to what |
+| L27 | ch07 | "KHÔNG AI XÓA / ĐƯỢC DẤU VẾT." (DISPLAY 150) | 7.7 had no type |
+| L28 | ch08 | "CHƯA ĐỐI THỦ NÀO CÓ" (DISPLAY 112) | the claim was only spoken |
+| L31 | ch09 | "CẦN 200 TRIỆU" (was "200 TRIỆU") | it read like revenue, not capital needed |
+| L34 | ch10 | "Công nghệ kết hợp / kinh doanh và tài chính." (LABEL 64) | only spoken |
+| L35 | ch11 | "SỔ QUỸ KHÔNG AI / SỬA LÉN ĐƯỢC." (DISPLAY 128) | the closing promise was only spoken |
+
+The other 22 beats already carried their message on screen. Two supporting texts were also enlarged because they
+now carry story: ch08's column labels (40 → 48 px) and ch06's privacy sentence (34 → 48 px).
+
+Each chapter was re-timed to the reading timeline and snapped to the grid, and passed its own review loop (every
+score 8+; rounds in `docs/review/chNN.md`). Director's checks on the whole rough cut:
+- **Boundaries:** all ten cuts are clean (`tools/boundary.mjs`).
+- **Holds:** no shot holds still for more than 2 s.
+- **Longest gaps between visual events:**
+  - 6.4 s in ch06's closing shot, which is by design: the reading budget for "AI GỢI Ý. / NGƯỜI QUYẾT ĐỊNH." and
+    the privacy sentence, with three slams and a strip inside it.
+  - 3.7 s in ch02's 745-cell shot, where cells keep flipping below the detector's threshold.
+- **Changes to the approved shotlist by the builders, all accepted:**
+  - ch03: the unit stays on the count from its first frame.
+  - ch05: the suggestion card sits in a navy paper pocket so the tags cover no UI text.
+  - ch07: the pushed badge rests 60 px lower.
+  - ch09: shot 9.3 holds instead of pushing in.
