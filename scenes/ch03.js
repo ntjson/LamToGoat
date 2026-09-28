@@ -1,11 +1,14 @@
 // ch03 Market (shots 3.1-3.4).
 // 3.1 ch02's report sheet turns over: its NAVY back is the price card.
-// 3.2 "20.000đ/căn/tháng" counts on the card under the B2B2C pair: the Ban quản trị pays, residents benefit.
-// 3.3 the card slides away left, one BLACK façade slab rises, its windows fill from 300 to 700 flats as the voice says
-//     it, and three tags pin the target customer onto it.
-// 3.4 the market nests TAM ⊃ SAM ⊃ SOM, three cut rectangles that slide in and count; SAM's digits land as the voice
-//     says them.
-// Every beat is anchored to L09-L11 (ctx.line / ctx.syl); nothing uses film-absolute seconds. Seeds 300-399.
+// 3.2 "20.000đ/căn/tháng" counts on the card, unit and all, then the B2B2C pair completes above it: the Ban quản trị
+//     pays, residents benefit.
+// 3.3 the card slides away left, one BLACK façade slab rises, its windows fill to 300 and then 700 flats, and three
+//     tags pin the target customer onto it.
+// 3.4 the market nests TAM ⊃ SAM ⊃ SOM, three cut rectangles that slide in and count; SAM's digits land on
+//     successive 8th notes.
+// Every beat is anchored to the story beats L09-L11 (reading time on the 108 BPM grid, ctx.line / ctx.syl / ctx.snap):
+// each beat's text holds, unoccluded, until the beat ends; hits and landings sit on 16ths, up to 0.05 s early, never
+// late. Nothing uses film-absolute seconds. Seeds 300-399.
 import { step, spring, track, PRESETS } from '../lib/motion.js';
 import { C, el, rough, rect, clip } from '../lib/paper.js';
 import { W, H, text, tag, odometer, flip, vis } from '../lib/kit.js';
@@ -15,7 +18,7 @@ const SHADOW = 'drop-shadow(0 5px 4px rgba(0,0,0,0.28))';
 // Counts land without the default preset's 1.5 % overshoot, which leaves a landed digit a fifth of a slot off for
 // almost half a second; these settle flat, so the figure reads the moment it lands on its word.
 const COUNT = { f: 1.3, z: 0.9 };
-const COUNT_FAST = { f: 1.6, z: 0.9 }; // TAM and SOM: nobody says them, so they count briskly
+const COUNT_FAST = { f: 1.6, z: 0.9 }; // TAM and SOM, skimmed context for SAM, count briskly
 const TOL = 0.1; // a digit has landed when it is within a tenth of its slot
 const WIPE = { f: 1.3, z: 0.85 }; // TAM crossing the whole frame: little overshoot on a long travel
 
@@ -33,6 +36,9 @@ function settle(p, travel, tol = TOL) {
   for (let t = 0; t < 4; t += 1 / 240) if (Math.abs(1 - step(t, p)) * travel > tol) last = t;
   return last + 1 / 240;
 }
+
+// Time from an odometer.roll() start (stagger 0.06 s) until its last digit stays within TOL of its slot.
+const countSpan = (digits, p) => Math.max(...digits.map((d, k) => 0.06 * k + settle(p, d + (k ? 10 : 0))));
 
 // The spring with damping z whose `travel`-slot move comes within `tol` slots of its target in `dur` s (settling
 // time scales as 1/f).
@@ -94,47 +100,43 @@ export default {
     const syl = (id, k) => ctx.syl(id, k);
     const slideIn = firstHit('slide');
 
-    // Beats (chapter-local seconds), all from the voice lines. Syllables are counted on vo_script.md's "Read this":
-    // L09 Ban0 quản1 trị2 trả3 hai4 mươi5 nghìn6 đồng7 mỗi8 căn9 mỗi10 tháng11
-    // L10 Khách0 hàng1 tòa2 ba3 trăm4 đến5 bảy6 trăm7 căn8 dưới9 mười10 năm11 có12 Ban13 quản14 trị15
-    // L11 Thị0 trường1 mục2 tiêu3 ba4 mươi5 hai6 phẩy7 bốn8 tỷ9 đồng10 mỗi11 năm12
+    // Beats (chapter-local seconds), all from the story beats and the grid. ctx.syl(id, k) is subdivision k of a beat
+    // (by the old voice line's syllables, snapped to 16ths); hits land on them up to 0.05 s early, never late.
     const T = {
-      pose: 0.4, // the turned card settles into the price-card pose (the flip itself is flip(t, 0))
-      b2b: L09.start - 0.42, // "Mô hình B2B2C" slides in just before the line
-      tag1: L09.start - slideIn + 0.04, // "Ban quản trị trả phí" lands on "Ban quản trị"
-      arrow: syl('L09', 2) - 0.12, // the arrow pushes out of tag 1 on "trị"
-      tag2: syl('L09', 3) - slideIn, // "Cư dân hưởng lợi" lands on "trả"
-      unit: syl('L09', 8) - 0.05, // "/căn/tháng" stamps on "mỗi căn"
-      out: L09.end - 0.12, // 3.2 slides away left in the breath after L09
-      head: L10.start - 0.04, // "KHÁCH HÀNG" slams on "Khách"
-      lit300: syl('L10', 3) - 0.08, // windows fill to 300 on "ba trăm"
-      pin1: syl('L10', 2) - 0.04, // "300–700 căn" pins as the phrase starts ("tòa ba trăm đến bảy trăm căn")
-      lit700: syl('L10', 6) - 0.08, // windows fill to 700 on "bảy trăm"
-      pin2: syl('L10', 9) - 0.04, // "dưới 10 năm" on "dưới"
-      pin3: syl('L10', 12) - 0.04, // "có Ban quản trị" on "có"
-      tam: L10.end - 0.3, // TAM wipes over the façade as L10 ends; its count lands before SAM rises
-      sam: syl('L11', 2) - slideIn, // SAM rises; its caption lands on "mục tiêu"
-      som: Math.min(syl('L11', 9), L11.end - 1.3), // SOM slides in on "tỷ", counted before the chapter ends
+      pose: ctx.snap(0.4 + slideIn) - 0.02 - slideIn, // the turned card lands in its price pose on a 16th
+      b2b: L09.start - 0.03 - slideIn, // "Mô hình B2B2C" lands as L09 starts...
+      tag1: L09.start - 0.02 - slideIn, // ...with "Ban quản trị trả phí"
+      lock: syl('L09', 4) - 0.02, // "20.000đ/căn/tháng" is complete
+      arrow: syl('L09', 7) - 0.02 - firstHit('snap'), // then the arrow pushes out of tag 1...
+      tag2: syl('L09', 8) - 0.02 - slideIn, // ...and "Cư dân hưởng lợi" slides in to its head
+      out: L09.end, // 3.2 slides away left in the gap after L09
+      slab: L10.start - 0.02 - slideIn, // the façade slab lands as...
+      head: L10.start - 0.04, // ..."KHÁCH HÀNG" slams
+      pin1: syl('L10', 2) - 0.04, // "300–700 căn" pins
+      lit300: syl('L10', 3), // windows fill to 300...
+      lit700: syl('L10', 6), // ...then to 700
+      pin2: syl('L10', 8) - 0.04, // "dưới 10 năm"
+      pin3: syl('L10', 11) - 0.04, // "có Ban quản trị", read before L10 ends
+      tam: L11.start - 0.02 - firstHit(WIPE), // TAM wipes over the façade (at L10.end its edge is still right of the slab)
+      sam: syl('L11', 2) - 0.02 - slideIn, // SAM rises with its caption
+      som: syl('L11', 8) - 0.02 - slideIn, // SOM slides in from the corner
     };
-    T.slab = T.out + 0.05;
-    // "20.000đ" starts counting the moment the card lands in its price pose, so the card never sits blank, and locks
-    // on "hai" like an odometer carrying: the "2" rolls up from 0 while the zeros spin two full turns, each slot on a
+    // "20.000đ/căn/tháng" starts counting the moment the card lands in its price pose, so the card never sits blank, and
+    // locks like an odometer carrying: the "2" rolls up from 0 while the zeros spin two full turns, each slot on a
     // spring tuned to read as landed (within a quarter slot) at its lock time (zeros right to left, 0.03 s apart,
-    // the "2" last), so the figure reads …19.999 → 20.000 as the voice says "hai".
+    // the "2" last), so the figure reads …19.999 → 20.000. The unit is on the card from the count's first frame.
     T.count = T.pose + slideIn;
-    T.lock = syl('L09', 4) + 0.02;
     T.slotP = [0, 1, 2, 3, 4].map((k) => {
       const at = k === 0 ? T.lock : T.lock - 0.03 * k;
       return tuned(0.95, k === 0 ? 2 : 20, Math.max(0.6, at - T.count), 0.25);
     });
-    T.tamCount = T.tam;
-    T.somCount = T.som + 0.1;
-    // SAM counts in step with the voice: "3" lands on "ba", "2" on "hai", "4" on "bốn" (slot k rolls 3, 12, 14).
-    T.samLand0 = syl('L11', 4) + 0.02;
-    T.samLand = syl('L11', 8) + 0.02;
-    T.samCount = T.samLand0 - settle(COUNT, 3);
-    T.samStagger = (T.samLand - settle(COUNT, 14) - T.samCount) / 2;
-    T.samLand1 = T.samCount + T.samStagger + settle(COUNT, 12); // lands near "hai" (syllable 6)
+    // TAM and SOM count briskly (odometer stagger 0.06 s) and are complete on a 16th: TAM two 16ths into L11, SOM on
+    // the first 16th after a count started with its slide. SAM's slots all roll as it rises and land one per 8th note
+    // ("3", "2", "4"; they travel 3, 12 and 14 slots, each on a spring tuned to land then), then it slams.
+    T.tamDone = ctx.snap(L11.start + 2 * ctx.grid) - 0.02;
+    T.samLand = [0, 2, 4].map((k) => syl('L11', 4) + k * ctx.grid - 0.02);
+    T.samDone = T.samLand[2];
+    T.samCount = T.sam + 0.1;
 
     // Ground: CREAM from t = 0 (ch02's flip exit paints over it for its first FLIP_EDGE seconds).
     el(root, '', { width: `${W}px`, height: `${H}px`, background: C.cream });
@@ -153,8 +155,6 @@ export default {
     const visTop = POSE.cy - chh / 2;
     const priceTop = Math.round((visTop + H) / 2 - visTop - price.h / 2);
     Object.assign(price.el.style, { left: `${Math.round((cw - price.w) / 2)}px`, top: `${priceTop}px` });
-    const unitEl = price.unit.el;
-    unitEl.style.transformOrigin = '0 70%';
 
     const EXIT = 2100; // 3.2 leaves left by this much
     const cardX = track(SHEET.cx, [[T.pose, POSE.cx], [T.out, POSE.cx - EXIT, 'drop']]);
@@ -240,10 +240,16 @@ export default {
     text(sam, 'label', 'thị trường mục tiêu', { size: 40, color: C.cream, left: '58px', top: '284px' });
     const somFig = figure(som, '0,54–5,4', 'tỷ đ/năm', { size: 100, usize: 44, color: C.black, gap: 16 });
     Object.assign(somFig.el.style, { left: '56px', top: '114px' });
+    T.tamCount = T.tamDone - countSpan(tamFig.odo.digits, COUNT_FAST);
+    const somSpan = countSpan(somFig.odo.digits, COUNT_FAST);
+    T.somDone = ctx.snap(T.som + somSpan + ctx.grid / 2) - 0.02;
+    T.somCount = T.somDone - somSpan;
+    const samTravel = samFig.odo.digits.map((d, k) => d + (k ? 10 : 0));
+    T.samP = samTravel.map((v, k) => tuned(COUNT.z, v, T.samLand[k] - T.samCount));
 
     return {
-      T, card, price, unitEl, cardX, cardY, cardR, b2b, tag1, tag2, arrowEl, rowX, head, slab, slabY, rows, pins,
-      tam, sam, som, tamFig, samFig, somFig, R,
+      T, card, price, cardX, cardY, cardR, b2b, tag1, tag2, arrowEl, rowX, head, slab, slabY, rows, pins,
+      tam, sam, som, tamFig, samFig, somFig, samTravel, R,
     };
   },
 
@@ -257,7 +263,6 @@ export default {
       s.card.style.transform = `translate(${s.cardX(t) - SHEET.cx}px, ${s.cardY(t) - SHEET.cy}px) rotate(${s.cardR(t)}deg) scaleX(${f.sx})`;
     }
     if (vis(s.price.el, t >= T.count)) s.price.odo.place(T.slotP.map((p, k) => spring(t, T.count, 0, k ? 20 : 2, p)));
-    if (vis(s.unitEl, t >= T.unit)) s.unitEl.style.transform = `scale(${spring(t, T.unit, 1.22, 1, 'slam')})`;
     if (vis(s.b2b.el, t >= T.b2b && !gone32)) s.b2b.el.style.transform = `translateX(${s.rowX.b2b(t)}px)`;
     if (vis(s.tag1.el, t >= T.tag1 && !gone32)) {
       s.tag1.el.style.transform = `translateX(${s.rowX.tag1(t)}px) rotate(${spring(t, T.tag1, -5, -2, 'slide')}deg)`;
@@ -289,8 +294,8 @@ export default {
     }
     if (vis(s.sam, t >= T.sam)) {
       s.sam.style.transform = `translateY(${spring(t, T.sam, H - s.R.sam[1] + 60, 0, 'slide')}px)`;
-      s.samFig.odo.roll(t, T.samCount, { preset: COUNT, stagger: T.samStagger });
-      s.samFig.el.style.transform = `scale(${t < T.samLand ? 1 : spring(t, T.samLand, 1.07, 1, 'slam')})`;
+      s.samFig.odo.place(s.samTravel.map((v, k) => spring(t, T.samCount, 0, v, T.samP[k])));
+      s.samFig.el.style.transform = `scale(${t < T.samDone ? 1 : spring(t, T.samDone, 1.07, 1, 'slam')})`;
     }
     if (vis(s.som, t >= T.som)) {
       const u = 1 - spring(t, T.som, 0, 1, 'slide');
