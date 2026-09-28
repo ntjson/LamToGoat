@@ -1,17 +1,18 @@
 // ch09 Business (shots 9.1-9.4): what one building earns, what the start costs, and where the roadmap climbs to.
 // 9.1 ch08's NAVY strip fills the frame (ch08's exit); here the frame is plain NAVY until EXIT.ch08.
 // 9.2 A BLACK façade of 25 × 20 = 500 windows rises out of the NAVY field. The windows light ORANGE in one sweep and
-//     "10 TRIỆU" counts with them (the lit share of the 500 flats is the share of the 10 triệu), landing on "mười";
-//     "/THÁNG" stamps on "mỗi tháng". The revenue bar under the figure is cut at 59,2 %: the profit piece flips over
-//     to CREAM ("lợi nhuận ròng"), the rest stays ORANGE, and "59,2%" counts digit by digit with the voice.
-// 9.3 HARD CUT to CREAM. The capital strip "200 TRIỆU" slams on "hai trăm triệu"; "cho 8 tháng đầu" slides out from
-//     under it; the timeline band slides in from 10/2026; the ORANGE flag snaps up at 08/2027 on "hòa vốn", the
-//     date types itself on as the flag lands and pulses as the voice reads it.
-// 9.4 9.3's paper slides away left; four NAVY façades rise left to right, one per beat (GĐ3 on "ba"), their windows
-//     lighting; "20–25 TÒA" slams on the top step; the ORANGE MRR banner slides across GĐ3 and counts with the voice.
+//     "10 TRIỆU" counts with them (the lit share of the 500 flats is the share of the 10 triệu); "/THÁNG" stamps.
+//     The revenue bar under the figure is cut at 59,2 %: the profit piece flips over to CREAM ("lợi nhuận ròng"), the
+//     rest stays ORANGE, and "59,2%" counts digit by digit, then stamps.
+// 9.3 HARD CUT to CREAM on L31's first beat, with the capital strip "CẦN 200 TRIỆU" slamming; "cho 8 tháng đầu"
+//     slides out from under it; the timeline band slides in from 10/2026; the ORANGE flag "HÒA VỐN VẬN HÀNH" snaps
+//     up at 08/2027 and the date types itself on; a slow PUSH that keeps every text in frame, and the date stamps
+//     once more. All of it holds to L31's end.
+// 9.4 9.3's paper slides away left; four NAVY façades rise left to right, one per beat, their windows lighting;
+//     "20–25 TÒA" slams on the top step; the ORANGE MRR banner slides across GĐ3, counts, and stamps.
 // Exit (EXIT.ch09): the CREAM ground and the staircase slide out left together, the ground's right edge hand-cut,
-// onto ch10's BLACK field. Every beat is anchored to L30-L32 (ctx.line / ctx.syl); nothing uses film-absolute
-// seconds. Seeds 900-999.
+// onto ch10's BLACK field. No voice: every beat sits on the music's grid, anchored to L30-L32 (ctx.line / ctx.syl /
+// ctx.snap); nothing uses film-absolute seconds. Seeds 900-999.
 import { step, spring, hash, PRESETS } from '../lib/motion.js';
 import { C, el, rough, rect, clip, jagged, pathData } from '../lib/paper.js';
 import { W, H, text, odometer, flip, svg, stroke, drawOn, vis } from '../lib/kit.js';
@@ -27,6 +28,8 @@ const PART = { f: 2, z: 1 }; // the cost piece of the cut bar easing away from t
 const OUT = { f: 1.6, z: 0.9 }; // 9.3's paper leaving left at the change of shot
 const EXIT_P = { f: 1.3, z: 1 }; // the whole CREAM sheet pulled out left, no bounce
 const EXIT_D = W + 340; // its travel: the hand-cut right edge rests just past the frame and ends far left of it
+const LEAD = 0.03; // a hit leads its grid point by this much (under 2 frames at 60 fps); it never trails
+const PUSH = { f: 0.7, z: 1 }; // 9.3's slow push-in (8 %), moving through most of the reading hold
 
 const params = (p) => (typeof p === 'string' ? PRESETS[p] : p);
 
@@ -129,7 +132,6 @@ export default {
     const L32 = ctx.line('L32');
     const s30 = (k) => ctx.syl('L30', k);
     const s31 = (k) => ctx.syl('L31', k);
-    const s32 = (k) => ctx.syl('L32', k);
     const cv = document.createElement('canvas').getContext('2d');
     // Ink box of one line (line-height lh), px from the element's top (fonts are loaded before build).
     const ink = (s, kind, size, lh) => {
@@ -140,53 +142,60 @@ export default {
       return { top: base - m.actualBoundingBoxAscent, base, bottom: base + m.actualBoundingBoxDescent, w: m.width };
     };
     const slideHit = firstHit('slide');
+    const B = ctx.beat;
+    // Start time of a spring whose first arrival lands LEAD s before grid time g.
+    const land = (g, p) => g - LEAD - firstHit(p);
 
-    // Beats (chapter-local seconds), all from the voice. Syllables as spoken (vo_script.md, "Read this"):
-    // L30 Tòa0 năm1 trăm2 căn3 mười4 triệu5 mỗi6 tháng7 lợi8 nhuận9 ròng10 năm11 mươi12 chín13 phẩy14 hai15 phần16 trăm17
-    // L31 Cần0 hai1 trăm2 triệu3 cho4 tám5 tháng6 đầu7 hòa8 vốn9 vận10 hành11 tháng12 tám13 năm14 hai15 không16 hai17 bảy18
-    // L32 Giai0 đoạn1 ba2 hai3 mươi4 đến5 hai6 mươi7 lăm8 tòa9 một10 trăm11 sáu12 mươi13 đến14 hai15 trăm16 triệu17
-    //     mỗi18 tháng19
+    // Beats (chapter-local seconds) on the music's grid. ctx.syl(id, k) is subdivision k of a story beat, snapped to
+    // 16ths (L30 and L31 have 18 and 19 of them, about 0.29 s apart); every text lands early in its beat and holds,
+    // landed, to the beat's end.
     const T = {
-      fac: Math.max(EXIT.ch08 + 0.02, L30.start - 0.42), // the façade rises once ch08's exit is done, landing on "Tòa"
-      lab: s30(1) - 0.06 - slideHit, // "500 căn × 20.000đ" lands just before "năm trăm căn"
-      count: s30(1) - 0.04, // the sweep and the count start on "năm"...
-      land10: s30(4) + 0.02, // ...and land together on "mười"
-      month: s30(6) - 0.03, // "/THÁNG" stamps on "mỗi tháng"
-      snip: s30(8) - 0.06, // the scissor line crosses the bar on "lợi"
-      slam: s31(1) - 0.03, // HARD CUT to CREAM on the slam of the capital strip, on "hai trăm triệu"
-      for: s31(4) - 0.06, // "cho 8 tháng đầu" slides out from under the strip on "cho"
-      band: s31(5) - 0.12, // the timeline band slides in from the left on "tám tháng đầu"
-      flag: s31(8) + 0.02 - firstHit('snap'), // the flag snaps up at 08/2027, landing on "hòa"
-      capOut: s31(9) - 0.03, // the capital strip and its caption slide out left on "vốn"...
-      push: s31(10) - 0.1, // ...and the camera pushes in on the flag and the date ("vận hành tháng tám…")
-      out93: L31.end - 0.12, // 9.3's paper leaves left as L31 ends
-      goal: s32(3) - 0.03, // GĐ3 lands carrying "20–25 TÒA", which slams on "hai mươi đến hai mươi lăm tòa"
-      mrr: s32(10) - 0.1 - slideHit, // the MRR banner lands on "một trăm sáu mươi"
+      fac: Math.max(EXIT.ch08 + 0.02, land(L30.start, FAC)), // the façade rises once ch08's exit is done, landing on L30
+      lab: land(s30(1), 'slide'), // "500 căn × 20.000đ" lands on the 2nd subdivision...
+      count: s30(1) - LEAD, // ...as the sweep and the count start...
+      land10: s30(4) - LEAD, // ...which land together on the 5th
+      month: s30(6) - LEAD, // "/THÁNG" stamps
+      snip: s30(8) - LEAD, // the scissor line crosses the bar
+      cut93: L31.start, // HARD CUT to CREAM exactly on L31's first beat...
+      slam: L31.start, // ...with the capital strip "CẦN 200 TRIỆU" slamming on it
+      for: land(s31(3), 'snap'), // "cho 8 tháng đầu" slides out from under the strip
+      band: land(s31(5), 'slide'), // the timeline band slides in from the left, from 10/2026
+      flag: land(s31(7), 'snap'), // the flag snaps up at 08/2027
+      push: s31(9) - LEAD, // a slow PUSH-in over the reading hold (every text of L31 stays in frame)
+      dateSay: ctx.snap(L31.end - 2.5 * B) - LEAD, // "08/2027" stamps once more, on the bar line
+      out93: L31.end, // 9.3's paper leaves left once L31 has ended
     };
-    T.cut93 = T.slam;
     T.bar = T.land10 - slideHit; // the revenue bar slides in under the figure and lands with the count
-    T.part = T.snip + 0.3; // the two pieces part; the profit piece flips over
-    // "08/2027" types on fast as the flag lands on "hòa", so it's complete and readable through the push; it pulses
-    // when the voice reads it ("tháng tám…").
-    T.date = [0, 1, 2, 3, 4, 5, 6].map((k) => s31(8) + 0.02 + 0.05 * k);
-    T.dateSay = s31(12) - 0.03;
-    // The steps land one per syllable on "Giai", "đoạn", "ba", "hai"; the last (GĐ3) brings the goal with it. The first
-    // rises only once 9.3's paper has cleared the frame.
-    T.land = [Math.max(T.out93 + 0.35 + firstHit(RISE), s32(0)), s32(1), s32(2), s32(3)];
-    // "10 TRIỆU": the second slot turns a full 10 on a spring that settles exactly on "mười"; the first slot (0 -> 1)
+    T.part = ctx.snap(T.snip + LEAD + 0.3) - LEAD; // the two pieces part; the profit piece flips over
+    // "08/2027" types on fast as the flag lands, so it's complete and readable for the rest of L31.
+    T.date = [0, 1, 2, 3, 4, 5, 6].map((k) => T.flag + firstHit('snap') + 0.05 * k);
+    // 9.4 on L32's beats: the steps land one per beat (the first once 9.3's paper has cleared the frame: it only
+    // rises from below, so it may start while the paper is still leaving on the left), GĐ3 carries the goal, which
+    // slams on its roof a beat later. The MRR banner slides in five beats before the end (the last clear event before
+    // the exit); its two figures count and the banner stamps as the last digit locks, 1.7 s before the exit.
+    const ceil = (t) => ctx.snap(t + ctx.grid / 2 - 1e-6); // the first grid time at or after t
+    const firstStep = Math.max(L32.start, ceil(T.out93 + 0.25 + firstHit(RISE) + LEAD)); // 9.3 clears in 0.25 s
+    T.land = [0, 1, 2, 3].map((k) => ctx.snap(firstStep + k * B) - LEAD);
+    T.goal = ctx.snap(T.land[3] + LEAD + B) - LEAD; // "20–25 TÒA" slams on GĐ3's roof a beat after it lands
+    T.mrrLand = ctx.snap(L32.end - 5 * B) - LEAD;
+    T.mrr = T.mrrLand - slideHit;
+    // "10 TRIỆU": the second slot turns a full 10 on a spring that settles exactly on land10; the first slot (0 -> 1)
     // starts later so it rolls over at the end, like an odometer carrying, and both lock together.
     const P10 = tuned(0.9, 10, T.land10 - T.count);
     const d10 = settle(P10, 10) - settle(P10, 1);
-    // "59,2%" counts with the voice: "5" locks on "năm", "2" on "hai", "9" in between (near "chín"). The "%" is part of
-    // the figure from its first frame (a margin never reads without its unit); the whole figure stamps on "phần".
-    T.pct = s30(11) + 0.02 - settle(COUNT, 5);
-    T.pctSt = (s30(15) + 0.02 - settle(COUNT, 12) - T.pct) / 2;
-    T.pctStamp = s30(16) - 0.03;
-    // "160" locks "1" on "một" and "0" on "mươi" ("6" near "sáu"); "200" locks "2" on "hai" and the zeros on "trăm".
-    T.mrrA = s32(10) + 0.02 - settle(COUNT, 1);
-    T.mrrASt = (s32(13) + 0.02 - settle(COUNT, 10) - T.mrrA) / 2;
-    T.mrrB = s32(15) + 0.02 - settle(COUNT, 2);
-    T.mrrBSt = Math.max(0, (s32(16) + 0.02 - settle(COUNT, 10) - T.mrrB) / 2);
+    // "59,2%": "5" locks on the 12th subdivision, "2" on the 14th, "9" in between; the "%" is part of the figure from
+    // its first frame (a margin never reads without its unit), and the whole figure stamps on the 15th.
+    T.pct = s30(11) - LEAD - settle(COUNT, 5);
+    T.pctSt = (s30(13) - LEAD - settle(COUNT, 12) - T.pct) / 2;
+    T.pctStamp = s30(14) - LEAD;
+    // MRR: "160" locks "1" an 8th after the banner lands and its last "0" a beat later, with "2" of "200"; the zeros of
+    // "200" lock an 8th after that and the banner stamps with them.
+    const mrrKey = (k) => ctx.snap(T.mrrLand + LEAD + k * B) - LEAD;
+    T.mrrA = mrrKey(0.5) - settle(COUNT, 1);
+    T.mrrASt = (mrrKey(1.5) - settle(COUNT, 10) - T.mrrA) / 2;
+    T.mrrB = mrrKey(1.5) - settle(COUNT, 2);
+    T.mrrBSt = Math.max(0, (mrrKey(2) - settle(COUNT, 10) - T.mrrB) / 2);
+    T.mrrStamp = mrrKey(2);
 
     // ================= 9.1-9.2: the NAVY field (full frame from t = 0; ch08 paints over it until EXIT.ch08).
     const navy = el(root, '', { width: `${W}px`, height: `${H}px` });
@@ -234,7 +243,7 @@ export default {
     el(pieceR, '', { width: `${BAR.w}px`, height: `${BAR.h}px`, background: C.orange, clipPath: outer });
     const snip = stroke(svg(barBox, BAR.w, BAR.h), cutLine, { color: C.cream, width: 8 });
 
-    // "59,2%" counts with the voice (the "%" is a fixed slot of the odometer) and stamps on "phần trăm".
+    // "59,2%" counts digit by digit (the "%" is a fixed slot of the odometer, there from the first frame), then stamps.
     const pctBox = el(navy, '', { left: `${X0}px`, top: '644px', transformOrigin: '0 75%' });
     const pct = odometer(pctBox, '59,2%', { cls: 'disp cut-text', size: 150, color: C.cream, lh: 1 });
 
@@ -248,24 +257,25 @@ export default {
     });
 
     // ---- 9.3: capital strip, its caption, the timeline band and the break-even flag, in one group that leaves left.
-    // The PUSH scales the whole group about PIV (off to the right, so it also pans): the pole ends near x = 1000 with
-    // the flag right of centre and the last months' ticks spread across the left, all at 145 %.
-    const PIV = { x: 1967, y: 600, k: 1.45 };
+    // Every text of L31 holds to its end, so the frame is laid out to read on the phone as it stands: the strip
+    // top-left, the flag right of centre, the band along the bottom. The PUSH scales the group about PIV by 8 %, which
+    // keeps all of it in frame.
+    const PIV = { x: 900, y: 600, k: 1.06 };
     const g93 = el(cream, '', { width: `${W}px`, height: `${H}px`, transformOrigin: `${PIV.x}px ${PIV.y}px` });
-    const STRIP = { x: -60, y: 290, h: 276, pad: 180 };
+    const STRIP = { x: -60, y: 130, h: 300, pad: 180, size: 190 };
     // The caption is laid down first, so it sits under the strip and can slide out from beneath it.
-    const forLab = text(g93, 'label', 'cho 8 tháng đầu', { size: 56, color: C.black, left: '132px', top: `${STRIP.y + STRIP.h + 24}px` });
-    const capT = ink('200', 'disp', 170, 1.1);
-    const capW = STRIP.pad + Math.round(ink('200 TRIỆU', 'disp', 170, 1.1).w) + 100;
+    const forLab = text(g93, 'label', 'cho 8 tháng đầu', { size: 64, color: C.black, left: '132px', top: `${STRIP.y + STRIP.h + 22}px` });
+    const capT = ink('200', 'disp', STRIP.size, 1.1);
+    const capW = STRIP.pad + Math.round(ink('CẦN 200 TRIỆU', 'disp', STRIP.size, 1.1).w) + 100;
     const cap = sheet(g93, C.black, STRIP.x, STRIP.y, capW, STRIP.h, { seed: 940, amp: 4, lift: true });
-    text(cap, 'disp cut-text', '200 TRIỆU', { size: 170, color: C.cream, left: `${STRIP.pad}px`, top: `${Math.round(STRIP.h / 2 - (capT.top + capT.bottom) / 2)}px` });
-    cap.style.transformOrigin = `${STRIP.pad + 260}px 50%`;
+    text(cap, 'disp cut-text', 'CẦN 200 TRIỆU', { size: STRIP.size, color: C.cream, left: `${STRIP.pad}px`, top: `${Math.round(STRIP.h / 2 - (capT.top + capT.bottom) / 2)}px` });
+    cap.style.transformOrigin = `${Math.round(capW / 2)}px 50%`;
 
     // The band: a BLACK ground across the bottom of the frame, starting at 10/2026, with a tick standing on it for
     // every month to 08/2027 (the first and the last taller) and the two dates in CREAM on it.
-    const BAND = { x: 120, y: 830, month: 118 };
+    const BAND = { x: 120, y: 830, month: 88 };
     const band = el(g93, '', { width: `${W}px`, height: `${H}px` });
-    const bw = W + 300 - BAND.x; // long enough that its right end stays off-frame through the push
+    const bw = W + 60 - BAND.x; // its right end stays off-frame through the push
     const bh = H + 60 - BAND.y;
     el(band, '', { left: `${BAND.x}px`, top: `${BAND.y}px`, width: `${bw}px`, height: `${bh}px`, background: C.black, clipPath: clip(rough(rect(0, 0, bw, bh), { seed: 941, amp: 4 })) });
     const ticks = [];
@@ -274,10 +284,10 @@ export default {
       ticks.push(rough(rect(BAND.x + i * BAND.month - 4, BAND.y - th, 10, th + 4), { seed: 942 + i, amp: 1 }));
     }
     el(band, '', { width: `${W}px`, height: `${H}px`, background: C.black, clipPath: clip(...ticks) });
-    const monoTop = BAND.y + 26;
-    text(band, 'mono', '10/2026', { size: 40, color: C.cream, left: `${BAND.x + 4}px`, top: `${monoTop}px` });
+    const monoTop = BAND.y + 22;
+    text(band, 'mono', '10/2026', { size: 60, color: C.cream, left: `${BAND.x + 4}px`, top: `${monoTop}px` });
     const XF = BAND.x + 10 * BAND.month; // 08/2027
-    const dateEl = el(band, 'mono', { left: `${XF + 4}px`, top: `${monoTop}px`, fontSize: '40px', lineHeight: 1.2, color: C.cream, whiteSpace: 'nowrap', transformOrigin: '0 60%' });
+    const dateEl = el(band, 'mono', { left: `${XF + 4}px`, top: `${monoTop}px`, fontSize: '60px', lineHeight: 1.2, color: C.cream, whiteSpace: 'nowrap', transformOrigin: '0 60%' });
     const dateCh = [...'08/2027'].map((ch) => {
       const sp = document.createElement('span');
       sp.textContent = ch;
@@ -287,16 +297,17 @@ export default {
     });
 
     // The flag: a pole standing on the band at 08/2027 with an ORANGE flag, raised from inside the band.
-    const FT = 300; // flag top at rest
+    const FT = 540; // flag top at rest
+    const FS = 100; // flag type
     const flagMask = el(g93, '', { left: `${XF - 30}px`, top: '0px', width: `${W - XF + 30}px`, height: `${BAND.y + 4}px`, overflow: 'hidden' });
     const flagG = el(flagMask, '', { width: `${W - XF + 30}px`, height: `${BAND.y + 4}px` });
     const poleH = BAND.y + 4 - FT;
     el(flagG, '', { left: '24px', top: `${FT}px`, width: '12px', height: `${poleH}px`, background: C.black, clipPath: clip(rough(rect(0, 0, 12, poleH), { seed: 951, amp: 1.2 })) });
-    const flagIn = ink('HOA VON VAN HANH', 'disp', 56, 1.6);
-    const flagW = Math.round(ink('HÒA VỐN VẬN HÀNH', 'disp', 56, 1.6).w) + 64;
-    const flagH = 108;
+    const flagIn = ink('HOA VON VAN HANH', 'disp', FS, 1.6);
+    const flagW = Math.round(ink('HÒA VỐN VẬN HÀNH', 'disp', FS, 1.6).w) + FS;
+    const flagH = 176;
     const flag = sheet(flagG, C.orange, 36, FT, flagW, flagH, { seed: 952, amp: 3, lift: true });
-    text(flag, 'disp cut-text', 'HÒA VỐN VẬN HÀNH', { size: 56, color: C.black, lh: 1.6, left: '32px', top: `${Math.round(flagH / 2 - (flagIn.top + flagIn.bottom) / 2)}px` });
+    text(flag, 'disp cut-text', 'HÒA VỐN VẬN HÀNH', { size: FS, color: C.black, lh: 1.6, left: `${FS / 2}px`, top: `${Math.round(flagH / 2 - (flagIn.top + flagIn.bottom) / 2)}px` });
     const flagFrom = BAND.y + 4 - FT + 12;
 
     // ---- 9.4: the staircase, four NAVY façades standing on the bottom edge, each with its phase printed on it.
@@ -353,10 +364,11 @@ export default {
     const bnPaper = sheet(banner, C.orange, 0, 0, bnW, BN.h, { seed: 971, amp: 3, lift: true });
     banner.insertBefore(bnPaper, mrr);
     Object.assign(mrr.style, { left: '36px', top: `${Math.round(BN.h / 2 - (mi.top + mi.bottom) / 2)}px` });
+    banner.style.transformOrigin = `${Math.round(bnW / 2)}px ${BN.h / 2}px`; // it stamps about its centre
     g3.winTop = BN.y + BN.h + 26;
 
     // Windows on each step: BLACK when dark, ORANGE groups that light from the bottom up once the step has landed.
-    // GĐ3's light up slowly, across "hai mươi đến hai mươi lăm tòa".
+    // GĐ3's light up slowly, from the goal's slam to the MRR banner.
     steps.forEach((st, i) => {
       const cols = Math.floor((st.w - 48 + 14) / 36);
       const x0 = Math.round((st.w - (cols * 22 + (cols - 1) * 14)) / 2);
@@ -367,7 +379,7 @@ export default {
       fillPath(layer, list.map((w) => w.pts), C.black);
       const lit = lights(layer, list, (w, k) => (rows - 1 - w.r) / rows + 0.3 * hash(k, 985 + i), i === 3 ? 8 : 4, C.orange);
       const start = T.land[i] + (i === 3 ? 0.06 : 0.02);
-      const dur = i === 3 ? Math.max(0.8, s32(9) - start) : 0.55;
+      const dur = i === 3 ? Math.max(0.8, T.mrr - start) : 0.55; // GĐ3's light up slowly, until the banner comes
       const LP = { f: 0.93 / dur, z: 1 };
       for (const g of lit) g.t = start + reach(LP, g.u);
       Object.assign(st, { lit, t0: T.land[i] - firstHit(RISE), from: H + 40 - st.top });
@@ -425,15 +437,10 @@ export default {
 
     // 9.3: the capital, the band and the flag; then the whole group leaves left.
     if (vis(s.g93, t < T.out93 + 1)) {
-      const k = spring(t, T.push, 1, s.pushK, 'settle');
+      const k = spring(t, T.push, 1, s.pushK, PUSH);
       s.g93.style.transform = `translateX(${spring(t, T.out93, 0, -2600, OUT).toFixed(2)}px) scale(${k.toFixed(4)})`;
-      const capX = spring(t, T.capOut, 0, -1500, OUT).toFixed(2);
-      if (vis(s.cap, t >= T.slam && t < T.capOut + 1)) {
-        s.cap.style.transform = `translateX(${capX}px) rotate(-2deg) scale(${spring(t, T.slam, 1.14, 1, 'slam')})`;
-      }
-      if (vis(s.forLab.el, t >= T.for && t < T.capOut + 1)) {
-        s.forLab.el.style.transform = `translate(${capX}px, ${spring(t, T.for, -112, 0, 'snap').toFixed(2)}px)`;
-      }
+      if (vis(s.cap, t >= T.slam)) s.cap.style.transform = `rotate(-2deg) scale(${spring(t, T.slam, 1.14, 1, 'slam')})`;
+      if (vis(s.forLab.el, t >= T.for)) s.forLab.el.style.transform = `translateY(${spring(t, T.for, -112, 0, 'snap').toFixed(2)}px)`;
       if (vis(s.band, t >= T.band)) s.band.style.transform = `translateX(${spring(t, T.band, -s.bandFrom, 0, 'slide').toFixed(2)}px)`;
       s.dateCh.forEach((sp, k) => {
         if (vis(sp, t >= T.date[k])) sp.style.transform = `scale(${spring(t, T.date[k], 1.45, 1, 'snap')})`;
@@ -442,7 +449,7 @@ export default {
       if (vis(s.flagG, t >= T.flag)) s.flagG.style.transform = `translateY(${spring(t, T.flag, s.flagFrom, 0, 'snap').toFixed(2)}px)`;
     }
 
-    // 9.4: the steps rise one per beat, their windows light; the goal slams; the MRR banner slides in and counts.
+    // 9.4: the steps rise one per beat, their windows light; the goal slams; the MRR banner slides in, counts, stamps.
     for (const st of s.steps) {
       if (vis(st.box, t >= st.t0)) {
         st.box.style.transform = `translateY(${spring(t, st.t0, st.from, 0, RISE).toFixed(2)}px)`;
@@ -451,7 +458,8 @@ export default {
     }
     if (vis(s.goal.el, t >= T.goal)) s.goal.el.style.transform = `scale(${spring(t, T.goal, 1.16, 1, 'slam')})`;
     if (vis(s.banner, t >= T.mrr)) {
-      s.banner.style.transform = `translateX(${spring(t, T.mrr, s.bannerFrom, 0, 'slide').toFixed(2)}px)`;
+      const k = t >= T.mrrStamp ? spring(t, T.mrrStamp, 1.16, 1, 'snap') : 1; // the last stamp: held a little longer
+      s.banner.style.transform = `translateX(${spring(t, T.mrr, s.bannerFrom, 0, 'slide').toFixed(2)}px) scale(${k.toFixed(4)})`;
       s.odoA.roll(t, T.mrrA, { preset: COUNT, stagger: T.mrrASt });
       s.odoB.roll(t, T.mrrB, { preset: COUNT, stagger: T.mrrBSt });
     }
