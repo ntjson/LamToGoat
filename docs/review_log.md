@@ -17,6 +17,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch03 Market | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
 | ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
+| ch06 USP 1: before approval | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
 
 ## Gate 1: style frames (2026-09-28)
 
@@ -151,3 +152,16 @@ Director's check: ch04's doors part onto ch05's cream by 63.1 s and the logo lan
 UI words, never on them, and no test string appears. Text check: 10 texts, none under 28 px. Notes: the logo sits on
 `ctx.top` so its pixels match the file exactly. The shotlist's LABEL 52-64 lines pass the phone sheet, but only "AI GỢI Ý"
 is 100 px or larger; revisit sizes at gate 6 if the phone test disagrees.
+
+### ch06 USP 1: before approval
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch06 v4 | 8 | 9 | 8 | 8 | 8 | 8 | 8 | black cover + "1"; "TRƯỚC KHI / DUYỆT CHI" rises out of an orange layer bar; the example price band (18–34tr, "Ví dụ") grows on the voice; the 46tr quote slides and jolts past it, the overrun tears red, "VƯỢT KHUNG" slams; a scissor cut clears the frame; "AI GỢI Ý." / "NGƯỜI QUYẾT ĐỊNH." with a navy strip under the decision |
+
+Director's check: the cover (`kit.cover`) passes over ch05's top-layer plates and has covered them by +0.4 s. The
+chapter is drawn paper only and never looks like an app screen; "Ví dụ" is on screen whenever an example figure is.
+The six numeric labels in 6.4 are the scale's tick labels plus the band and the quote, which read as one diagram,
+not a wall of numbers. Two devices beyond the shotlist are accepted: the orange layer bar (6.2) and the navy strip
+under "NGƯỜI QUYẾT ĐỊNH." (6.5), which echoes ch05's navy tag. The chapter ends on its black ground with nothing on
+its top layer, as ch07's tear expects. Text check: 18 texts, none under 28 px.
