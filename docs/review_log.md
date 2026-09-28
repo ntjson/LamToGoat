@@ -18,6 +18,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
 | ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch06 USP 1: before approval | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
+| ch09 Business | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 
 ## Gate 1: style frames (2026-09-28)
 
@@ -165,3 +166,16 @@ The six numeric labels in 6.4 are the scale's tick labels plus the band and the 
 not a wall of numbers. Two devices beyond the shotlist are accepted: the orange layer bar (6.2) and the navy strip
 under "NGƯỜI QUYẾT ĐỊNH." (6.5), which echoes ch05's navy tag. The chapter ends on its black ground with nothing on
 its top layer, as ch07's tear expects. Text check: 18 texts, none under 28 px.
+
+### ch09 Business
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch09 v3 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 500 windows light orange on the same spring as "10 TRIỆU/THÁNG"; the bar cut at 59,2 % (counted on the voice); "200 TRIỆU" + the timeline, the break-even flag at 08/2027 typed on the syllables; a four-step staircase GĐ0-GĐ3 with "20–25 TÒA" and "MRR 160–200 TRIỆU" counted |
+
+Director's check: ch08's navy strip fills the frame by +0.3 s and ch09 is full navy underneath until its façade rises.
+At most three figures on screen at a time. The exit slides the staircase's cream sheet out left behind a hand-cut
+edge; the frame is black by +0.42 s, under ch10. Accepted deviations: the hard cut to cream lands on "hai" (with the
+"200 TRIỆU" slam) instead of in the breath, so there's no empty frame; the capital is not drawn as an 8-month span,
+because 8 months from 10/2026 ends before the 08/2027 break-even and a span would imply something the deck doesn't
+say. Text check: 26 texts, none under 28 px.
