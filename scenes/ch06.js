@@ -2,16 +2,21 @@
 // AI gives a reasonable price band from similar past jobs (the deck's example, 18–34tr, always labelled "Ví dụ");
 // a 46tr quote lands beyond the band and is flagged before approval; AI only suggests, people decide.
 // Drawn paper only: no UI screenshot exists for the price check, so nothing here imitates an app screen.
-// Every beat is anchored to the voice lines L19-L22; nothing uses film-absolute seconds.
-import { step, spring } from '../lib/motion.js';
+// The film has no voice: every beat is anchored to the story beats L19-L22 on the music's grid (ctx.line / ctx.syl,
+// hits landing on their grid times); each beat's text lands early and holds to the beat's end. Nothing uses
+// film-absolute seconds.
+import { step, spring, PRESETS } from '../lib/motion.js';
 import { C, el, rough, rect, clip, jagged } from '../lib/paper.js';
 import { W, H, text, tag, cover, odometer, svg, stroke, drawOn, vis } from '../lib/kit.js';
 
 const UNDERLAP = 0.8;
 const COVER = { f: 2.4, z: 1 }; // the black curtain lands dead (no bounce), whole px, exactly at rest by the underlap
-const PAN = { f: 1.1, z: 0.82 }; // 6.2 -> 6.3: the claim leaves left as the scale bar arrives from the right
-const FLAG = { f: 0.26, z: 0.6 }; // the quote's friction slide along the bar, from "Một", stopped hard at 46
+const PAN0 = { f: 1.1, z: 0.82 }; // 6.2 -> 6.3: the claim leaves left as the scale bar arrives from the right (retimed in build)
+const FLAG = { f: 0.26, z: 0.6 }; // the quote's friction slide along the bar, stopped hard at 46
 const LAYER = { f: 1.3, z: 0.85 }; // a long strip shooting in along the frame (the layer bar, the NAVY strip)
+const BAND = { f: 1.3, z: 0.7 }; // the band growing 18 -> 34
+const ODO = { f: 1.25, z: 0.8 }; // "18–34tr" counting (one spring per digit slot)
+const ODO_STAGGER = 0.05;
 const SHADOW = 'drop-shadow(0 5px 4px rgba(0,0,0,0.28))';
 
 // The deck's example ("Công nghệ cốt lõi"): a reasonable band of 18–34tr, and a 46tr quote above it.
@@ -36,17 +41,21 @@ function ink(s, kind, size, lh) {
   return { top: base - m.actualBoundingBoxAscent, base, bottom: base + m.actualBoundingBoxDescent, left: -m.actualBoundingBoxLeft, right: m.actualBoundingBoxRight };
 }
 
-// Seconds until an underdamped spring first reaches its target (where the quote hits its stop).
+// Seconds until an underdamped spring first reaches its target (where a slide lands, where the quote hits its stop):
+// scanned forward, then refined, so a later crossing of an oscillating spring is never taken for the first.
 function firstArrival(p) {
-  let a = 0;
-  let b = 4;
-  for (let i = 0; i < 50; i++) {
+  let b = 0.001;
+  while (b < 8 && step(b, p) < 1) b += 0.001;
+  let a = b - 0.001;
+  for (let i = 0; i < 40; i++) {
     const m = (a + b) / 2;
     if (step(m, p) < 1) a = m;
     else b = m;
   }
   return b;
 }
+// The same spring retimed (same damping) so it first lands `dt` s after it starts: a move that fills a gap exactly.
+const landIn = (p, dt) => ({ f: (p.f * firstArrival(p)) / dt, z: p.z });
 
 const place = (e, x, y) => Object.assign(e.style, { left: `${Math.round(x)}px`, top: `${Math.round(y)}px` });
 
@@ -81,13 +90,16 @@ function makeScene(parent, g, clipPath) {
     return { notch, lab: lab.el };
   });
 
-  // Heading above the band: "Ví dụ", "Khung giá hợp lý", "18–34tr".
+  // Heading, one flush-left stack over the bar's 0 end: "Ví dụ", the two lines that say where the band comes from,
+  // and the band's figure in the band's colour.
   const vidu = tag(box, 'Ví dụ', { size: 40, color: C.black, bg: C.cream, seed: 620, rot: -2 });
-  place(vidu.el, BX, g.viduY);
-  const khung = text(box, 'label', 'Khung giá hợp lý', { size: 52, color: C.cream });
-  place(khung.el, g.hx, g.khungY);
+  place(vidu.el, BX - 6, g.viduY);
+  const khung = text(box, 'label', 'AI đưa ra khung giá hợp lý', { size: 52, color: C.cream });
+  place(khung.el, BX, g.khungY);
+  const tu = text(box, 'label', 'từ những việc tương tự đã làm', { size: 52, color: C.cream });
+  place(tu.el, BX, g.tuY);
   const fig = odometer(box, '18–34tr', { cls: 'disp cut-text', size: 110, color: C.orange });
-  place(fig.el, g.hx - 4, g.figY);
+  place(fig.el, BX - 4, g.figY);
 
   // The quote: a red flag whose pole marks its price on the bar.
   const flag = el(box, '', { width: `${g.flagW}px`, height: `${g.poleH}px`, filter: SHADOW, transformOrigin: `6px ${g.poleH}px` });
@@ -102,18 +114,18 @@ function makeScene(parent, g, clipPath) {
   const warn = text(box, 'label', 'cảnh báo trước khi duyệt', { size: 48, color: C.cream });
   place(warn.el, g.sx + 10, g.wy);
 
-  return { box, bar, rip, band, ticks, vidu: vidu.el, khung: khung.el, fig, flag, strip: strip.el, warn: warn.el };
+  return { box, bar, rip, band, ticks, vidu: vidu.el, khung: khung.el, tu: tu.el, fig, flag, strip: strip.el, warn: warn.el };
 }
 
 function paintScene(c, s, t) {
   const { T, g } = s;
-  const pan = step(t - T.pan, PAN);
+  const pan = step(t - T.pan, s.PAN);
   const bump = 12 * (step(t - T.hit, 'snap') - step(t - T.hit - 0.08, 'snap'));
   c.bar.style.transform = `translate(${(PAN_D * (1 - pan)).toFixed(1)}px, ${bump.toFixed(2)}px)`;
 
-  // Ticks click on one after another, each notch dropping from the bar.
+  // Ticks click on one after another, a 16th apart, each notch dropping from the bar.
   c.ticks.forEach((k, i) => {
-    const t0 = T.ticks + i * 0.12;
+    const t0 = T.tick[i];
     const on = vis(k.notch, t >= t0);
     vis(k.lab, on);
     if (on) {
@@ -124,10 +136,12 @@ function paintScene(c, s, t) {
   // "Ví dụ" arrives with the first tick: the example is labelled whenever its figures are on screen.
   if (vis(c.vidu, t >= T.ticks)) c.vidu.style.transform = `scale(${spring(t, T.ticks, 1.25, 1, 'slam').toFixed(3)})`;
 
-  // The band grows 18 -> 34 on "khung giá"; the heading slides in with it; the figure counts on "từ những việc".
-  if (vis(c.band, t >= T.band)) c.band.style.transform = `scaleX(${Math.max(0.001, spring(t, T.band, 0, 1, { f: 1.3, z: 0.7 })).toFixed(4)})`;
-  if (vis(c.khung, t >= T.band)) c.khung.style.transform = `translateX(${spring(t, T.band, -g.hx - 700, 0, 'slide').toFixed(1)}px)`;
-  if (vis(c.fig.el, t >= T.count)) c.fig.roll(t, T.count, { preset: { f: 1.25, z: 0.8 }, stagger: 0.05 });
+  // The first line slides in, the band grows 18 -> 34 under it, the second line follows, then the figure counts.
+  if (vis(c.khung, t >= T.khung)) c.khung.style.transform = `translateX(${spring(t, T.khung, -g.headOut, 0, 'slide').toFixed(1)}px)`;
+  if (vis(c.band, t >= T.band)) c.band.style.transform = `scaleX(${Math.max(0.001, spring(t, T.band, 0, 1, BAND)).toFixed(4)})`;
+  if (vis(c.tu, t >= T.tu)) c.tu.style.transform = `translateX(${spring(t, T.tu, -g.headOut, 0, 'slide').toFixed(1)}px)`;
+  // It shows once its digits are turning, so no frame reads "00–00tr".
+  if (vis(c.fig.el, t >= T.count + 0.1)) c.fig.roll(t, T.count, { preset: ODO, stagger: ODO_STAGGER });
 
   // The quote slides in from the left, crosses the band and stops dead at 46; it jolts forward on impact.
   const moving = t >= T.flag;
@@ -156,37 +170,49 @@ export default {
     const L21 = ctx.line('L21');
     const L22 = ctx.line('L22');
     const syl = (id, k) => ctx.syl(id, k);
-    const flagTravel = firstArrival(FLAG);
+    const arrive = (p) => firstArrival(typeof p === 'string' ? PRESETS[p] : p);
+    const SL = arrive('slide'); // a 'slide' first lands this long after it starts
+    const PAN = landIn(PAN0, L20.start - L19.end); // the scale bar lands exactly on L20's first beat
 
-    // Beats (chapter-local seconds), all derived from the voice lines.
+    // Beats (chapter-local seconds), all on the grid of the story beats. A move that lands (slide, band, count, flag)
+    // starts early by its spring's first-arrival time so it lands on its grid point; a SLAM appears on it.
     const T = {
-      one: Math.max(UNDERLAP + 0.02, L19.start - 0.25), // 6.1 the numeral slams in the breath
-      claim: syl('L19', 3) - 0.3, // 6.2 "Hai lớp bảo vệ quỹ chung" lands on "hai lớp"
-      layer: syl('L19', 7) - 0.12, // the ORANGE layer bar shoots in under the numeral on "Lớp một"
-      truoc: syl('L19', 9) - 0.3, // "TRƯỚC KHI" rises out of the bar, lands on "trước"
-      duyet: syl('L19', 11) - 0.3, // "DUYỆT CHI" lands on "duyệt"
-      pan: L19.end + 0.1, // 6.3 in the breath: the claim leaves left, the scale bar slides in on the same line
-      ticks: L20.start + 0.12, // ticks click on under "Ây-ai đưa ra"
-      band: syl('L20', 4) - 0.08, // the band grows on "khung giá"
-      count: syl('L20', 9) - 0.05, // "18–34tr" counts through "những việc tương tự"
-      hit: syl('L21', 5), // 6.4 the quote stops at 46 on "sáu"
-      strip: syl('L21', 7) - 0.05, // "VƯỢT KHUNG" slams on "vượt"
-      warn: syl('L21', 10) - 0.3, // "cảnh báo trước khi duyệt" lands on "cảnh báo"
-      cut: syl('L21', 12) - 0.1, // the scissor line crosses on "ngay"
-      split: L21.end + 0.03, // the halves part in the breath
-      ai: L22.start - 0.06, // 6.5 "AI GỢI Ý." on "Ây-ai"
-      nguoi: syl('L22', 5) - 0.06, // "NGƯỜI QUYẾT ĐỊNH." on "ban quản lý"
-      cap: syl('L22', 8) - 0.3, // the caption lands on "xem lại"
-      decide: syl('L22', 11) - 0.1, // the NAVY strip slides in under "NGƯỜI QUYẾT ĐỊNH." on "quyết định"
+      one: L19.start, // 6.1 the numeral SLAMs on the beat's first grid point (the BLACK cover is down by then)
+      claim: syl('L19', 3) - SL, // 6.2 "Hai lớp bảo vệ quỹ chung" slides in beside it
+      layer: syl('L19', 5) - arrive(LAYER), // the ORANGE layer bar shoots in under the numeral
+      truoc: syl('L19', 6) - SL, // "TRƯỚC KHI" rises out from behind the bar
+      duyet: syl('L19', 7) - SL, // "DUYỆT CHI"; the finished claim then holds to the beat's end
+      pan: L19.end, // 6.3 the claim leaves left as the scale bar slides in on the same line
+      ticks: L20.start, // the ticks click on a 16th apart, "Ví dụ" with the first
+      khung: syl('L20', 2) - SL, // "AI đưa ra khung giá hợp lý" lands
+      band: syl('L20', 3) - arrive(BAND), // the band grows 18 -> 34 under it
+      tu: syl('L20', 5) - SL, // "từ những việc tương tự đã làm" lands
+      count: syl('L20', 9) - arrive(ODO) - ODO_STAGGER * ('18–34tr'.replace(/\D/g, '').length - 1), // "18–34tr" lands
+      hit: L21.start, // 6.4 the quote (sliding in since the end of L20) stops dead at 46 on L21's first beat
+      strip: syl('L21', 2), // "VƯỢT KHUNG" SLAMs
+      warn: syl('L21', 5) - SL, // "cảnh báo trước khi duyệt" lands (halfway between the slam and the scissor)
+      cut: syl('L21', 10), // the scissor line runs down the frame...
+      split: L21.end, // ...and the halves part on the beat's end
+      ai: L22.start, // 6.5 "AI GỢI Ý." SLAMs
+      nguoi: syl('L22', 2), // "NGƯỜI QUYẾT ĐỊNH." SLAMs
+      cap: [syl('L22', 4) - SL, syl('L22', 6) - SL], // the caption's two lines land in turn
+      decide: syl('L22', 10) - arrive(LAYER), // the NAVY strip lands under "NGƯỜI QUYẾT ĐỊNH."
     };
-    T.flag = T.hit - flagTravel;
-    T.tear = T.hit + 0.05;
+    T.tick = TICKS.map((_, i) => T.ticks + i * ctx.grid);
+    T.flag = T.hit - arrive(FLAG);
+    T.tear = T.hit;
+    // Landing times of the moves above (for the sound's cues).
+    const land = {
+      claim: T.claim + SL, layer: T.layer + arrive(LAYER), truoc: T.truoc + SL, duyet: T.duyet + SL, pan: L20.start,
+      khung: T.khung + SL, band: T.band + arrive(BAND), tu: T.tu + SL, count: syl('L20', 9), warn: T.warn + SL,
+      cap: T.cap.map((c) => c + SL), decide: T.decide + arrive(LAYER),
+    };
 
     // 6.1 ground: the BLACK cover. It travels on ctx.top over ch05's plates, then becomes this chapter's ground.
     const blk = cover(ctx, C.black, { seed: 601, amp: 6 });
 
-    // 6.1-6.2: the numeral stands on the line the scale bar will take; on "Lớp một" an ORANGE layer bar shoots in
-    // along that line, and the claim rises out from behind it. The pan later carries all of it out left.
+    // 6.1-6.2: the numeral stands on the line the scale bar will take; an ORANGE layer bar shoots in along that line,
+    // and the claim rises out from behind it. The pan later carries all of it out left.
     const g62 = el(root, '', { width: `${W}px`, height: `${H}px` });
     const baseY = BY - 40; // the numeral's and the claim's baseline
     const one = text(g62, 'disp cut-text', '1', { size: 620, color: C.orange, lh: 1, fontVariantNumeric: 'normal' });
@@ -212,7 +238,7 @@ export default {
     place(claim.el, cx + 4, baseY - di.base - 132 + ti.top - 26 - ci.bottom);
 
     // 6.3-6.4 geometry, shared by the three copies of the scene.
-    const g = { bandW: Math.round(PX(34) - PX(18)), hx: Math.round(PX(18)) };
+    const g = { bandW: Math.round(PX(34) - PX(18)) };
     {
       const probe = tag(root, 'Báo giá 46tr', { size: 52, color: C.cream, bg: C.red, seed: 630 });
       g.flagW = probe.w + 8;
@@ -220,15 +246,18 @@ export default {
       probe.el.remove();
       g.poleH = g.bannerH + 34;
       g.flagX0 = -g.flagW - 80;
-      // Heading: the figure's baseline sits 150 px over the bar; "Khung giá hợp lý" and "Ví dụ" stack above it.
+      // Heading: a flush-left stack over the bar's 0 end, its figure 30 px over the quote's lane. The two label lines
+      // sit at a 64 px baseline pitch (the descenders of the first clear the marks of the second); "Ví dụ" tops it.
       const fi = ink('18–34tr', 'disp', 110, 1);
       g.figY = Math.round(BY - g.poleH - 30 - 110);
-      const ki = ink('Khung giá hợp lý', 'label', 52, 1.2);
-      g.khungY = Math.round(g.figY + fi.top - 18 - ki.bottom);
-      // "Ví dụ" labels the whole scale: it sits over the bar's 0 end, just above the quote's lane.
+      const ki = ink('AI đưa ra khung giá hợp lý', 'label', 52, 1.2);
+      const tui = ink('từ những việc tương tự đã làm', 'label', 52, 1.2);
+      g.tuY = Math.round(g.figY + fi.top - 24 - tui.bottom);
+      g.khungY = g.tuY - 64;
       const vprobe = tag(root, 'Ví dụ', { size: 40, color: C.black, bg: C.cream, seed: 620 });
-      g.viduY = Math.round(BY - g.poleH - 24 - vprobe.h);
+      g.viduY = Math.round(g.khungY + ki.top - 20 - vprobe.h);
       vprobe.el.remove();
+      g.headOut = Math.round(BX + Math.max(ki.right, tui.right) + 80); // the lines slide in from off-frame left
       // Right column, over the red segment: the strip and its warning.
       const sprobe = tag(root, 'VƯỢT KHUNG', { cls: 'disp cut-text', size: 140, color: C.cream, bg: C.red, padX: 0.3, padY: 0.14, seed: 640 });
       g.stripW = sprobe.w;
@@ -265,21 +294,23 @@ export default {
     const scissor = svg(root);
     const sPath = stroke(scissor, cutLine, { color: C.orange, width: 7 });
 
-    // 6.5: one idea on black. On "quyết định" a NAVY strip (the named manager's colour) slides in under the
-    // people's line: the bookend of the orange layer bar that opened the chapter.
+    // 6.5: one idea on black. Last, a NAVY strip (the named manager's colour) shoots in under the people's line: the
+    // bookend of the orange layer bar that opened the chapter.
     const navy = el(root, '', { background: C.navy });
     const ai = text(root, 'disp cut-text', 'AI GỢI Ý.', { size: 170, color: C.orange });
     const ng = text(root, 'disp cut-text', 'NGƯỜI QUYẾT ĐỊNH.', { size: 170, color: C.cream });
-    const cap = text(root, 'label', 'AI có bước tự kiểm tra · ảnh và thông tin cá nhân / cư dân không gửi cho AI', { size: 34, color: C.cream, lh: 1.3 });
+    // The caption (one sentence, broken where the shotlist breaks it) as its two lines, so each can land in turn.
+    const CAP_LH = Math.round(34 * 1.3);
+    const cap = ['AI có bước tự kiểm tra · ảnh và thông tin cá nhân', 'cư dân không gửi cho AI'].map((s) => text(root, 'label', s, { size: 34, color: C.cream, lh: 1.3 }).el);
     const ni = ink('NGƯỜI QUYẾT ĐỊNH.', 'disp', 170, 1.1);
     const gap = 50;
     const capGap = Math.round(ni.bottom - ng.h + 30 + 40);
-    const block = ai.h + gap + ng.h + capGap + cap.h;
+    const block = ai.h + gap + ng.h + capGap + 2 * CAP_LH;
     const y0 = Math.round((H - block) / 2);
     const ngY = y0 + ai.h + gap;
     place(ai.el, 150, y0);
     place(ng.el, 150, ngY);
-    place(cap.el, 156, ngY + ng.h + capGap);
+    cap.forEach((e, i) => place(e, 156, ngY + ng.h + capGap + i * CAP_LH));
     for (const e of [ai.el, ng.el]) e.style.transformOrigin = '0 60%';
     const navyW = 150 + ng.w + 70 + 60;
     const navyH = Math.round(ni.bottom - ni.top + 54);
@@ -289,7 +320,7 @@ export default {
     });
 
     const coverY = (t) => Math.round(spring(t, 0.1, -(H + 150), 0, COVER));
-    return { T, g, blk, coverY, g62, one: one.el, claim: claim.el, truoc: truoc.el, duyet: duyet.el, rise, layer, whole, halfA, halfB, sPath, navy, navyW, ai: ai.el, ng: ng.el, cap: cap.el };
+    return { T, land, g, PAN, blk, coverY, g62, one: one.el, claim: claim.el, truoc: truoc.el, duyet: duyet.el, rise, layer, whole, halfA, halfB, sPath, navy, navyW, ai: ai.el, ng: ng.el, cap };
   },
 
   render(s, t) {
@@ -297,8 +328,9 @@ export default {
     // 6.1 BLACK slides down over ch05's held last frame (on ctx.top until the underlap ends).
     s.blk.place(0, s.coverY(t), t < UNDERLAP);
 
-    // 6.1-6.2: the numeral slams, hits again on "một"; the claim slides in beside it; the pan takes it out left.
-    const pan = step(t - T.pan, PAN);
+    // 6.1-6.2: the numeral slams; the claim slides in beside it; the layer bar shoots in and the two lines rise out
+    // from behind it; the pan takes it all out left.
+    const pan = step(t - T.pan, s.PAN);
     if (vis(s.g62, t >= T.one && pan < 0.995)) {
       s.g62.style.transform = `translateX(${(-PAN_D * pan).toFixed(1)}px)`;
       s.one.style.transform = `rotate(${spring(t, T.one, -4, 0, 'slam').toFixed(3)}deg) scale(${spring(t, T.one, 1.25, 1, 'slam').toFixed(4)})`;
@@ -326,10 +358,44 @@ export default {
     const cutting = t >= T.cut && t < T.split + 0.05;
     if (vis(s.sPath, cutting)) drawOn(s.sPath, step(t - T.cut, { f: 1.8, z: 1 }));
 
-    // 6.5: the two lines slam in turn; the caption slides in under them. Final state holds past ctx.dur.
+    // 6.5: the two lines slam in turn; the caption's lines slide in under them; the NAVY strip lands last, under the
+    // people's line. Final state holds past ctx.dur.
     if (vis(s.ai, t >= T.ai)) s.ai.style.transform = `scale(${spring(t, T.ai, 1.2, 1, 'slam').toFixed(4)})`;
     if (vis(s.ng, t >= T.nguoi)) s.ng.style.transform = `scale(${spring(t, T.nguoi, 1.2, 1, 'slam').toFixed(4)})`;
     if (vis(s.navy, t >= T.decide)) s.navy.style.transform = `translateX(${spring(t, T.decide, -s.navyW - 120, 0, LAYER).toFixed(1)}px)`;
-    if (vis(s.cap, t >= T.cap)) s.cap.style.transform = `translateX(${spring(t, T.cap, -1300, 0, 'slide').toFixed(1)}px)`;
+    s.cap.forEach((e, i) => {
+      if (vis(e, t >= T.cap[i])) e.style.transform = `translateX(${spring(t, T.cap[i], -1300, 0, 'slide').toFixed(1)}px)`;
+    });
+  },
+
+  // Event times (chapter-local) for the sound: a move that lands carries `land` (its hit, on the grid); the rest hit
+  // on `t`.
+  cues(s) {
+    const { T, land: L } = s;
+    return [
+      { t: 0.1, name: 'wipe' },
+      { t: T.one, name: 'slam' },
+      { t: T.claim, name: 'slide', land: L.claim },
+      { t: T.layer, name: 'bar', land: L.layer },
+      { t: T.truoc, name: 'rise', land: L.truoc },
+      { t: T.duyet, name: 'rise', land: L.duyet },
+      { t: T.pan, name: 'pan', land: L.pan },
+      ...T.tick.map((t, i) => ({ t, name: 'tick', i })),
+      { t: T.ticks, name: 'tag' },
+      { t: T.khung, name: 'slide', land: L.khung },
+      { t: T.band, name: 'band', land: L.band },
+      { t: T.tu, name: 'slide', land: L.tu },
+      { t: T.count, name: 'count', land: L.count },
+      { t: T.flag, name: 'friction', land: T.hit },
+      { t: T.tear, name: 'tear' },
+      { t: T.strip, name: 'stab' },
+      { t: T.warn, name: 'slide', land: L.warn },
+      { t: T.cut, name: 'scissor' },
+      { t: T.split, name: 'split' },
+      { t: T.ai, name: 'slam' },
+      { t: T.nguoi, name: 'slam' },
+      ...T.cap.map((t, i) => ({ t, name: 'slide', land: L.cap[i] })),
+      { t: T.decide, name: 'bar', land: L.decide },
+    ];
   },
 };
