@@ -1,8 +1,12 @@
 // ch01 Hook (shots 1.1-1.5). A real complaint is lost in a group chat; the chat is cut away; the fund balance has a
 // block of digits cut out of it; the hole tears open into the question "TIỀN QUỸ ĐI ĐÂU?".
-// Every beat is anchored to the voice lines L01-L03; nothing here uses film-absolute seconds.
+// No voice-over: the story beats L01-L03 carry their message on screen (docs/onscreen.json): two ORANGE caption
+// strips pasted on the chat ("PHẢN ÁNH GỬI VÀO NHÓM CHAT," / "RỒI TRÔI MẤT.") and a BLACK strip over the balance
+// ("SỐ DƯ QUỸ LẶNG LẼ THAY ĐỔI."). Every beat is anchored to L01-L03 on the music's grid (ctx.line / ctx.syl /
+// ctx.snap); nothing here uses film-absolute seconds. cues() lists the event times for the sound.
 import { step, spring, track, rng } from '../lib/motion.js';
 import { C, el, rough, rect, bubble, blob, clip, jagged, pathData } from '../lib/paper.js';
+import { tag } from '../lib/kit.js';
 
 const W = 1920;
 const H = 1080;
@@ -12,6 +16,16 @@ const COMPLAINT = ['Thang máy B kẹt cửa ở tầng 3,', 'phải bấm nhi�
 const FIGURE = ['981.', '500', '.000 đ'];
 
 const SCROLL = { f: 2.4, z: 0.85 };
+// The L01 caption strips pasted on the chat sheet (upper right, clear of the complaint's column), and the L02 strip.
+const CAP1 = { text: 'PHẢN ÁNH GỬI VÀO / NHÓM CHAT,', size: 96, rot: -2, seed: 51, right: 100, top: 80 };
+const CAP2 = { text: 'RỒI TRÔI MẤT.', size: 140, rot: 1.5, seed: 52, right: 130, gap: 16 };
+const CAP3 = { text: 'SỐ DƯ QUỸ LẶNG LẼ THAY ĐỔI.', size: 112, rot: -1.5, seed: 53, gap: 28 };
+// Time from a spring's start to its first arrival at the target (a slide's landing).
+const firstHit = (p) => {
+  let t = 0;
+  while (step(t, p) < 1 && t < 2) t += 1 / 240;
+  return t;
+};
 const STACK_BOTTOM = 1010; // the newest bubble stays above this line
 const GAP = 24;
 const CFONT = 72; // complaint text size
@@ -67,6 +81,11 @@ function makeSheet(parent, chat, clipPath) {
   const sheet = el(parent, '', { width: `${W}px`, height: `${H}px`, background: C.black, transformOrigin: '50% 50%' });
   if (clipPath) sheet.style.clipPath = clipPath;
   const stack = el(sheet, '', { width: `${W}px`, height: `${H}px` });
+  // The caption strips are pasted on the sheet (they don't scroll with the chat), so the scissor cuts them too.
+  const cap1 = tag(sheet, CAP1.text, { cls: 'disp cut-text', size: CAP1.size, color: C.black, bg: C.orange, rot: CAP1.rot, seed: CAP1.seed, padX: 0.34, padY: 0.16 });
+  const cap2 = tag(sheet, CAP2.text, { cls: 'disp cut-text', size: CAP2.size, color: C.black, bg: C.orange, rot: CAP2.rot, seed: CAP2.seed, padX: 0.3, padY: 0.14 });
+  Object.assign(cap1.el.style, { left: `${W - CAP1.right - cap1.w}px`, top: `${CAP1.top}px` });
+  Object.assign(cap2.el.style, { left: `${W - CAP2.right - cap2.w}px`, top: `${CAP1.top + cap1.h + CAP2.gap}px` });
   const els = chat.items.map((it, i) => {
     const b = el(stack, '', {
       left: `${it.x}px`, top: `${it.y}px`, width: `${it.w}px`, height: `${it.h}px`,
@@ -87,7 +106,9 @@ function makeSheet(parent, chat, clipPath) {
     }
     return b;
   });
-  return { sheet, stack, els };
+  sheet.appendChild(cap1.el);
+  sheet.appendChild(cap2.el);
+  return { sheet, stack, els, cap1: cap1.el, cap2: cap2.el };
 }
 
 export default {
@@ -101,16 +122,22 @@ export default {
     probe.remove();
     const chat = layoutChat(ctx, cw, ch);
 
-    // Beats (chapter-local seconds), all derived from the voice lines.
+    // Beats (chapter-local seconds), all derived from the story beats L01-L03 and snapped to the music's grid.
+    // ctx.syl(id, k) subdivides a beat by the old voice line's syllables (L01: Phản0 ánh1 gửi2 vào3 nhóm4 chat5
+    // rồi6 trôi7 mất8; L02: Số0 dư1 quỹ2 lặng3 lẽ4 thay5 đổi6).
+    const L02 = ctx.line('L02');
     const T = {
-      cut: L01.end + 0.1, // scissor line starts
-      split: L01.end + 0.52, // the two halves leave
-      strip: ctx.line('L02').start - 0.3, // balance strip slides in
-      cut500: ctx.syl('L02', 3) - 0.05, // on "lặng"
-      tear: Math.min(L03.start - 0.72, ctx.line('L02').end + 0.05), // the hole tears open in the breath after L02
-      slam: L03.start - 0.06, // the question lands on "Tiền"
+      cap1: ctx.syl('L01', 0) - 0.04, // "PHẢN ÁNH GỬI VÀO / NHÓM CHAT," slams as the beat starts
+      cap2: ctx.syl('L01', 7) - 0.04, // "RỒI TRÔI MẤT." slams as the complaint leaves the frame (the chat is solved for it)
+      cut: L01.end, // scissor line starts, on the beat
+      split: ctx.snap(L01.end + 0.52), // the two halves leave
+      strip: L02.start - firstHit('slide'), // balance strip lands on the beat
+      cap3: ctx.syl('L02', 1) - 0.04, // "SỐ DƯ QUỸ LẶNG LẼ THAY ĐỔI." slams
+      cut500: ctx.syl('L02', 3) - 0.04, // the "500" is cut on "lặng"
+      tear: ctx.snap(Math.min(L03.start - 0.72, L02.end + 0.05)), // the hole tears open in the gap after L02
+      slam: L03.start - 0.04, // the question lands on the beat
     };
-    T.drop = T.cut500 + 0.35;
+    T.drop = ctx.snap(T.cut500 + 0.35);
 
     // Layer 1: orange field.
     el(root, '', { width: `${W}px`, height: `${H}px`, background: C.orange });
@@ -146,6 +173,9 @@ export default {
     const clipHoled = clip(outer, holePoly);
     Object.assign(patch.style, { left: `${hole.x}px`, top: `${hole.y}px`, width: `${hole.w}px`, height: `${hole.h}px` });
     const stripX = (t) => spring(t, T.strip, -sw - 80, Math.round((W - sw) / 2) - 60, 'slide');
+    // The L02 caption: a BLACK strip over the balance strip's left edge (under the piece, the sheets and the tear).
+    const cap3 = tag(root, CAP3.text, { cls: 'disp cut-text', size: CAP3.size, color: C.cream, bg: C.black, rot: CAP3.rot, seed: CAP3.seed, padX: 0.34, padY: 0.16 });
+    Object.assign(cap3.el.style, { left: `${Math.round((W - sw) / 2) - 60 - 10}px`, top: `${SY - cap3.h - CAP3.gap}px` });
 
     // Layer 3: the cut-out "500" piece and the scissor outline around it.
     const piece = el(root, '', { width: `${hole.w}px`, height: `${hole.h}px`, transformOrigin: '50% 30%', filter: 'drop-shadow(0 5px 4px rgba(0,0,0,0.3))' });
@@ -203,7 +233,7 @@ export default {
     q.style.top = `${Math.round((H - qh) / 2)}px`;
 
     const tearScale = track(1.4, [[T.tear, 4.2, { f: 2.0, z: 0.85 }], [T.slam - 0.3, 26, { f: 1.6, z: 1 }]]);
-    return { T, tearScale, chat, whole, halfA, halfB, strip, paper, spans, clipWhole, clipHoled, stripX, SY, hole, piece, outline, oPath, oLen, sPath, sLen, fringe, tear, q };
+    return { T, tearScale, chat, whole, halfA, halfB, strip, paper, spans, clipWhole, clipHoled, stripX, SY, hole, piece, outline, oPath, oLen, sPath, sLen, fringe, tear, q, cap3: cap3.el, slideHit: firstHit('slide') };
   },
 
   render(s, t) {
@@ -223,6 +253,12 @@ export default {
           b.style.transform = `translateY(${dy}px) rotate(${rot}deg) scale(${k})`;
         }
       });
+      // The L01 caption strips on the sheet: slam in, one per half of the sentence.
+      for (const [e, t0, k0] of [[sheet.cap1, T.cap1, 1.14], [sheet.cap2, T.cap2, 1.2]]) {
+        const on = t >= t0;
+        e.style.visibility = on ? 'inherit' : 'hidden';
+        if (on) e.style.transform = `scale(${spring(t, t0, k0, 1, 'slam')})`;
+      }
     }
     const split = t >= T.split;
     s.whole.sheet.style.visibility = split ? 'hidden' : 'inherit';
@@ -239,7 +275,10 @@ export default {
     s.sPath.style.visibility = cutting ? 'visible' : 'hidden';
     if (cutting) s.sPath.setAttribute('stroke-dashoffset', `${s.sLen * (1 - step(t - T.cut, { f: 1.8, z: 1 }))}`);
 
-    // Balance strip, then the "500" cut and drop.
+    // Balance strip and its caption, then the "500" cut and drop.
+    const c3 = t >= T.cap3;
+    s.cap3.style.visibility = c3 ? 'inherit' : 'hidden';
+    if (c3) s.cap3.style.transform = `scale(${spring(t, T.cap3, 1.14, 1, 'slam')})`;
     const x = s.stripX(t);
     const sy = s.SY;
     s.strip.style.transform = `translate(${x}px, 0px)`;
@@ -269,5 +308,23 @@ export default {
     const slammed = t >= T.slam;
     s.q.style.visibility = slammed ? 'visible' : 'hidden';
     if (slammed) s.q.style.transform = `scale(${spring(t, T.slam, 1.1, 1, 'slam')})`;
+  },
+
+  // Event times (chapter-local) for the sound: every bubble, the caption slams, the cuts, slides, drop, tear and stab.
+  cues(s) {
+    const { T } = s;
+    return [
+      ...s.chat.items.map((it, i) => ({ t: it.tIn, name: i === 0 ? 'complaint' : 'bubble', i })),
+      { t: T.cap1, name: 'caption' },
+      { t: T.cap2, name: 'caption' },
+      { t: T.cut, name: 'scissor' },
+      { t: T.split, name: 'split' },
+      { t: T.strip, name: 'slide', land: T.strip + s.slideHit },
+      { t: T.cap3, name: 'caption' },
+      { t: T.cut500, name: 'snip' },
+      { t: T.drop, name: 'drop' },
+      { t: T.tear, name: 'tear' },
+      { t: T.slam, name: 'stab' },
+    ];
   },
 };
