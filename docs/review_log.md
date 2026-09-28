@@ -274,8 +274,10 @@ score is 8 or higher. Details are in each chapter's review file.
 
 The film is now music and sound effects only.
 - **Timeline:** `docs/timeline.json` is built from on-screen reading time (`tools/timeline.py`,
-  `docs/onscreen.json`) on a 108 BPM grid. The film is **188.9 s (3:08.9), 85 bars**, at a reading pace of about
-  17 characters/s. 3:00 would need about 20 characters/s.
+  `docs/onscreen.json`) on a 108 BPM grid. The film is **188.9 s (3:08.9), 85 bars**.
+  - Measured on the result, there are 11.9 characters of text per second of hold on average, and 15-19 on the
+    busiest beats (L33, L35, L01, L05).
+  - At 3:00 those beats would need 20-23 characters/s.
 - **Text check:** every story beat L01-L35 was checked against the frame. Where the message was only spoken, text
   was added as DISPLAY type or a caption strip in the Bass style, never as a bottom subtitle:
 
@@ -303,9 +305,9 @@ score 8+; rounds in `docs/review/chNN.md`). Director's checks on the whole rough
 - **Boundaries:** all ten cuts are clean (`tools/boundary.mjs`).
 - **Holds:** no shot holds still for more than 2 s.
 - **Longest gaps between visual events:**
-  - 6.4 s in ch06's closing shot, which is by design: the reading budget for "AI GỢI Ý. / NGƯỜI QUYẾT ĐỊNH." and
-    the privacy sentence, with three slams and a strip inside it.
-  - 3.7 s in ch02's 745-cell shot, where cells keep flipping below the detector's threshold.
+  - Counting small events too (`tools/stillness.py --event 8`), the longest gap is **2.1 s**.
+  - The default threshold misses smooth slides and small type, so it reports 4.4 s at ch06's end (the navy strip
+    slides in at 111.4 s) and 3.7 s in ch02 (cells flipping in the 745-cell shot).
 - **Changes to the approved shotlist by the builders, all accepted:**
   - ch03: the unit stays on the count from its first frame.
   - ch05: the suggestion card sits in a navy paper pocket so the tags cover no UI text.

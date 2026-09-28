@@ -25,8 +25,11 @@ The film is **music and sound effects only**; the on-screen text carries the who
   `docs/timeline.md`) from the on-screen text in `docs/onscreen.json`. The engine and every tool read it.
   - Beats sit on 8th notes and chapters on bar lines at 108 BPM. `ctx.syl` snaps to 16ths, and `ctx.snap()` snaps
     any other time.
-  - The length is **188.9 s (3:08.9), 85 bars**, at reading pace 0.82 (about 17 characters/s, standard subtitle
-    speed). The same text needs 3:32 fully relaxed, and 3:00 would need about 20 characters/s.
+  - The length is **188.9 s (3:08.9), 85 bars**, at reading-pace factor 0.82.
+    - On average there are 11.9 characters of text per second of hold. The busiest beats (the team, the end card,
+      the hook) run 15-19 characters/s.
+    - At exactly 3:00 (81 bars) those beats would need 20-23 characters/s, too fast for a relaxed read. Fully
+      relaxed (pace 1.0) would take 3:32.
   - `uv run python tools/timeline.py --bars N` changes the length: 81 bars = 3:00, 85 = 3:09, 90 = 3:20.
 - **Every story beat's message is on screen.** Thirteen beats got text added (list and reasons in
   `docs/onscreen.json`, under `added`).
