@@ -185,6 +185,9 @@ export default {
 - **Line height.** 1.1 or more under caps (DISPLAY default in `text()`). Check stacked diacritics (Ề, Ỗ, Ữ, Ậ, Ẫ, Ỹ)
   at 100 % on a full-resolution still: `node tools/frames.mjs chNN out/tmp/chNN <t>`. The cut-text filter must
   leave every mark intact and marks must not touch the line above.
+  - The filter region extends 35 % of the element's height above and below it, so marks that rise above a
+    single-line box at 1.1 are no longer shaved. It used to extend only 3 %, which flattened the tilde of Ễ at 72 px.
+    The ch10 builder found this.
 - **Sources.** A source caption ("Nguồn: CBRE, Savills") sits directly under the figure it sources, as part of that
   group, never in a frame corner: corner labels are banned.
 
