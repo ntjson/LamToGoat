@@ -1,0 +1,336 @@
+{
+ "film_length": 180.0,
+ "rate_sps": 3.0,
+ "rate_source": "your figure, used until the L04-L08 test read arrives",
+ "rate_kind": "estimate",
+ "syllable_overrides": {
+  "Kawaibu": 3,
+  "Zalo": 2
+ },
+ "min_gap": {
+  "chapter_open": 0.6,
+  "within": 0.25
+ },
+ "end_hold": {
+  "base": 4.8,
+  "weight": 1.0
+ },
+ "measured": {},
+ "lines": [
+  {
+   "id": "L01",
+   "ch": "ch01",
+   "shots": "1.1–1.2",
+   "gap": 1.6,
+   "gap_weight": 0.0,
+   "display": "Phản ánh gửi vào nhóm chat, rồi trôi mất.",
+   "spoken": "Phản ánh gửi vào nhóm chat, rồi trôi mất."
+  },
+  {
+   "id": "L02",
+   "ch": "ch01",
+   "shots": "1.3–1.4",
+   "gap": 1.0,
+   "gap_weight": 0.35,
+   "display": "Số dư quỹ lặng lẽ thay đổi.",
+   "spoken": "Số dư quỹ lặng lẽ thay đổi."
+  },
+  {
+   "id": "L03",
+   "ch": "ch01",
+   "shots": "1.5",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "Tiền quỹ đi đâu?",
+   "spoken": "Tiền quỹ đi đâu?"
+  },
+  {
+   "id": "L04",
+   "ch": "ch02",
+   "shots": "2.1–2.2",
+   "gap": 1.3,
+   "gap_weight": 1.0,
+   "display": "Hà Nội có 1.363 tòa chung cư.",
+   "spoken": "Hà Nội có một nghìn ba trăm sáu mươi ba tòa chung cư."
+  },
+  {
+   "id": "L05",
+   "ch": "ch02",
+   "shots": "2.3",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "17% chung cư thương mại / có tranh chấp, khiếu kiện.",
+   "spoken": "Mười bảy phần trăm chung cư thương mại có tranh chấp, khiếu kiện."
+  },
+  {
+   "id": "L06",
+   "ch": "ch02",
+   "shots": "2.4",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "36% vụ tranh chấp là về quỹ bảo trì.",
+   "spoken": "Ba mươi sáu phần trăm vụ tranh chấp là về quỹ bảo trì."
+  },
+  {
+   "id": "L07",
+   "ch": "ch02",
+   "shots": "2.5",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "52% chưa được bàn giao quỹ.",
+   "spoken": "Năm mươi hai phần trăm chưa được bàn giao quỹ."
+  },
+  {
+   "id": "L08",
+   "ch": "ch02",
+   "shots": "2.6",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "Báo cáo thu chi chỉ vài lần mỗi năm, / không kèm chứng từ.",
+   "spoken": "Báo cáo thu chi chỉ vài lần mỗi năm, không kèm chứng từ."
+  },
+  {
+   "id": "L09",
+   "ch": "ch03",
+   "shots": "3.1–3.2",
+   "gap": 1.1,
+   "gap_weight": 1.0,
+   "display": "Ban quản trị trả 20.000 đồng / mỗi căn mỗi tháng.",
+   "spoken": "Ban quản trị trả hai mươi nghìn đồng mỗi căn mỗi tháng."
+  },
+  {
+   "id": "L10",
+   "ch": "ch03",
+   "shots": "3.3",
+   "gap": 0.4,
+   "gap_weight": 0.35,
+   "display": "Khách hàng: tòa 300–700 căn, / dưới 10 năm, có Ban quản trị.",
+   "spoken": "Khách hàng: tòa ba trăm đến bảy trăm căn, dưới mười năm, có Ban quản trị."
+  },
+  {
+   "id": "L11",
+   "ch": "ch03",
+   "shots": "3.4",
+   "gap": 0.4,
+   "gap_weight": 0.35,
+   "display": "Thị trường mục tiêu: 32,4 tỷ đồng mỗi năm.",
+   "spoken": "Thị trường mục tiêu: ba mươi hai phẩy bốn tỷ đồng mỗi năm."
+  },
+  {
+   "id": "L12",
+   "ch": "ch04",
+   "shots": "4.1–4.2",
+   "gap": 1.1,
+   "gap_weight": 1.0,
+   "display": "Ban quản trị bị nghi ngờ, / kể cả khi làm đúng.",
+   "spoken": "Ban quản trị bị nghi ngờ, kể cả khi làm đúng."
+  },
+  {
+   "id": "L13",
+   "ch": "ch04",
+   "shots": "4.3",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "Ban quản lý nhận phản ánh qua Zalo, / không ai theo dõi.",
+   "spoken": "Ban quản lý nhận phản ánh qua Zalo, không ai theo dõi."
+  },
+  {
+   "id": "L14",
+   "ch": "ch04",
+   "shots": "4.4",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "Cư dân đóng phí, / nhưng không rõ tiền đi đâu.",
+   "spoken": "Cư dân đóng phí, nhưng không rõ tiền đi đâu."
+  },
+  {
+   "id": "L15",
+   "ch": "ch05",
+   "shots": "5.1–5.2",
+   "gap": 1.3,
+   "gap_weight": 1.0,
+   "display": "Làm Tổ biến một phản ánh / thành khoản chi ai cũng kiểm chứng được.",
+   "spoken": "Làm Tổ biến một phản ánh thành khoản chi ai cũng kiểm chứng được."
+  },
+  {
+   "id": "L16",
+   "ch": "ch05",
+   "shots": "5.3",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "Cư dân gửi phản ánh bất kỳ lúc nào, / kèm ảnh và vị trí.",
+   "spoken": "Cư dân gửi phản ánh bất kỳ lúc nào, kèm ảnh và vị trí."
+  },
+  {
+   "id": "L17",
+   "ch": "ch05",
+   "shots": "5.4–5.5",
+   "gap": 1.4,
+   "gap_weight": 0.35,
+   "display": "AI gợi ý nhóm sự cố, / mức khẩn và hạn xử lý.",
+   "spoken": "Ây-ai gợi ý nhóm sự cố, mức khẩn và hạn xử lý."
+  },
+  {
+   "id": "L18",
+   "ch": "ch05",
+   "shots": "5.6",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "Nhưng người quyết định / là một quản lý có tên; // mọi bước đều lưu vết.",
+   "spoken": "Nhưng người quyết định là một quản lý có tên; mọi bước đều lưu vết."
+  },
+  {
+   "id": "L19",
+   "ch": "ch06",
+   "shots": "6.1–6.2",
+   "gap": 1.1,
+   "gap_weight": 1.0,
+   "display": "Quỹ chung có hai lớp bảo vệ. / Lớp một: trước khi duyệt chi.",
+   "spoken": "Quỹ chung có hai lớp bảo vệ. Lớp một: trước khi duyệt chi."
+  },
+  {
+   "id": "L20",
+   "ch": "ch06",
+   "shots": "6.3",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "AI đưa ra khung giá hợp lý / từ những việc tương tự đã làm.",
+   "spoken": "Ây-ai đưa ra khung giá hợp lý từ những việc tương tự đã làm."
+  },
+  {
+   "id": "L21",
+   "ch": "ch06",
+   "shots": "6.4",
+   "gap": 0.6,
+   "gap_weight": 0.35,
+   "display": "Một báo giá 46 triệu vượt khung, / bị cảnh báo ngay.",
+   "spoken": "Một báo giá bốn mươi sáu triệu vượt khung, bị cảnh báo ngay."
+  },
+  {
+   "id": "L22",
+   "ch": "ch06",
+   "shots": "6.5",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "AI chỉ gợi ý; / ban quản lý xem lại và quyết định.",
+   "spoken": "Ây-ai chỉ gợi ý; ban quản lý xem lại và quyết định."
+  },
+  {
+   "id": "L23",
+   "ch": "ch07",
+   "shots": "7.1–7.2",
+   "gap": 1.1,
+   "gap_weight": 1.0,
+   "display": "Lớp hai: sau khi công bố, / khoản chi được niêm phong, // không thể chỉnh sửa.",
+   "spoken": "Lớp hai: sau khi công bố, khoản chi được niêm phong, không thể chỉnh sửa."
+  },
+  {
+   "id": "L24",
+   "ch": "ch07",
+   "shots": "7.3",
+   "gap": 0.6,
+   "gap_weight": 0.35,
+   "display": "Cư dân lần ngược từ khoản chi / về đúng phản ánh ban đầu.",
+   "spoken": "Cư dân lần ngược từ khoản chi về đúng phản ánh ban đầu."
+  },
+  {
+   "id": "L25",
+   "ch": "ch07",
+   "shots": "7.4",
+   "gap": 0.8,
+   "gap_weight": 0.35,
+   "display": "Mã băm của bản ghi / được giữ ở 4 nơi độc lập.",
+   "spoken": "Mã băm của bản ghi được giữ ở bốn nơi độc lập."
+  },
+  {
+   "id": "L26",
+   "ch": "ch07",
+   "shots": "7.5–7.6",
+   "gap": 0.8,
+   "gap_weight": 0.35,
+   "display": "Ai sửa lén số cũ, hệ thống báo lỗi ngay.",
+   "spoken": "Ai sửa lén số cũ, hệ thống báo lỗi ngay."
+  },
+  {
+   "id": "L27",
+   "ch": "ch07",
+   "shots": "7.7",
+   "gap": 1.0,
+   "gap_weight": 0.35,
+   "display": "Không ai xóa được dấu vết.",
+   "spoken": "Không ai xóa được dấu vết."
+  },
+  {
+   "id": "L28",
+   "ch": "ch08",
+   "shots": "8.1–8.2",
+   "gap": 1.1,
+   "gap_weight": 1.0,
+   "display": "Chưa đối thủ nào có / AI xử lý yêu cầu thực chất, // hay sổ thu chi chống sửa đổi.",
+   "spoken": "Chưa đối thủ nào có Ây-ai xử lý yêu cầu thực chất, hay sổ thu chi chống sửa đổi."
+  },
+  {
+   "id": "L29",
+   "ch": "ch08",
+   "shots": "8.3",
+   "gap": 1.3,
+   "gap_weight": 0.35,
+   "display": "Làm Tổ có cả hai.",
+   "spoken": "Làm Tổ có cả hai."
+  },
+  {
+   "id": "L30",
+   "ch": "ch09",
+   "shots": "9.1–9.2",
+   "gap": 1.1,
+   "gap_weight": 1.0,
+   "display": "Tòa 500 căn: 10 triệu mỗi tháng, / lợi nhuận ròng 59,2%.",
+   "spoken": "Tòa năm trăm căn: mười triệu mỗi tháng, lợi nhuận ròng năm mươi chín phẩy hai phần trăm."
+  },
+  {
+   "id": "L31",
+   "ch": "ch09",
+   "shots": "9.3",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "Cần 200 triệu cho 8 tháng đầu; / hòa vốn vận hành tháng 8/2027.",
+   "spoken": "Cần hai trăm triệu cho tám tháng đầu; hòa vốn vận hành tháng tám năm hai không hai bảy."
+  },
+  {
+   "id": "L32",
+   "ch": "ch09",
+   "shots": "9.4",
+   "gap": 0.5,
+   "gap_weight": 0.35,
+   "display": "Giai đoạn 3: 20–25 tòa, / 160–200 triệu mỗi tháng.",
+   "spoken": "Giai đoạn ba: hai mươi đến hai mươi lăm tòa, một trăm sáu mươi đến hai trăm triệu mỗi tháng."
+  },
+  {
+   "id": "L33",
+   "ch": "ch10",
+   "shots": "10.1–10.2",
+   "gap": 1.1,
+   "gap_weight": 1.0,
+   "display": "Đội Kawaibu: 5 thành viên / từ Đại học Ngoại thương, // Học viện Tài chính / và Đại học Công nghệ.",
+   "spoken": "Đội Kawaibu: năm thành viên từ Đại học Ngoại thương, Học viện Tài chính và Đại học Công nghệ."
+  },
+  {
+   "id": "L34",
+   "ch": "ch10",
+   "shots": "10.3",
+   "gap": 0.4,
+   "gap_weight": 0.35,
+   "display": "Công nghệ kết hợp kinh doanh và tài chính.",
+   "spoken": "Công nghệ kết hợp kinh doanh và tài chính."
+  },
+  {
+   "id": "L35",
+   "ch": "ch11",
+   "shots": "11.1–11.3",
+   "gap": 1.1,
+   "gap_weight": 1.0,
+   "display": "Làm Tổ: sổ quỹ không ai sửa lén được.",
+   "spoken": "Làm Tổ: sổ quỹ không ai sửa lén được."
+  }
+ ]
+}

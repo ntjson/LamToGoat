@@ -1,0 +1,329 @@
+{
+ "note": "Real-screenshot crops for ch05/ch07, measured on the final @3x/@4x/@5x set by tools/crops.py. crop = x,y,w,h in source px; scale = on-screen px per source px at 1080p; min_text_px = smallest text on screen.",
+ "crops": [
+  {
+   "shot": "5.3a",
+   "file": "assets/screens/app/android-light-12-report-form@3x.png",
+   "crop": [
+    0,
+    0,
+    1170,
+    690
+   ],
+   "scale": 0.8,
+   "screen": [
+    936,
+    552
+   ],
+   "what": "header + empty report box",
+   "min_text_px": 38.3,
+   "min_text_probe": "Đ of the placeholder"
+  },
+  {
+   "shot": "5.3b",
+   "file": "assets/screens/app/flow-00-picker@3x.png",
+   "crop": [
+    0,
+    0,
+    1170,
+    900
+   ],
+   "scale": 0.8,
+   "screen": [
+    936,
+    720
+   ],
+   "what": "location picker, first rows",
+   "min_text_px": 38.3,
+   "min_text_probe": "K of Khu tiện ích"
+  },
+  {
+   "shot": "5.3c",
+   "file": "assets/screens/app/flow-01-form-filled@3x.png",
+   "crop": [
+    48,
+    780,
+    1074,
+    1035
+   ],
+   "scale": 0.8,
+   "screen": [
+    859,
+    828
+   ],
+   "what": "location, photo, submit (the test-string description box is excluded)",
+   "min_text_px": 33.8,
+   "min_text_probe": "C of Chỉ bạn"
+  },
+  {
+   "shot": "5.4",
+   "file": "assets/screens/app/flow-02-submitted@3x.png",
+   "crop": [
+    48,
+    1347,
+    1074,
+    342
+   ],
+   "scale": 0.9333,
+   "screen": [
+    1002,
+    319
+   ],
+   "what": "confirmation banner + notify pill",
+   "min_text_px": 42.0,
+   "min_text_probe": "P of Phản ánh của bạn"
+  },
+  {
+   "shot": "5.5a",
+   "file": "assets/screens/web/desktop-report-triage@4x.png",
+   "crop": [
+    1184,
+    856,
+    2608,
+    972
+   ],
+   "scale": 0.55,
+   "screen": [
+    1434,
+    535
+   ],
+   "what": "report #7 card",
+   "min_text_px": 30.7,
+   "min_text_probe": "V of the Vị trí label"
+  },
+  {
+   "shot": "5.5b",
+   "file": "assets/screens/web/desktop-report-triage@4x.png",
+   "crop": [
+    1184,
+    2096,
+    2608,
+    1156
+   ],
+   "scale": 0.575,
+   "screen": [
+    1500,
+    665
+   ],
+   "what": "AI suggestion card",
+   "min_text_px": 28.9,
+   "min_text_probe": "C of Có thể thiếu"
+  },
+  {
+   "shot": "5.6a",
+   "file": "assets/screens/web/desktop-report-triage@4x.png",
+   "crop": [
+    3920,
+    716,
+    1680,
+    1000
+   ],
+   "scale": 0.575,
+   "screen": [
+    966,
+    575
+   ],
+   "what": "confirm panel: title, Danh mục, Mức khẩn",
+   "min_text_px": 28.9,
+   "min_text_probe": "B of Bước tiếp theo"
+  },
+  {
+   "shot": "5.6b",
+   "file": "assets/screens/web/desktop-report-triage@4x.png",
+   "crop": [
+    4000,
+    2760,
+    1520,
+    176
+   ],
+   "scale": 0.55,
+   "screen": [
+    836,
+    97
+   ],
+   "what": "Xác nhận phân loại button",
+   "min_text_px": 31.5,
+   "min_text_probe": "X of Xác nhận"
+  },
+  {
+   "shot": "5.6c",
+   "file": "assets/screens/web/desktop-report-triage@4x.png",
+   "crop": [
+    64,
+    3188,
+    870,
+    194
+   ],
+   "scale": 0.65,
+   "screen": [
+    566,
+    126
+   ],
+   "what": "manager identity: avatar, Kawaibu, email",
+   "min_text_px": 30.8,
+   "min_text_probe": "email line, ascender to descender"
+  },
+  {
+   "shot": "5.6d",
+   "file": "assets/screens/web/desktop-case-completed@4x.png",
+   "crop": [
+    1184,
+    4328,
+    2848,
+    440
+   ],
+   "scale": 0.575,
+   "screen": [
+    1638,
+    253
+   ],
+   "what": "case #2 accountability chain, all Hoàn tất",
+   "min_text_px": 28.9,
+   "min_text_probe": "H of Hoàn tất"
+  },
+  {
+   "shot": "7.2a",
+   "file": "assets/screens/web/desktop-proposal-new@4x.png",
+   "crop": [
+    4240,
+    892,
+    1280,
+    464
+   ],
+   "scale": 0.55,
+   "screen": [
+    704,
+    255
+   ],
+   "what": "publish lock note",
+   "min_text_px": 30.7,
+   "min_text_probe": "V of Việc"
+  },
+  {
+   "shot": "7.2b",
+   "file": "assets/screens/web/desktop-proposal-new@4x.png",
+   "crop": [
+    1248,
+    5140,
+    2040,
+    144
+   ],
+   "scale": 0.525,
+   "screen": [
+    1071,
+    76
+   ],
+   "what": "confirm checkbox line",
+   "min_text_px": 28.6,
+   "min_text_probe": "T of Tôi"
+  },
+  {
+   "shot": "7.2c",
+   "file": "assets/screens/web/desktop-proposal-new@4x.png",
+   "crop": [
+    1280,
+    5492,
+    632,
+    176
+   ],
+   "scale": 0.55,
+   "screen": [
+    348,
+    97
+   ],
+   "what": "Công bố đề xuất button",
+   "min_text_px": 32.3,
+   "min_text_probe": "C of Công"
+  },
+  {
+   "shot": "7.3a",
+   "file": "assets/screens/app/android-light-07-ledger-detail@3x.png",
+   "crop": [
+    48,
+    192,
+    1074,
+    1044
+   ],
+   "scale": 0.8333,
+   "screen": [
+    895,
+    870
+   ],
+   "what": "verified header + amount/contractor",
+   "min_text_px": 30.5,
+   "min_text_probe": "S of the Số tiền label"
+  },
+  {
+   "shot": "7.3b",
+   "file": "assets/screens/app/android-light-07-ledger-detail@3x.png",
+   "crop": [
+    0,
+    1300,
+    1170,
+    1232
+   ],
+   "scale": 0.8333,
+   "screen": [
+    975,
+    1027
+   ],
+   "what": "Chuỗi trách nhiệm steps",
+   "min_text_px": 35.2,
+   "min_text_probe": "C of Cảm biến (step 1 detail)"
+  },
+  {
+   "shot": "7.3c",
+   "file": "assets/screens/app/android-light-06-issue-detail@3x.png",
+   "crop": [
+    0,
+    168,
+    1170,
+    402
+   ],
+   "scale": 0.9333,
+   "screen": [
+    1092,
+    375
+   ],
+   "what": "Phản ánh #2 header: badge, title, location",
+   "min_text_px": 39.4,
+   "min_text_probe": "G of Goldmark"
+  },
+  {
+   "shot": "7.4",
+   "file": "assets/screens/web/desktop-explorer-verified@5x.png",
+   "crop": [
+    1750,
+    2995,
+    3700,
+    315
+   ],
+   "scale": 0.48,
+   "screen": [
+    1776,
+    151
+   ],
+   "what": "integrity card header, verified badge",
+   "min_text_px": 31.3,
+   "min_text_probe": "badge text, ascender to descender"
+  },
+  {
+   "shot": "7.6",
+   "file": "assets/screens/web/desktop-explorer-mismatch@5x.png",
+   "crop": [
+    1750,
+    2995,
+    3700,
+    315
+   ],
+   "scale": 0.48,
+   "screen": [
+    1776,
+    151
+   ],
+   "what": "same crop, mismatch badge; 7.7 pushes to 0.96",
+   "min_text_px": 29.8,
+   "min_text_probe": "badge text, ascender to descender"
+  }
+ ]
+}

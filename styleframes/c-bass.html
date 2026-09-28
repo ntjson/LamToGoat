@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="vi">
+<meta charset="utf-8">
+<link rel="stylesheet" href="sf.css">
+<style>
+  :root { --cream: #F4ECDC; --black: #151311; --orange: #FF7C00; --navy: #003080; --red: #D0271D; }
+  body { background: var(--cream); color: var(--black); }
+  .disp { font-family: 'Bricolage Grotesque'; font-weight: 800; font-stretch: 75%; text-transform: none; }
+  .head1 { left: 84px; top: 22px; font-size: 250px; line-height: 1.1; letter-spacing: -0.01em; filter: url(#rough-text); }
+  .head2 { left: 104px; top: 356px; font-size: 150px; line-height: 1.1; color: var(--cream); transform: rotate(-2deg); transform-origin: 0 0; }
+  .label { left: 1204px; top: 80px; font: 700 48px/1 'Bricolage Grotesque'; }
+  .hash { font: 600 52px/1 'IBM Plex Mono'; }
+  .grain { inset: 0; background: url(/assets/textures/paper-grain.png); mix-blend-mode: multiply; }
+  .fibres { inset: 0; background: url(/assets/textures/paper-fibres.png); mix-blend-mode: multiply; }
+  #card { left: 72px; top: 850px; box-shadow: 14px 14px 0 var(--black); }
+</style>
+<body>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <defs>
+      <filter id="cut" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="7"/>
+        <feDisplacementMap in="SourceGraphic" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="cut2" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" seed="19"/>
+        <feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="rough-text" x="-2%" y="-2%" width="104%" height="104%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="3"/>
+        <feDisplacementMap in="SourceGraphic" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+    <!-- the orange field, cut by hand along a diagonal -->
+    <path d="M-20 -20 H1150 L940 1100 H-20 Z" fill="#FF7C00" filter="url(#cut)"/>
+    <!-- black strip behind the second line -->
+    <path d="M58 352 L842 326 L850 508 L66 536 Z" fill="#151311" filter="url(#cut2)"/>
+    <!-- four identical copies -->
+    <g filter="url(#cut2)">
+      <rect x="1200" y="150" width="630" height="96" fill="#003080"/>
+      <rect x="1200" y="264" width="630" height="96" fill="#003080"/>
+      <rect x="1200" y="378" width="630" height="96" fill="#003080"/>
+      <rect x="1200" y="492" width="630" height="96" fill="#003080"/>
+    </g>
+    <text x="1238" y="217" class="hash" fill="#F4ECDC">9f2a…c1</text>
+    <text x="1238" y="331" class="hash" fill="#F4ECDC">9f2a…c1</text>
+    <text x="1238" y="445" class="hash" fill="#F4ECDC">9f2a…c1</text>
+    <text x="1238" y="559" class="hash" fill="#F4ECDC">9f2a…c1</text>
+    <!-- the tampered copy, slipped in crooked -->
+    <g transform="rotate(-5 1480 660)">
+      <rect x="1130" y="620" width="700" height="100" fill="#D0271D" filter="url(#cut)"/>
+      <text x="1172" y="690" class="hash" fill="#F4ECDC">4b70…e8</text>
+    </g>
+  </svg>
+
+  <div class="abs disp head1">SỬA LÉN?</div>
+  <div class="abs disp head2">BÁO LỖI NGAY.</div>
+  <div class="abs label">4 nơi độc lập</div>
+
+  <div class="abs grain"></div>
+  <div class="abs fibres"></div>
+  <div id="card" class="abs"></div>
+
+  <script type="module">
+    import { uiCrop, ready } from './sf.js';
+    uiCrop(document.getElementById('card'), '/assets/screens/web/desktop-explorer-mismatch@2x.png',
+      { sx: 700, sy: 1198, sw: 1480, sh: 126, scale: 1.2, radius: 24 });
+    window.__ready = ready();
+  </script>
+</body>
+</html>

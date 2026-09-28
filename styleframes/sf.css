@@ -1,0 +1,15 @@
+/* Shared by the gate-1 style frames. Fonts live in assets/fonts (all OFL). */
+@font-face { font-family: 'Bricolage Grotesque'; src: url(/assets/fonts/bricolage-grotesque/BricolageGrotesque-VF.ttf); font-weight: 200 800; font-stretch: 75% 100%; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/assets/fonts/ibm-plex-mono/IBMPlexMono-Regular.ttf); font-weight: 400; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/assets/fonts/ibm-plex-mono/IBMPlexMono-Medium.ttf); font-weight: 500; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/assets/fonts/ibm-plex-mono/IBMPlexMono-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/assets/fonts/ibm-plex-mono/IBMPlexMono-Bold.ttf); font-weight: 700; }
+
+html, body { margin: 0; padding: 0; }
+body { width: 1920px; height: 1080px; overflow: hidden; position: relative; }
+.abs { position: absolute; }
+svg.full { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+
+/* A crop of a real screenshot: container clips, the untouched image sits inside at an integer-friendly scale. */
+.ui { position: absolute; overflow: hidden; }
+.ui > img { position: absolute; left: 0; top: 0; transform-origin: 0 0; image-rendering: auto; }

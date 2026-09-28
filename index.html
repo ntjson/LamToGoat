@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="vi">
+<meta charset="utf-8">
+<title>Làm Tổ: pitch film</title>
+<link rel="stylesheet" href="/lib/film.css">
+<body>
+  <div id="stage">
+    <div id="grain" class="grain"></div>
+    <div id="dark" class="grain"></div>
+  </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- Hand-cut edge for DISPLAY type (fixed seed, so every frame is identical). -->
+      <filter id="cut-text" x="-3%" y="-3%" width="106%" height="106%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="2" seed="3"/>
+        <feDisplacementMap in="SourceGraphic" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+  <script type="module" src="/lib/engine.js"></script>
+</body>
+</html>

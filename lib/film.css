@@ -1,0 +1,28 @@
+/* Film stage. Fonts are OFL files in assets/fonts; the engine waits for every face before the first frame. */
+@font-face { font-family: 'Bricolage Grotesque'; src: url(/assets/fonts/bricolage-grotesque/BricolageGrotesque-VF.ttf); font-weight: 200 800; font-stretch: 75% 100%; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/assets/fonts/ibm-plex-mono/IBMPlexMono-Regular.ttf); font-weight: 400; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/assets/fonts/ibm-plex-mono/IBMPlexMono-Medium.ttf); font-weight: 500; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/assets/fonts/ibm-plex-mono/IBMPlexMono-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: 'IBM Plex Mono'; src: url(/assets/fonts/ibm-plex-mono/IBMPlexMono-Bold.ttf); font-weight: 700; }
+
+:root {
+  --orange: #FF7C00; --cream: #F4ECDC; --black: #151311; --navy: #003080; --red: #D0271D;
+}
+
+/* Render mode: nothing may animate on its own. */
+*, *::before, *::after { transition: none !important; animation: none !important; }
+
+html, body { margin: 0; padding: 0; background: var(--black); }
+body { width: 1920px; height: 1080px; overflow: hidden; }
+#stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--black); }
+.chapter, .top { position: absolute; inset: 0; overflow: hidden; visibility: hidden; }
+.grain { position: absolute; inset: 0; pointer-events: none; background-size: 1920px 1080px; }
+#grain { background-image: url(/assets/textures/paper-grain.png); mix-blend-mode: multiply; z-index: 10; }
+#dark { background-image: url(/assets/textures/paper-dark.png); mix-blend-mode: screen; z-index: 11; }
+.top { z-index: 20; }
+
+.abs { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.disp { font-family: 'Bricolage Grotesque'; font-weight: 800; font-stretch: 75%; font-variant-numeric: tabular-nums; }
+.label { font-family: 'Bricolage Grotesque'; font-weight: 700; font-stretch: 100%; }
+.mono { font-family: 'IBM Plex Mono'; font-weight: 600; }
+.cut-text { filter: url(#cut-text); }
