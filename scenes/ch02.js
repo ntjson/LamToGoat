@@ -18,7 +18,7 @@ const SMAX = 40; // the dive's end scale, well past the point where the tower's 
 const RISE = { f: 1.6, z: 0.7 }; // a slab rising into the skyline
 const QUICK = { f: 3, z: 1 }; // a scissor stroke across the strip
 const RULE = { f: 2.2, z: 1 }; // a ledger rule drawn across the report sheet
-const TYPE = { f: 1.1, z: 1 }; // MONO text typing on, one character after another
+const TYPE = { f: 2.4, z: 1 }; // MONO text typing on, one character after another (about 0.4 s for a line)
 const GLIDE = { f: 1.5, z: 0.92 }; // a long slide that must not overshoot into its neighbour
 const SNIP = { f: 7, z: 1 }; // a short scissor stroke around one box
 const LOCK = { f: 1.3, z: 0.92 }; // an odometer digit spinning up and locking without a visible overshoot
@@ -104,7 +104,7 @@ export default {
       flip0: syl('L05', 1), // 129 cells flip orange...
       flip1: syl('L05', 8), // ...until "có"
       label17: syl('L05', 4) - 0.06, // "chung cư thương mại"
-      src17: syl('L05', 9) - 0.06, // "tranh chấp": 129/745 · Thanh tra Chính phủ
+      src17: syl('L05', 6) - 0.06, // "thương mại", after the label: 129/745 · Thanh tra Chính phủ, complete well before the cut
       strip: L05.end, // the strip starts to slide in (unseen until the cut)...
       cut24: L05.end + 0.1, // ...and the HARD CUT to cream finds it crossing
       slam36: syl('L06', 0) - 0.04, // "Ba mươi sáu"
