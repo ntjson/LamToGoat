@@ -24,6 +24,9 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
 | ch11 Close | 8 | 9 | 8 | 8 | 9 | 8 | 8 | 4 | integrated |
 
+Whole film: `out/roughcut.mp4` (960×540, 30 fps, 5,400 frames, 180.0 s), rendered in one pass with every chapter
+loaded strictly. Continuity checks are at the end of gate 5 below.
+
 ## Gate 1: style frames (2026-09-28)
 
 All three frames show the same beat so they compare like for like: ch07, the moment an edited record
@@ -229,3 +232,25 @@ Director's check: the wipe covers ch10's held frame by +0.65 s (under the 0.7 s 
 on `ctx.top`. Credits come from the deck (slides 7 and 15) and the README. The final frame works as the poster at
 1920×1080. The credits are small on the 360 px phone sheet at the shotlist's sizes; the logo carries the frame. Text
 check: 3 texts, none under 28 px.
+
+### Continuity pass (whole film)
+
+`node render.mjs --out out/roughcut.mp4 --workers 10`: 5,400 frames in 159 s, no errors with all eleven chapters
+loaded. Checks:
+- **Rhythm** (`uv run --with numpy python tools/stillness.py out/roughcut.mp4`): no hold longer than 2 s anywhere.
+  Longest gaps between clear visual events: 3.5 s (ch09, the MRR count), 3.0 s (ch05, the AI suggestion), 2.5 s
+  (ch02, ch06); everything else is under 2.5 s. That meets "a new visual event every 3-4 s".
+- **Transitions:** all ten cuts checked with `tools/boundary.mjs`.
+  - Covers: ch02, ch04, ch06, ch07, ch08, ch11. The ch06 and ch08 covers pass over the UI plates of ch05 and ch07.
+  - Exits: ch02's flip, ch04's doors, ch08's navy growth, ch09's slide-out.
+  - None leaves a gap, a double frame or a stray element.
+- **The loop:** the hook's complaint bubble returns word for word under "Phản ánh gốc" at 116 s (ch07, shot 7.3).
+- **Look:** 1 fps sheets of all 180 s (`out/review/film_0-2.png`) read as one film.
+  - The problem half is orange/black and the solution half cream/navy.
+  - Red appears only for missing receipts, the over-limit quote, the edit and the alarm.
+  - No fades, corner labels, frame borders or glow.
+- **UI plates:** ch05 and ch07 use all 18 crops of `docs/crops.json`, all from the @3x/@4x/@5x set, through
+  `kit.plate`. The smallest UI text is 28.6 px.
+- **For gate 6** (with the real voice): phone readability of the shotlist's 36-48 px supporting labels (ch03 tags,
+  ch04 descriptors, ch08 column labels, ch11 credits); ch03's nearly blank card for 1.5 s after the flip; and every
+  voice-anchored beat, which will re-flow when the takes are measured.
