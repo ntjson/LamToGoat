@@ -1,9 +1,11 @@
 // ch02 Problem (shots 2.1-2.6). Five figures from the deck, one at a time, each with its own piece of paper:
-// a skyline rises and 1.363 counts digit by digit as the voice says it; the camera dives into one tower whose face
-// becomes a façade of 745 cells, 129 of which flip orange (17%); a strip standing for all disputes is cut at 36% and
-// the piece turns navy; 13 of 25 "quỹ" boxes are cut out and fall (52%); a report sheet with an empty clip is
+// a skyline rises and 1.363 counts digit by digit, one digit locking per beat; the camera dives into one tower whose
+// face becomes a façade of 745 cells, 129 of which flip orange (17%); a strip standing for all disputes is cut at 36%
+// and the piece turns navy; 13 of 25 "quỹ" boxes are cut out and fall (52%); a report sheet with an empty clip is
 // stamped "KHÔNG KÈM CHỨNG TỪ", then turns edge-on for ch03 (3.1).
-// Every beat is anchored to the voice lines L04-L08; nothing here uses film-absolute seconds.
+// Every beat is anchored to the story beats L04-L08 (reading time on the 108 BPM grid): each beat's text lands in its
+// first second and holds, unoccluded, until the beat ends; hits land on 16ths (up to 0.05 s early, never late) and the
+// transitions play in the one-beat gaps. Nothing here uses film-absolute seconds.
 import { step, spring, hash, rng } from '../lib/motion.js';
 import { C, el, rough, rect, clip, jagged, pathData } from '../lib/paper.js';
 import { W, H, text, tag, odometer, flip, svg, stroke, drawOn, vis } from '../lib/kit.js';
@@ -20,7 +22,8 @@ const QUICK = { f: 3, z: 1 }; // a scissor stroke across the strip
 const RULE = { f: 2.2, z: 1 }; // a ledger rule drawn across the report sheet
 const TYPE = { f: 2.4, z: 1 }; // MONO text typing on, one character after another (about 0.4 s for a line)
 const GLIDE = { f: 1.5, z: 0.92 }; // a long slide that must not overshoot into its neighbour
-const SNIP = { f: 7, z: 1 }; // a short scissor stroke around one box
+const SNIP = { f: 7, z: 1 }; // a short scissor stroke around one box...
+const SNIPT = 0.1; // ...drawn in this long, ending as the piece falls out
 const LOCK = { f: 1.3, z: 0.92 }; // an odometer digit spinning up and locking without a visible overshoot
 const X0 = 110; // the film's left type margin
 
@@ -29,6 +32,13 @@ function reach(preset, frac = 1) {
   let x = 0;
   while (x < 4 && step(x, preset) < frac) x += 1 / 480;
   return x;
+}
+
+// Time from a spring's start until it stays within tol of its target, for a move of `travel`.
+function settle(preset, travel, tol) {
+  let last = 0;
+  for (let x = 0; x < 4; x += 1 / 240) if (Math.abs(1 - step(x, preset)) * travel > tol) last = x;
+  return last + 1 / 240;
 }
 
 // First t >= t0 (1/240 s steps) at which ok(t) holds.
@@ -82,6 +92,7 @@ export default {
     const L05 = ctx.line('L05');
     const L06 = ctx.line('L06');
     const L07 = ctx.line('L07');
+    const L08 = ctx.line('L08');
     const syl = (id, k) => ctx.syl(id, k);
 
     // Shot layers, bottom to top.
@@ -93,40 +104,44 @@ export default {
     const s25t = el(root, ''); // 2.5 type (stays put while the field settles)
     const s26 = el(root, ''); // 2.6 cream field and the report sheet
 
-    // Beats (chapter-local seconds), all from the voice lines. Layout-dependent ones are added below.
+    // Beats (chapter-local seconds), all from the story beats and the grid. Layout-dependent ones are added below.
+    // Hits (slams, snaps, landings) sit on 16ths, up to 0.05 s early; a slide lands reach('slide') after it starts.
+    const slideIn = reach('slide');
     const T = {
-      rise: reach('slide') - 0.04, // the first slabs rise as the orange field lands
+      rise: slideIn - 0.04, // the first slabs rise as the orange field lands
       riseEnd: syl('L04', 2) - 0.2, // the last slab starts rising
-      group: L04.start - 0.12, // "tòa chung cư tại Hà Nội" slides in on "Hà Nội"
-      stagger: syl('L04', 5) - syl('L04', 3), // one digit per spoken figure word
-      push: L04.end - 0.4, // PUSH (dive) into one tower
-      slam17: syl('L05', 0) - 0.04, // "Mười bảy phần trăm"
-      flip0: syl('L05', 1), // 129 cells flip orange...
-      flip1: syl('L05', 8), // ...until "có"
-      label17: syl('L05', 4) - 0.06, // "chung cư thương mại"
-      src17: syl('L05', 6) - 0.06, // "thương mại", after the label: 129/745 · Thanh tra Chính phủ, complete well before the cut
+      group: L04.start + 2 * ctx.grid - 0.02 - slideIn, // "tòa chung cư tại Hà Nội" lands two 16ths into L04
+      lock04: ctx.snap(L04.start + 2 * ctx.beat, 1) - 0.02, // 1.363: every digit spins, the first locks on a beat...
+      stagger: ctx.beat, // ...and each next digit a beat later, the last one well before the dive
+      push: L04.end, // PUSH (dive) into one tower, in the gap after L04
+      slam17: L05.start - 0.04, // 17% slams as the façade lights up
+      flip0: syl('L05', 1), // 129 cells flip orange, thickening...
+      flip1: syl('L05', 12), // ...until late in the beat
+      label17: syl('L05', 1) - 0.02 - slideIn, // the label's two lines land a 16th apart, right after 17%
+      src17: syl('L05', 6) - 0.02, // 129/745 · Thanh tra Chính phủ types on while the label is read, 2 s before the cut
       strip: L05.end, // the strip starts to slide in (unseen until the cut)...
-      cut24: L05.end + 0.1, // ...and the HARD CUT to cream finds it crossing
-      slam36: syl('L06', 0) - 0.04, // "Ba mươi sáu"
-      scissor: syl('L06', 1) - 0.04, // the strip is cut at 36%
-      part: syl('L06', 3) - 0.05, // the piece turns navy and lifts ("phần trăm")
-      label36: syl('L06', 5) - 0.06, // "vụ tranh chấp là về quỹ bảo trì"
-      piece: syl('L06', 10) - 0.05, // "quỹ bảo trì" lands on the piece
-      wipe25: L06.end + 0.06, // ORANGE rises
-      slam52: syl('L07', 0) - 0.03, // "Năm mươi hai"
-      paste0: syl('L07', 1) - 0.05, // the 25 "quỹ" boxes are pasted on, left to right ("mươi hai phần trăm")
-      label52: syl('L07', 5) - 0.1, // "chưa được bàn giao quỹ"
-      cut0: syl('L07', 5) + 0.05, // the first of 13 boxes is cut out
-      sheet: syl('L08', 0) + 0.06 - reach('slide'), // the report sheet lands on "Báo"
-      rules: syl('L08', 2) - 0.05, // the ledger rules draw on across "thu chi chỉ"
-      freq: syl('L08', 5) - 0.06, // "vài lần mỗi năm"
-      clip: syl('L08', 7) - 0.04, // the empty clip clicks on ("mỗi năm")
-      stamp: syl('L08', 9) - 0.05, // "không kèm chứng từ"
+      cut24: ctx.snap(L05.end + 0.1), // ...and the HARD CUT to cream, on a 16th, finds it crossing
+      slam36: L06.start - 0.04, // 36% slams
+      label36: syl('L06', 1) - 0.04, // "vụ tranh chấp là về quỹ bảo trì" glides in right after it
+      scissor: syl('L06', 3) - 0.04, // the strip is cut at 36%
+      part: syl('L06', 5) - 0.04, // the piece turns navy and lifts
+      piece: syl('L06', 10) - 0.04, // "quỹ bảo trì" lands on the piece
+      wipe25: L06.end, // ORANGE rises in the gap after L06
+      slam52: L07.start - 0.03, // 52% slams
+      label52: syl('L07', 1) - 0.04, // "chưa được bàn giao quỹ bảo trì" snaps in under it...
+      paste0: syl('L07', 1) - 0.04, // ...as the 25 "quỹ" boxes are pasted on, left to right
+      cut0: syl('L07', 4) - 0.02, // the first of 13 boxes falls out; one per 16th after it
+      sheet: L08.start + ctx.grid - 0.02 - slideIn, // the report sheet lands a 16th into L08 (L07's label holds longer)
+      rules: syl('L08', 2) - 0.04, // the ledger rules draw on
+      freq: syl('L08', 4) - 0.04, // "vài lần mỗi năm"
+      clip: syl('L08', 7) + ctx.grid - 0.02 - reach('snap'), // the empty clip clicks on, landing on a 16th
+      stamp: syl('L08', 9) - 0.04, // "KHÔNG KÈM CHỨNG TỪ"
     };
-    T.count = syl('L04', 3) - reach(LOCK, 0.995) + 0.04; // digit k locks on syllable 3 + 2k: một / ba / sáu / ba
-    T.cutIv = (L07.end - 0.2 - T.cut0) / 12; // 13 cuts, left to right, close to sixteenth notes
-    T.pasteIv = (syl('L07', 4) - T.paste0) / 24; // the paste ripple ends on "trăm"
-    T.cream26 = T.sheet - 0.1; // the cream field slides in just ahead of the sheet
+    T.count = T.lock04 - reach(LOCK, 0.995); // the number snaps in with every digit rolling
+    T.lineIv = ctx.grid; // 2.3's second label line lands a 16th after the first
+    T.cutIv = ctx.grid; // 13 cuts, left to right, one per 16th
+    T.pasteIv = (syl('L07', 4) - ctx.grid - T.paste0) / 24; // the paste ripple ends a 16th before the first cut
+    T.cream26 = T.sheet - 0.1; // the cream field slides in just ahead of the sheet, after L07 has ended
 
     // ---------- 2.3 type first: the façade takes the rest of the width; the tower we dive into stands near its centre ----------
     const f17 = text(s23, 'disp cut-text', '17%', { size: 300, color: C.orange, lh: 1, transformOrigin: '0 62%' });
@@ -157,6 +172,11 @@ export default {
     // ---------- 2.2 the figure group, top left ----------
     const g22 = el(s22, '');
     const od = odometer(g22, '1.363', { cls: 'disp cut-text', size: 260, color: C.black, transformOrigin: '0 80%' });
+    // All four digits roll from the first frame (so no in-between value ever reads as the figure) and lock left to
+    // right, one per beat: slot k travels its digit plus a turn (not the first) on a spring tuned to be within 0.05
+    // slot of it at its lock time.
+    const travel04 = od.digits.map((d, k) => d + (k ? 10 : 0));
+    const slot04 = travel04.map((v, k) => ({ f: settle({ f: 1, z: LOCK.z }, v, 0.05) / (T.lock04 + k * T.stagger - T.count), z: LOCK.z }));
     const l22 = text(g22, 'label', 'tòa chung cư tại Hà Nội', { size: 56, color: C.black });
     const n22 = text(g22, 'label', 'Nguồn: CBRE, Savills', { size: 30, color: C.black });
     place(l22.el, 10, od.h + 2);
@@ -262,7 +282,7 @@ export default {
     cells.forEach((c, i) => {
       c.on = T.black + 0.3 * (c.d / dmax) + 0.04 * hash(i, 239);
     });
-    // 129 of 745 flip to orange: a seeded scatter of places, and times that thicken towards "có".
+    // 129 of 745 flip to orange: a seeded scatter of places, and times that thicken towards the end of the beat.
     const rf = rng(238);
     const order = cells.map((_, i) => i);
     for (let i = order.length - 1; i > 0; i--) {
@@ -393,7 +413,7 @@ export default {
     T.cover26 = when(T.cream26, (t) => spring(t, T.cream26, x26, 0, 'slide') >= -60);
 
     return {
-      T, dur: ctx.dur, g21: field21.el, x21, s22, g22, gx22: -(G22.x + G22.w + 80), od, slabs, ax, ay, pushS,
+      T, dur: ctx.dur, g21: field21.el, x21, s22, g22, gx22: -(G22.x + G22.w + 80), od, travel04, slot04, slabs, ax, ay, pushS,
       s23, grid, cells, f17: f17.el, l17: l17.map((l) => l.el), lx17: -(X0 + col17 + 60), m17: m17.el, typed17,
       s24, f36: f36.el, g36, gx36: W - g36x + 40, whole24, right24, left24, pt: pt.el, cutLayer, cut24, x24,
       s25, s25t, y25, boxes, f52: f52.el, l52: l52.el,
@@ -419,7 +439,7 @@ export default {
       }
       if (vis(s.g22, t >= T.group && S < 2.6)) s.g22.style.transform = `translateX(${px(spring(t, T.group, s.gx22, 0, 'slide'))})`;
       if (vis(s.od.el, t >= T.count)) s.od.el.style.transform = `scale(${spring(t, T.count, 1.12, 1, 'snap').toFixed(4)})`;
-      s.od.roll(t, T.count, { stagger: T.stagger, preset: LOCK });
+      s.od.place(s.travel04.map((v, k) => spring(t, T.count, 0, v, s.slot04[k])));
     }
 
     // 2.3: the façade lights up from the dive point; 129 cells flip orange; 17% slams.
@@ -443,7 +463,7 @@ export default {
       }
       if (vis(s.f17, t >= T.slam17)) s.f17.style.transform = `scale(${spring(t, T.slam17, 1.2, 1, 'slam').toFixed(4)})`;
       s.l17.forEach((l, k) => {
-        const t0 = T.label17 + 0.09 * k;
+        const t0 = T.label17 + T.lineIv * k;
         if (vis(l, t >= t0)) l.style.transform = `translateX(${px(spring(t, t0, s.lx17, 0, 'slide'))})`;
       });
       const n = s.typed17.length - 1;
@@ -476,10 +496,11 @@ export default {
         if (vis(b.face, t >= b.paste)) b.face.style.transform = `scale(${spring(t, b.paste, 1.3, 1, 'snap').toFixed(4)})`;
         let d = 0;
         if (b.cut >= 0) {
-          if (vis(b.outline, t >= b.cut && t < b.cut + 0.1)) drawOn(b.outline, step(t - b.cut, SNIP));
-          const gone = t >= b.cut + 0.1;
+          // The scissors go round the box in the SNIPT before its cut time; the piece falls out on it.
+          if (vis(b.outline, t >= b.cut - SNIPT && t < b.cut)) drawOn(b.outline, step(t - b.cut + SNIPT, SNIP));
+          const gone = t >= b.cut;
           b.slab.style.clipPath = gone ? b.holed : b.whole;
-          d = gone ? step(t - b.cut - 0.1, 'drop') : 0;
+          d = gone ? step(t - b.cut, 'drop') : 0;
         }
         b.piece.style.transform = `translate(${px(b.dx * d)}, ${px(1100 * d)}) rotate(${(b.rot * d).toFixed(2)}deg)`;
       }
