@@ -34,6 +34,10 @@ function settle(p, travel, tol = TOL) {
   return last + 1 / 240;
 }
 
+// The spring with damping z whose `travel`-slot move comes within `tol` slots of its target in `dur` s (settling
+// time scales as 1/f).
+const tuned = (z, travel, dur, tol = TOL) => ({ f: settle({ f: 1, z }, travel, tol) / dur, z });
+
 // Baseline of one line of text, from the top of its box (fonts are loaded before build).
 function baseline(parent, cls, size, lh) {
   const e = el(parent, cls, { fontSize: `${size}px`, lineHeight: lh, whiteSpace: 'nowrap' },
@@ -113,10 +117,16 @@ export default {
       som: Math.min(syl('L11', 9), L11.end - 1.3), // SOM slides in on "tỷ", counted before the chapter ends
     };
     T.slab = T.out + 0.05;
-    // "20.000đ" counts in step with the voice: "2" lands on "hai", the next slot on "mươi", the last zero on "nghìn"
-    // (slot 0 rolls 2, the zeros a full turn of 10).
-    T.count = syl('L09', 4) + 0.02 - settle(COUNT, 2);
-    T.countStagger = (syl('L09', 6) + 0.02 - settle(COUNT, 10) - T.count) / 4;
+    // "20.000đ" starts counting the moment the card lands in its price pose, so the card never sits blank, and locks
+    // on "hai" like an odometer carrying: the "2" rolls up from 0 while the zeros spin two full turns, each slot on a
+    // spring tuned to read as landed (within a quarter slot) at its lock time (zeros right to left, 0.03 s apart,
+    // the "2" last), so the figure reads …19.999 → 20.000 as the voice says "hai".
+    T.count = T.pose + slideIn;
+    T.lock = syl('L09', 4) + 0.02;
+    T.slotP = [0, 1, 2, 3, 4].map((k) => {
+      const at = k === 0 ? T.lock : T.lock - 0.03 * k;
+      return tuned(0.95, k === 0 ? 2 : 20, Math.max(0.6, at - T.count), 0.25);
+    });
     T.tamCount = T.tam;
     T.somCount = T.som + 0.1;
     // SAM counts in step with the voice: "3" lands on "ba", "2" on "hai", "4" on "bốn" (slot k rolls 3, 12, 14).
@@ -246,7 +256,7 @@ export default {
     if (vis(s.card, f.back && !gone32)) {
       s.card.style.transform = `translate(${s.cardX(t) - SHEET.cx}px, ${s.cardY(t) - SHEET.cy}px) rotate(${s.cardR(t)}deg) scaleX(${f.sx})`;
     }
-    if (vis(s.price.el, t >= T.count)) s.price.odo.roll(t, T.count, { preset: COUNT, stagger: T.countStagger });
+    if (vis(s.price.el, t >= T.count)) s.price.odo.place(T.slotP.map((p, k) => spring(t, T.count, 0, k ? 20 : 2, p)));
     if (vis(s.unitEl, t >= T.unit)) s.unitEl.style.transform = `scale(${spring(t, T.unit, 1.22, 1, 'slam')})`;
     if (vis(s.b2b.el, t >= T.b2b && !gone32)) s.b2b.el.style.transform = `translateX(${s.rowX.b2b(t)}px)`;
     if (vis(s.tag1.el, t >= T.tag1 && !gone32)) {
