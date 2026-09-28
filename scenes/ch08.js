@@ -1,9 +1,11 @@
 // ch08 Competition (shots 8.1-8.3). The deck's "Bức tranh cạnh tranh": no competitor has real AI request handling or
-// an anti-tamper income/expense ledger; Làm Tổ has both. Two ORANGE columns stand for the two features. The five
-// competitors arrive as BLACK strips that stop short of the first column on a torn end; LamTo's NAVY strip runs through
-// both columns and a hole is punched through it at each one, so the orange shows through. The black strips fall away,
-// the claim slams, and in the exit the NAVY strip grows until it fills the frame (ch09 opens on that NAVY field).
-// Every beat is anchored to the voice lines L28-L29; nothing here uses film-absolute seconds.
+// an anti-tamper income/expense ledger; Làm Tổ has both. Two ORANGE columns stand for the two features. The header
+// "CHƯA ĐỐI THỦ NÀO CÓ" slams over the stack and reads into the columns' labels. The five competitors arrive as BLACK
+// strips, one per beat, that stop short of the first column on a torn end; LamTo's NAVY strip runs through both
+// columns and a hole is punched through it at each one, so the orange shows through. The black strips and the header
+// fall away, the claim slams, and in the exit the NAVY strip grows until it fills the frame (ch09 opens on that NAVY
+// field). No voice: every beat sits on the music's grid, anchored to the story beats L28-L29 (ctx.line / ctx.snap);
+// nothing here uses film-absolute seconds.
 import { step, spring, track, noise1, hash, rng } from '../lib/motion.js';
 import { C, el, rough, rect, blob, clip, jagged } from '../lib/paper.js';
 import { W, H, text, cover, vis } from '../lib/kit.js';
@@ -13,6 +15,7 @@ import { EXIT } from '../lib/handoff.js';
 const NAMES = ['CYHOME', 'PIHOME', 'HOMEID', 'BUILDING CARE', 'LANDSOFT'];
 const FEATURES = ['AI xử lý yêu cầu / thực chất', 'Sổ thu chi / chống sửa đổi'];
 const SOURCE = 'Nguồn: website và công bố của các nhà cung cấp';
+const HEADER = 'CHƯA ĐỐI THỦ NÀO CÓ'; // docs/onscreen.json L28 "added": the claim that was only spoken
 
 const UNDERLAP = 0.75;
 const PAD = 60; // kit.field's bleed past the frame
@@ -26,6 +29,13 @@ const KICK = { f: 6, z: 0.5 }; // the strip jolts under a punch
 const CLAIM_HOLD = 1.3; // s the full claim holds, landed, before the exit starts to cover it
 const EXPAND = { f: 1.1, z: 1 }; // the NAVY strip grows to fill the frame (exit), aimed past it so it leaves moving
 const SHADOW = 'drop-shadow(0 5px 4px rgba(0,0,0,0.28))';
+const LEAD = 0.03; // a hit leads its grid point by this much (under 2 frames at 60 fps); it never trails
+const FALL_GAP = 0.04; // s between the pieces that fall away, bottom first: all clear of the claim before it slams
+const DROP = { f: 1.5, z: 1 }; // the fall: quicker than 'drop', so the last piece (the header) clears the claim's space
+const HEAD_SIZE = 112;
+// The column labels carry the two features on their own now that no voice names them: 48 px (shotlist 40) so they
+// read on the phone sheet.
+const LAB_SIZE = 48;
 
 // Layout (1080p px).
 const TX = 120; // type flush left
@@ -103,34 +113,39 @@ export default {
     const root = ctx.root;
     const L28 = ctx.line('L28');
     const L29 = ctx.line('L29');
-    const s28 = (k) => ctx.syl('L28', k);
+    const B = ctx.beat;
     const arrive = firstArrival(STOP);
+    // Start time of a spring whose first arrival lands LEAD s before grid time g.
+    const land = (g, p) => g - LEAD - firstArrival(p);
 
-    // Beats (chapter-local seconds), all derived from the voice lines.
-    const lab0 = Math.max(UNDERLAP + 0.02, L28.start - 0.36);
-    // Strips stop on "đối" (thủ), "có", "xử", "cầu", "hay": one a second across the first half of L28.
-    const hits = [1, 4, 7, 10, 13].map((k) => s28(k) - 0.04);
-    const punch = [s28(17) - 0.04, s28(19) - 0.04]; // "chống" ... "đổi"
+    // Beats (chapter-local seconds) on the music's grid, from the story beats. L28 reads: the header on its first
+    // beat, the two column labels an 8th apart after it, the five strips one per beat from two beats in; the NAVY run
+    // and its two punches count back from L28's end, so the whole frame holds, landed, to the end of L28.
+    const hits = [2, 3, 4, 5, 6].map((k) => ctx.snap(L28.start + k * B) - LEAD);
+    const punch = [ctx.snap(L28.end - 4 * B) - LEAD, ctx.snap(L28.end - 2 * B) - LEAD];
     const T = {
-      stand: [0.19, 0.19], // the columns stand up as the wipe lands (the wipe is a fixed 0.75 s transition)
-      lab: [lab0, lab0 + 0.16],
+      // The columns stand up as the wipe lands, on the chapter's 4th 16th (settled by the underlap's grain swap).
+      stand: Array(2).fill(Math.min(land(ctx.snap(0.4), STAND), UNDERLAP - settle(STAND, -LEAN, 0.05))),
+      head: L28.start - LEAD, // "CHƯA ĐỐI THỦ NÀO CÓ" slams on L28's first beat...
+      lab: [ctx.snap(L28.start + B / 2), ctx.snap(L28.start + B)].map((g) => land(g, 'snap')), // ...and reads into the columns
       hits,
       slide: hits.map((h) => Math.max(UNDERLAP + 0.01, h - arrive)), // root paper only appears after the underlap
-      cap: hits[0] + 0.3,
+      cap: land(ctx.snap(hits[0] + LEAD + B / 2), 'snap'), // the source lands under CYHOME an 8th after it
       punch,
-      fall: L28.end + 0.06, // 8.3, in the breath before L29 (bottom strip first)
-      // "LÀM TỔ" on "Làm", "CÓ CẢ HAI." on "có", but never later than CLAIM_HOLD s before the chapter ends, so the
-      // whole claim is read before the exit's NAVY takes the frame; "LÀM TỔ" always leads it by at least 0.3 s.
+      fall: L28.end + 0.06, // 8.3: the hinges let go on L28's end (bottom strip first, the header last)
+      // "LÀM TỔ" on L29's first beat, "CÓ CẢ HAI." an 8th later, but never later than CLAIM_HOLD s before the chapter
+      // ends (so the whole claim is read before the exit's NAVY takes the frame); "LÀM TỔ" leads it by 2 16ths or more.
       slam: (() => {
-        const two = Math.min(ctx.syl('L29', 2) - 0.05, ctx.dur - CLAIM_HOLD);
-        return [Math.min(L29.start - 0.05, two - 0.3), two];
+        let two = ctx.syl('L29', 1);
+        while (two - LEAD > ctx.dur - CLAIM_HOLD) two -= ctx.grid;
+        return [Math.min(L29.start, two - 2 * ctx.grid) - LEAD, two - LEAD];
       })(),
       expand: ctx.dur, // exit: the NAVY strip grows over everything
     };
 
     // ---- 8.1 ground: the CREAM wipe from the right, carrying the two ORANGE columns ----
     const cov = cover(ctx, C.cream, { seed: 801, amp: 6 });
-    const labs = FEATURES.map((s) => text(root, 'label', s, { size: 40, color: C.black }));
+    const labs = FEATURES.map((s) => text(root, 'label', s, { size: LAB_SIZE, color: C.black }));
     const CW = Math.round(Math.max(...labs.map((l) => l.w)) + 2 * LAB_PAD);
     const X2 = W - RIGHT - CW;
     const X1 = X2 - COL_GAP - CW;
@@ -143,6 +158,16 @@ export default {
       Object.assign(l.el.style, { left: `${colX[i] + LAB_PAD}px`, top: `${LAB_Y}px` });
     });
     const coverX = (t) => Math.round(spring(t, 0, W + 2 * PAD, 0, COVER));
+
+    // ---- the header, flush left over the stack; its baseline sits on the labels' last baseline, so the line reads on
+    // into the two columns ("… NÀO CÓ" → "AI xử lý yêu cầu thực chất" → "Sổ thu chi chống sửa đổi"). The outer box
+    // falls (hinged at its left end), the inner text slams.
+    const cH = caps(HEAD_SIZE, 1.1);
+    const labBase = LAB_Y + 1.2 * LAB_SIZE + caps(LAB_SIZE, 1.2, false).base;
+    const headBox = el(root, '', { left: `${TX - 2}px`, top: `${Math.round(labBase - cH.base)}px` });
+    const head = text(headBox, 'disp cut-text', HEADER, { size: HEAD_SIZE, color: C.black });
+    Object.assign(headBox.style, { width: `${head.w}px`, height: `${head.h}px`, transformOrigin: '0px 50%' });
+    head.el.style.transformOrigin = `0px ${Math.round(cH.base)}px`;
 
     // ---- source caption, under the stack (part of the group) ----
     // It rides under the stack: under CYHOME when it lands, one slot down as each strip comes in, under the NAVY strip
@@ -174,8 +199,9 @@ export default {
         drift: (fr() - 0.5) * 120,
       };
     });
-    // Bottom strip falls first, so no strip falls through another.
-    const fallAt = strips.map((_, i) => T.fall + (NAMES.length - 1 - i) * 0.09);
+    // Bottom strip falls first, so no strip falls through another; the header goes last, off the top of the stack.
+    const fallAt = strips.map((_, i) => T.fall + (NAMES.length - 1 - i) * FALL_GAP);
+    T.headFall = T.fall + NAMES.length * FALL_GAP;
 
     // ---- the NAVY strip: runs through both columns; two holes punched where it crosses them ----
     const NL = W - 2 * SX0;
@@ -188,8 +214,9 @@ export default {
     const nLab = text(nWrap, 'disp cut-text', 'LÀM TỔ', { size: 64, color: C.cream });
     Object.assign(nLab.el.style, { left: `${TX - SX0}px`, top: `${Math.round((NH - (c64.base - c64.top)) / 2 - c64.top)}px` });
     const nOff = NL + 200;
-    // The run starts on "sổ", but always early enough to be at rest (within 2 px) when the first hole is punched.
-    T.navy = Math.min(s28(14) - 0.05, punch[0] - settle(LONG, nOff, 2));
+    // The run reaches its stop on the grid two beats before the first punch, so it is at rest (within 2 px) when the
+    // first hole is punched; it never starts before the last black strip has stopped.
+    T.navy = Math.max(hits[4] + 0.2, Math.min(land(ctx.snap(punch[0] + LEAD - 2 * B), LONG), punch[0] - settle(LONG, nOff, 2)));
     const capTrack = track(capY(0), [
       ...[1, 2, 3, 4].map((k) => [T.slide[k] - 0.12, capY(k), CAPMOVE]),
       [T.navy - 0.12, NY + NH + 22, CAPMOVE],
@@ -236,7 +263,7 @@ export default {
     const grow = (t) => E * step(t - T.expand, EXPAND);
 
     return {
-      T, cov, coverX, cols, labs: labs.map((l) => l.el), cap: cap.el, capTrack, strips, fallAt, nWrap, nPaper, nLab: nLab.el, clips, nOff, chads,
+      T, cov, coverX, cols, labs: labs.map((l) => l.el), labDrop: LAB_Y + Math.max(...labs.map((l) => l.h)) + 30, headBox, head: head.el, cap: cap.el, capTrack, strips, fallAt, nWrap, nPaper, nLab: nLab.el, clips, nOff, chads,
       h1: h1.el, h2: h2.el, wrapU, bladeU, wrapD, bladeD, grow, cy, BLADE_H,
     };
   },
@@ -256,9 +283,17 @@ export default {
     });
     // The column labels drop in from above the frame, one after the other.
     s.labs.forEach((e, i) => {
-      if (vis(e, t >= T.lab[i])) e.style.transform = `translateY(${spring(t, T.lab[i], -170, 0, 'snap').toFixed(2)}px)`;
+      if (vis(e, t >= T.lab[i])) e.style.transform = `translateY(${spring(t, T.lab[i], -s.labDrop, 0, 'snap').toFixed(2)}px)`;
     });
     if (vis(s.cap, t >= T.cap)) s.cap.style.transform = `translateY(${(s.capTrack(t) + spring(t, T.cap, 30, 0, 'snap')).toFixed(2)}px)`;
+
+    // The header slams on L28's first beat and holds to its end; then it falls after the strips (hinged at its left).
+    if (vis(s.headBox, t >= T.head && t < T.headFall + 1.4)) {
+      s.head.style.transform = `scale(${spring(t, T.head, 1.12, 1, 'slam').toFixed(4)})`;
+      const f = step(t - T.headFall, DROP);
+      const r = step(t - T.headFall + 0.06, DROP);
+      s.headBox.style.transform = `translate(${(40 * f).toFixed(2)}px, ${(1350 * f).toFixed(2)}px) rotate(${(7 * r).toFixed(3)}deg)`;
+    }
 
     // 8.2 The five BLACK strips shoot in and stop short; 8.3 they fall away, bottom first.
     s.strips.forEach((st, i) => {
@@ -266,8 +301,8 @@ export default {
       const tf = s.fallAt[i];
       if (!vis(st.wrap, t >= t0 && t < tf + 1.4)) return;
       const x = spring(t, t0, -st.off, 0, STOP);
-      const f = step(t - tf, 'drop');
-      const r = step(t - tf + 0.06, 'drop'); // the hinge lets go a moment before the drop
+      const f = step(t - tf, DROP);
+      const r = step(t - tf + 0.06, DROP); // the hinge lets go a moment before the drop
       const rot = st.tilt * (1 - step(t - T.hits[i], 'snap')) + st.spin * r;
       st.wrap.style.transform = `translate(${(x + st.drift * f).toFixed(2)}px, ${(1350 * f).toFixed(2)}px) rotate(${rot.toFixed(3)}deg)`;
     });
