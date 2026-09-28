@@ -23,6 +23,7 @@ const CAPMOVE = { f: 3.4, z: 0.75 }; // the caption steps down under each new st
 const STOP = { f: 2.2, z: 0.78 }; // a strip shoots in and stops short (a 2 % overshoot, still short of the column)
 const LONG = { f: 1.5, z: 0.9 }; // the NAVY strip's long run through both columns
 const KICK = { f: 6, z: 0.5 }; // the strip jolts under a punch
+const CLAIM_HOLD = 1.3; // s the full claim holds, landed, before the exit starts to cover it
 const EXPAND = { f: 1.1, z: 1 }; // the NAVY strip grows to fill the frame (exit), aimed past it so it leaves moving
 const SHADOW = 'drop-shadow(0 5px 4px rgba(0,0,0,0.28))';
 
@@ -118,7 +119,12 @@ export default {
       cap: hits[0] + 0.3,
       punch,
       fall: L28.end + 0.06, // 8.3, in the breath before L29 (bottom strip first)
-      slam: [L29.start - 0.05, ctx.syl('L29', 2) - 0.05], // "Làm" / "có"
+      // "LÀM TỔ" on "Làm", "CÓ CẢ HAI." on "có", but never later than CLAIM_HOLD s before the chapter ends, so the
+      // whole claim is read before the exit's NAVY takes the frame; "LÀM TỔ" always leads it by at least 0.3 s.
+      slam: (() => {
+        const two = Math.min(ctx.syl('L29', 2) - 0.05, ctx.dur - CLAIM_HOLD);
+        return [Math.min(L29.start - 0.05, two - 0.3), two];
+      })(),
       expand: ctx.dur, // exit: the NAVY strip grows over everything
     };
 
