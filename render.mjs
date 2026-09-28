@@ -1,7 +1,10 @@
 // Render the film (or part of it) to H.264.
-//   node render.mjs [--from s] [--to s] [--chapters ch01,ch02] [--fps 30] [--scale 0.5] [--out out/draft.mp4]
-//                   [--workers n] [--crf n] [--preset p] [--final]
+//   node render.mjs [--from s] [--to s] [--chapters ch01,ch02] [--tail s] [--fps 30] [--scale 0.5]
+//                   [--out out/draft.mp4] [--workers n] [--crf n] [--preset p] [--final]
 // Drafts default to 960x540 at 30 fps. --final means 1920x1080, 60 fps, CRF 16, preset slow.
+// --chapters renders only those chapters' time range and loads only them (plus the chapter before each, for
+// transitions; see pageQuery), so a chapter that is mid-edit elsewhere can't break the render. --tail extends
+// the range past the last chapter's end (to see a chapter's exit).
 // The range is split at chapter boundaries (long chapters into chunks), rendered by parallel Chromium workers
 // that each pipe frames into their own ffmpeg, then joined with the ffmpeg concat demuxer.
 import { chromium } from 'playwright-core';
@@ -18,6 +21,14 @@ function ffmpeg(args) {
   const p = spawn('ffmpeg', ['-hide_banner', '-loglevel', 'error', ...args], { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((res, rej) => p.on('close', (code) => (code === 0 ? res() : rej(new Error(`ffmpeg exited ${code}`)))));
   return { p, done };
+}
+
+// Page query that loads only `ids` (errors in them fail the render) plus the chapter before each one, loaded
+// leniently (an error there just leaves it black), because transitions paint the previous chapter too.
+export function pageQuery(timings, ids) {
+  const order = timings.chapters.map((c) => c.id);
+  const soft = [...new Set(ids.map((id) => order[order.indexOf(id) - 1]).filter((id) => id && !ids.includes(id)))];
+  return `?only=${ids.join(',')}` + (soft.length ? `&soft=${soft.join(',')}` : '');
 }
 
 function plan(timings, { from, to, fps }) {
@@ -46,7 +57,7 @@ export async function render(opts) {
     const sel = timings.chapters.filter((c) => o.chapters.includes(c.id));
     if (!sel.length) throw new Error(`no such chapters: ${o.chapters}`);
     o.from = Math.min(...sel.map((c) => c.start));
-    o.to = Math.max(...sel.map((c) => c.end));
+    o.to = Math.min(timings.end, Math.max(...sel.map((c) => c.end)) + (o.tail ?? 0));
   }
   o.from ??= 0;
   o.to ??= timings.end;
@@ -61,7 +72,7 @@ export async function render(opts) {
   console.log(`render ${o.from.toFixed(3)}-${o.to.toFixed(3)} s, ${w}x${h} @${o.fps} fps, ${segs.length} segments, ${workers} workers`);
 
   const server = await serve();
-  const url = `http://127.0.0.1:${server.address().port}/index.html`;
+  const url = `http://127.0.0.1:${server.address().port}/index.html${o.chapters ? pageQuery(timings, o.chapters) : ''}`;
   const queue = segs.map((s, i) => ({ ...s, i }));
   const t0 = Date.now();
   let frames = 0;
@@ -117,7 +128,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   };
   const num = (k) => (get(k) !== undefined ? Number(get(k)) : undefined);
   const opts = {
-    from: num('from'), to: num('to'), scale: num('scale'), crf: num('crf'), workers: num('workers'),
+    from: num('from'), to: num('to'), scale: num('scale'), crf: num('crf'), workers: num('workers'), tail: num('tail'),
     preset: get('preset'), out: get('out'), final: a.includes('--final'),
     chapters: get('chapters')?.split(','),
   };

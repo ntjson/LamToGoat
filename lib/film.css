@@ -26,3 +26,8 @@ body { width: 1920px; height: 1080px; overflow: hidden; }
 .label { font-family: 'Bricolage Grotesque'; font-weight: 700; font-stretch: 100%; }
 .mono { font-family: 'IBM Plex Mono'; font-weight: 600; }
 .cut-text { filter: url(#cut-text); }
+/* Paper on a chapter's top layer (above the stage grain) carries its own copy of the stage's grain: the same two
+   textures and blend modes as #grain and #dark, so screen(multiply(colour, grain), dark) matches paper below the
+   grain exactly when background-position aligns the textures with the stage. Set backgroundColor, not background. */
+.grained { background-image: url(/assets/textures/paper-dark.png), url(/assets/textures/paper-grain.png);
+  background-size: 1920px 1080px; background-blend-mode: screen, multiply; }
