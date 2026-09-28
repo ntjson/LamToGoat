@@ -20,6 +20,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch06 USP 1: before approval | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
 | ch09 Business | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
+| ch11 Close | 8 | 9 | 8 | 8 | 9 | 8 | 8 | 4 | integrated |
 
 ## Gate 1: style frames (2026-09-28)
 
@@ -191,3 +192,14 @@ Director's check: black ground under ch09's exit, first band after it. Names, ro
 "Đội ngũ" slide, with stacked marks (Ễ, Ạ, Â, Ư, Ộ) intact at 100 %. This chapter's builder found the cut-text
 filter bug, fixed film-wide in 259a4c4. Role and school lines are 40 px, above the shotlist's 36. Text check: 11 texts,
 none under 28 px.
+
+### ch11 Close
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch11 v4 | 8 | 9 | 8 | 8 | 9 | 8 | 8 | orange-led cream wipe over ch10; the logo (whole, on cream, 559 px) lands on "Làm"; three cut-paper credit bars on "sổ", "ai", "được"; a navy façade strip rises and its windows light; still hold to 180.0 s |
+
+Director's check: the wipe covers ch10's held frame by +0.65 s (under the 0.7 s underlap). The logo is the file as-is
+on `ctx.top`. Credits come from the deck (slides 7 and 15) and the README. The final frame works as the poster at
+1920×1080. The credits are small on the 360 px phone sheet at the shotlist's sizes; the logo carries the frame. Text
+check: 3 texts, none under 28 px.
