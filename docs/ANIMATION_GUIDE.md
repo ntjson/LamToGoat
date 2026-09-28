@@ -1,0 +1,304 @@
+# Animation guide
+
+The contract every chapter follows. Read it with `CLAUDE.md` (studio rules), `docs/shotlist.md` (what each shot
+shows), `docs/style_guide.md` (direction C, Saul Bass) and `scenes/ch01.js` (the approved reference chapter).
+When this guide and the shotlist disagree on *how*, this guide wins; on *what* (facts, wording, assets), the shotlist
+and `docs/vo_script.md` win. Anything this guide doesn't settle is the chapter author's call, made in the spirit of
+ch01, and noted in the chapter's review file.
+
+## 1. Where you work
+
+| You may edit | You may not edit |
+|---|---|
+| `scenes/chNN.js` (your chapter only) | `lib/*`, `index.html`, `render.mjs`, `tools/*` |
+| `docs/review/chNN.md` (your review rounds) | other chapters, `docs/*` except your review file |
+| scratch files under `out/tmp/chNN/` | `docs/vo_lines.json`, `docs/vo_timings.json`, `docs/crops.json` |
+
+- Chapters are built in parallel. Never commit, never push, never touch another chapter's files.
+- Cap Chromium at 2 workers (`--workers 2`).
+- If you need something shared (a helper, a contract change, a new crop), don't build it into `lib/`. Write it
+  under **Proposals** in your report; the director decides.
+- Facts come only from the deck and README, via `docs/shotlist.md` ("Where every figure comes from") and
+  `docs/vo_script.md`. Never invent a number, name, date, source or claim. Wording on screen follows the shotlist.
+  If you need a word the shotlist doesn't give, take it from the voice line's subtitle text. The deck slides are
+  `refs/slide-NN.png` if you need to confirm something.
+
+## 2. Module API
+
+`scenes/chNN.js` default-exports `{ build, render, underlap?, exit? }`. The engine (`lib/engine.js`) loads it
+dynamically; a missing file is a black frame.
+
+```js
+import { step, spring, track, hash, rng, clamp, lerp } from '../lib/motion.js';
+import { C, el, rough, rect, bubble, blob, clip, jagged, pathData } from '../lib/paper.js';
+import { W, H, txt, text, tag, field, cover, aperture, odometer, plate, flip, svg, stroke, drawOn, vis, prog } from '../lib/kit.js';
+import { EXIT, SHEET } from '../lib/handoff.js';
+
+export default {
+  underlap: 0.8,            // optional: s at your start during which the previous chapter paints underneath you
+  exit: EXIT.ch04,          // optional: s after your end during which you paint on top of the next chapter
+  async build(ctx) { ...; return state; },
+  render(state, t, ctx) { ... },
+};
+```
+
+- **`build(ctx)`** runs once, after the fonts have loaded (so `offsetWidth`/`offsetHeight` measure real glyphs).
+  - It creates all DOM and precomputes everything: layout, clip-path strings, beat times, `track()`s.
+  - It may be `async`; `await plate(...)` for screenshots.
+  - It returns your state object.
+- **`render(state, t, ctx)`** paints chapter-local time `t`.
+  - It's a pure function of `t`: frames are rendered out of order by parallel workers.
+  - Set every property you animate on every call, for every element you control, from `t` alone. Never rely on what
+    the previous frame left behind.
+  - Don't create DOM or set `innerHTML` in `render`; toggle and transform what `build` made.
+  - `t` runs past `ctx.dur` during the next chapter's underlap and your own exit (section 7). After those windows,
+    hold your final state for any larger `t`.
+- **`ctx`**:
+  - `ctx.line(id)` → `{ start, end, dur, syllables }` of a voice line, in chapter-local seconds.
+  - `ctx.syl(id, k)` → the time of syllable `k` (0-based) of that line (proportional until word timings exist).
+  - `ctx.dur`: your chapter's length. It ends when your last line ends.
+  - `ctx.crop(shot)` → the `docs/crops.json` entry for a UI shot (`'5.5a'`).
+  - `ctx.image(src)` → Promise of a decoded image.
+  - `ctx.root` / `ctx.top`: your two layers (next list).
+- **Layers.**
+  - `ctx.root` is under the stage's paper grain: all paper, type and fields go here.
+  - `ctx.top` is above the grain, for UI plates and the paper that must overlap them (apertures, brackets, tags
+    touching a plate). Paper on `ctx.top` must be `grained` (kit helpers take `grained: true`). The CSS class
+    `.grained` is an exact copy of the stage grain; set `backgroundColor`, never the `background` shorthand.
+  - Never style `ctx.root` or `ctx.top` themselves; the engine owns them.
+  - Every `ctx.top` layer sits above every chapter's `ctx.root`. That is why covering wipes over ch05/ch07 need
+    `cover()` (section 7).
+- **Your ground.** Paint your own full-frame ground first in `ctx.root`: a `field()`, or
+  `el(ctx.root, '', { width: W + 'px', height: H + 'px', background: C.cream })`.
+  - If the previous chapter exits over you, your ground is there from `t = 0`.
+  - If you open with a cover, your ground is the covering paper, or it appears once the cover is complete.
+- **Seeds.** Use your chapter number × 100 + k for every `rough`/`jagged`/`blob`/`rng` seed (ch04 uses 400-499),
+  so no two chapters share an edge.
+
+## 3. Timing: the voice drives everything
+
+- **Anchors.** Every beat derives from `ctx.line(id)` / `ctx.syl(id, k)`. Small offsets from an anchor are fine
+  (`ctx.syl('L05', 0) - 0.05`, `L06.end + 0.3`). Never use film-absolute seconds or hard-coded chapter lengths
+  (`ctx.dur` is the only length). The timeline is an estimate at 3 syllables/s and will re-flow when the real voice
+  arrives: your chapter must survive every line getting 20 % longer or shorter. Collect beats in one `T = {...}` object
+  in `build` like ch01 does.
+- **Hitting words.** Land visual hits on the word they illustrate. Count syllables in the *spoken* text
+  (`docs/vo_script.md`, "Read this" column; 1 syllable per space-separated word, "Ây-ai" = 2).
+  - Figures SLAM or finish COUNTing on the syllable that says the number.
+  - Tags land on their phrase.
+  - A hit may lead its word by up to 0.1 s; never trail it by more than 0.15 s.
+- **Breaths.** Each chapter opens with a music-only breath of about 1 s before its first line: the transition plays
+  here. Gaps between lines (0.4-0.8 s) are where the frame changes shot.
+- **Rhythm.** A new visual event every 3-4 s at most (CLAUDE.md): something enters, is cut, flips, counts, slams or
+  the shot changes. Per voice line, expect at least two events. No frame holds still for more than 2 s, except the
+  holds the shotlist asks for (7.7, the end of ch11).
+
+## 4. Motion
+
+- **Springs only**, from `lib/motion.js`.
+  - `spring(t, t0, from, to, preset)` for one move.
+  - `track(v0, [[t, v, preset], ...])` for a value that changes target several times: it sums one spring per change,
+    as CLAUDE.md requires.
+  - `step(t - t0, preset)` / `prog(t, t0, preset)` for a 0 → 1 progress.
+  - `lerp`/`clamp` only to map a spring's progress, never to make time-based motion.
+- **Presets** (the verbs of `docs/shotlist.md`):
+
+  | Preset | Use it for |
+  |---|---|
+  | `slide` | SLIDE, paper entering along an axis |
+  | `snap` | SNAP, a short stiff settle |
+  | `slam` | SLAM, type from scale 1.08-1.25 to 1 |
+  | `drop` | pieces leaving the frame, no bounce |
+  | `tear` | torn reveals |
+  | `settle` | slow, calm arrivals and the PUSH |
+  | `count` | COUNT (the odometer's default) |
+  | `flip` | FLIP (`kit.flip`) |
+
+  Custom `{ f, z }` is fine when a beat needs it (ch01 does).
+- **Nothing fades.** Elements appear by visibility plus scale, translate, clip or draw-on. No `opacity` animation, no
+  colour tweens, no blur.
+  - Show and hide with `vis(el, on)`, which sets visibility `inherit`/`hidden`. Don't use `'visible'`.
+  - Colour changes are HARD CUTs, FLIPs or a new piece of paper sliding over.
+- **Randomness.** Seeded only: `rng(seed)` in `build` for layout; `hash(i, seed)` is stateless and may be used in
+  `render`. `Math.random`, timers, `requestAnimationFrame` and CSS transitions/animations throw or are disabled.
+- **Verbs** (from `docs/shotlist.md`):
+  - SLIDE: translate on `slide`, entering from off-frame.
+  - SNAP: short `snap`.
+  - SLAM: `scale(spring(t, t0, 1.08, 1, 'slam'))` and it appears on `t0`; ch01's complaint uses 1.25.
+  - FLIP: `kit.flip` → `scaleX(sx)` about the panel centre; swap to the back face when `back`.
+  - CUT: a scissor stroke drawn with `stroke`/`drawOn` along a `jagged` line, then the pieces part on `drop`.
+    ch01's chat cut is the model.
+  - TEAR: a `blob`/`jagged` edge with a thin cream fringe, as in ch01.
+  - WIPE: a `field()` translating across the frame.
+  - PUNCH: a hole appears (even-odd `clip`) with a small `snap` of the paper around it.
+  - PUSH: slow `settle` scale-in.
+  - COUNT: `odometer`.
+  - HARD CUT: visibility switches on a beat.
+- **Performance.** Precompute clip-path strings in `build`; in `render` only switch between them. Keep 1080p frames
+  cheap (ch01 renders at about 50 ms per frame).
+
+## 5. Look (direction C, after Saul Bass)
+
+- **Palette** (`C` in `lib/paper.js`):
+  - ORANGE `#FF7C00`, CREAM `#F4ECDC`, BLACK `#151311`, NAVY `#003080`, RED `#D0271D`.
+  - BAR `#CDBFA8` is only for the anonymous-chat bars.
+  - No other colours, no gradients.
+- **Colour meaning:**
+  - The problem half (ch01-ch04) plays on orange and black.
+  - The solution half (ch05-ch07) plays on cream and navy, with orange as the accent.
+  - Navy is LamTo's truth: copies, verification, the named manager.
+  - Red appears only for tampering, over-limit figures and missing receipts.
+  - Green appears only inside the real UI.
+- **Type** (classes in `lib/film.css`):
+  - DISPLAY `disp cut-text`: Bricolage Grotesque 800, 75 % width, CAPS, with the hand-cut edge. Every DISPLAY
+    element gets `cut-text`.
+  - LABEL `label`: Bricolage Grotesque 700, sentence case.
+  - MONO `mono`: IBM Plex Mono 600, for hashes, dates and tick labels.
+  - Figures are tabular (`disp` sets `tabular-nums`).
+  - Use the sizes in the shotlist.
+- **Paper.**
+  - Every shape is cut paper: `rough(rect(...))` → `clip(...)` for hand-cut edges, `jagged` for scissor lines,
+    `blob` for tears, `bubble` for chat.
+  - Flat colour only. Lifted paper may cast ch01's small hard shadow (`filter: drop-shadow(0 5px 4px
+    rgba(0,0,0,0.28))`).
+  - No other shadow, no glow, no blur, no 3D.
+- **Composition.**
+  - One idea per frame, in big flat fields: bold, asymmetric framing, type set flush left, diagonal cuts.
+  - Frames are dense with shape, not with words.
+  - The camera language is flat planes and hard graphic match cuts. Paper crossing the frame acts as the wipe.
+  - There is no 3D camera; a PUSH is a 2D scale.
+- **The craft bar is ch01.** Look at `docs/style/ch01.jpg` and `docs/style/c-bass.png` before you start.
+  Your frames must sit next to those without looking like a different film.
+
+## 6. Text
+
+- **Size floor.** Nothing under 28 px at 1080p, ever, including captions and tick labels.
+  - The frame's key message is DISPLAY 100 px or larger, so it reads at 360 px wide (the phone sheet).
+  - Supporting labels are 40 px or larger.
+  - 28-36 px only for sources and small captions.
+  - `node tools/textcheck.mjs chNN` (also run at the end of every review) fails any text that never reaches 28 px.
+- **NFC.** All on-screen strings are NFC. Type Vietnamese as precomposed characters; `txt()`/`text()` normalize
+  anyway, and the lint checks your file.
+- **No automatic wrapping.** Text is `white-space: nowrap`; break lines explicitly with ` / ` (the shotlist's notation),
+  so units and amounts never break: `20.000đ/căn/tháng`, `18–34tr`, `59,2%`, `08/2027`, `1.363`.
+  Vietnamese number format: `.` for thousands, `,` for decimals, `–` (en dash) for ranges, `đ` attached.
+- **Line height.** 1.1 or more under caps (DISPLAY default in `text()`). Check stacked diacritics (Ề, Ỗ, Ữ, Ậ, Ẫ, Ỹ)
+  at 100 % on a full-resolution still: `node tools/frames.mjs chNN out/tmp/chNN <t>`. The cut-text filter must
+  leave every mark intact and marks must not touch the line above.
+- **Sources.** A source caption ("Nguồn: CBRE, Savills") sits directly under the figure it sources, as part of that
+  group, never in a frame corner: corner labels are banned.
+
+## 7. Transitions
+
+Every boundary has one owner. There are two mechanisms:
+
+- **Cover (`underlap`).** The incoming chapter sets `underlap: s`; for its first `s` seconds the previous chapter
+  keeps painting underneath (at `t` past its end, holding its final frame) and the incoming chapter's paper covers
+  it. At `t = underlap` the previous chapter disappears, so the cover must be complete by then.
+  - Covering ch05 or ch07 (UI plates on their top layer): use `cover(ctx, color)` and call
+    `place(x, y, t < underlap)`. It travels on `ctx.top` while the previous chapter paints, then swaps to an
+    identical copy on `ctx.root` (the swap is invisible; measured ≤ 1/255).
+  - Anything else of yours that must appear before `underlap` also belongs on `ctx.top` (grained).
+- **Exit (`exit`).** The outgoing chapter sets `exit: EXIT.chNN` (from `lib/handoff.js`). For that long after its
+  end, it keeps painting on top of the next chapter, so it can animate its own paper out of frame. Everything it
+  leaves in frame covers the next chapter. By the end of the window its paper must be gone or must match the next
+  chapter's frame exactly. The next chapter paints normally underneath from its `t = 0` and must not put anything on
+  `ctx.top` during that window.
+- **Review both ends.**
+  - To see your exit, render with `--tail <exit>`.
+  - The previous chapter loads in your review (leniently: if it's broken or missing, it's black), so you can judge
+    your cover.
+  - The director checks every boundary at integration.
+
+| Boundary | Shot | Owner and mechanism | Contract |
+|---|---|---|---|
+| ch01 → ch02 | 2.1 | ch02, `underlap` (about 0.8 s) | An ORANGE field slides in from the right over ch01's held last frame (the question, cream/orange on black). The first slabs start to rise as it lands. |
+| ch02 → ch03 | 3.1 | ch02 `exit: EXIT.ch02` (= `FLIP_EDGE`, 0.167 s) and ch03 | **ch02** ends on a CREAM ground with the report sheet exactly at `SHEET`: centre (960, 560), 1120 × 680, −3°. Everything else of 2.6 is either on the sheet or gone by `ctx.dur`. In its exit ch02 flips the sheet with `flip(t, ctx.dur)` about the sheet's vertical centre line, drawing the front only while `!back`. **ch03** has a CREAM ground from `t = 0` and its NAVY card at `SHEET`. It draws the card with `flip(t, 0)`, visible only when `back`, and may move or resize it afterwards. |
+| ch03 → ch04 | 4.1 | ch04, `underlap` | A BLACK curtain drops from the top over ch03's held last frame. |
+| ch04 → ch05 | 5.1 | ch04 `exit: EXIT.ch04` (0.8 s) | **ch04** ends with three NAVY panels (answers on them) on its BLACK ground. In the exit, the frame parts like doors into three columns, each column being a panel with its strip of ground: left out left, right out right, centre down, on `drop`/`slide`. **ch05** has a CREAM ground from `t = 0` and nothing else in frame until `EXIT.ch04`. |
+| ch05 → ch06 | 6.1 | ch06, `underlap` + `cover()` | BLACK slides down over ch05's held last frame, including its plates, then the numeral SLAMs. |
+| ch06 → ch07 | 7.1 | ch07, `underlap` | ch06 ends on its BLACK ground (6.5) with no `ctx.top` content. ch07 tears it away: CREAM paper with a torn diagonal edge (jagged, cream fringe) sweeps across, then the "2" SLAMs. |
+| ch07 → ch08 | 8.1 | ch08, `underlap` + `cover()` | CREAM slides in from the right over ch07's held last frame (the pushed-in mismatch plate). |
+| ch08 → ch09 | 9.1 | ch08 `exit: EXIT.ch08` (0.6 s) | **ch08** grows the NAVY "LÀM TỔ" strip until it covers the whole frame. **ch09** is a full NAVY ground at `t = 0` and still is at `EXIT.ch08`; its content starts after. |
+| ch09 → ch10 | 10.1 | ch09 `exit: EXIT.ch09` (0.7 s) | **ch09**'s staircase and its CREAM ground slide out to the left together (the ground's right edge is hand-cut). **ch10** has a BLACK ground from `t = 0` and nothing else until `EXIT.ch09`. |
+| ch10 → ch11 | 11.1 | ch11, `underlap` | A CREAM field wipes over ch10's held last frame. |
+
+## 8. UI plates (ch05, ch07)
+
+- **Source.** Only real screenshots, only through `plate(ctx, shot, opts)`:
+  - Rects and scales come from `docs/crops.json` (measured on the final web @4x, app @3x and explorer @5x set;
+    every entry keeps its smallest text at 28 px or more). Never type a rectangle or a scale into scene code.
+  - The only allowed change is `zoom` > 1 for a PUSH.
+  - Never reference `assets/screens/` paths directly (the lint rejects it).
+- **Drawn straight.** No rotation, skew, recolouring, filter, glow or redraw. A plate may translate, scale up
+  (PUSH), be clipped by an aperture, and HARD CUT to another plate. Don't draw on the UI: brackets, tags and seals go
+  beside or under the UI text, never over it.
+- **Mounting**, one of two, on `ctx.top`:
+  - `plate(..., { backing: C.navy })`: a hard cut-paper backing offset 14 px down-right, in a second colour.
+  - An `aperture(ctx.top, color, { x, y, w, h })` above the plate, whose paper edge overlaps the UI by 4 px on
+    every side (a façade window).
+- **Covering.** A plate is on `ctx.top`, so anything that must pass over it (a wipe, a sliding strip) must also be on
+  `ctx.top` and `grained`.
+- **Test strings.** The crops already exclude the test-string description box and the explorer's step badges.
+  Don't widen them.
+
+## 9. Banned (CLAUDE.md)
+
+- A centred title on a gradient.
+- Everything fading in (nothing fades at all, section 4).
+- Corner labels and frame borders.
+- Glow on UI.
+- Particle bursts.
+- Walls of numbers that just sit there. At most three figures on screen at once, each arriving with its own motion
+  and landing with its word.
+- Redrawn UI.
+- Invented facts.
+- Film-absolute seconds.
+
+## 10. Review loop
+
+Run it for every round, until every score is 8 or higher:
+
+```sh
+node tools/lint_scene.mjs scenes/chNN.js
+node tools/review.mjs chNN --workers 2 [--tail <exit>] [--strip a:b ...]
+node tools/frames.mjs chNN out/tmp/chNN <t> [<t> ...]
+```
+
+1. **Lint.** It must print `lint ok`. Answer each WARN in your review notes or fix it.
+2. **Review.** This renders the 960×540 30 fps draft, `out/review/chNN_contact.png` (2 fps) and
+   `out/review/chNN_phone.png` (360 px tiles). With `--strip a:b` (chapter-local seconds) it adds every-other-frame
+   strips of fast beats. It then prints the text-size check. Tiles are labelled `film time · +chapter time`.
+3. **Full-resolution stills** (`frames.mjs`) of the key frames, to check diacritics and edges at 100 %.
+4. **Look** at the contact sheet, the phone sheet and a strip of every fast beat (cuts, slams, flips, transitions).
+   Open the images; don't guess.
+5. **Score** 1-10:
+   - **Hook**: the opening grabs, and the chapter ends on a payoff.
+   - **VN**: accents, NFC, line breaks, marks intact.
+   - **Read**: 1080p and the 360 px phone sheet; the key message reads on the phone.
+   - **Motion**: springs, craft, no dead or jittery frames.
+   - **Brand**: Bass look, palette meanings, UI rules, sits beside ch01.
+   - **Voice**: hits land on their words.
+   - **Variety**: a new event every 3-4 s, and verbs not repeated to boredom.
+6. **Fix** the 3 worst problems and repeat. Log each round in `docs/review/chNN.md`:
+
+```md
+### Round N
+| Hook | VN | Read | Motion | Brand | Voice | Variety | Worst problems |
+|---|---|---|---|---|---|---|---|
+| 7 | 9 | 8 | 7 | 8 | 8 | 7 | ... |
+
+Fixes: ...
+```
+
+When every score is 8 or higher, finish with a final round that re-renders from scratch and confirms it.
+
+## 11. Report back
+
+Return to the director:
+1. Final scores (the last round's table row).
+2. What the chapter does, beat by beat, with anchors.
+3. Contract notes: which transition you own or depend on and how you met it.
+4. Facts on screen, each with its source row.
+5. Proposals: shared helpers or contract changes, if any.
+6. Open issues.
