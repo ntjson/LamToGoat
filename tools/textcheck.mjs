@@ -24,7 +24,7 @@ export async function textcheck(id, { step = 0.25 } = {}) {
     const run = new Map();
     for (let t = 0; t < ch.end - ch.start; t += step) {
       const found = await page.evaluate(([tt, cid]) => {
-        window.seek(tt);
+        window.seek(tt); // film time
         const out = [];
         for (const layer of document.querySelectorAll(`[data-id="${cid}"]`)) {
           const walk = document.createTreeWalker(layer, NodeFilter.SHOW_TEXT);
@@ -41,7 +41,7 @@ export async function textcheck(id, { step = 0.25 } = {}) {
           }
         }
         return out;
-      }, [t, id]);
+      }, [ch.start + t, id]);
       const now = new Set();
       for (const [s, px] of found) {
         const v = seen.get(s) ?? { max: 0, run: 0, first: t };

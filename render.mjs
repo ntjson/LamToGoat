@@ -4,7 +4,8 @@
 // Drafts default to 960x540 at 30 fps. --final means 1920x1080, 60 fps, CRF 16, preset slow.
 // --chapters renders only those chapters' time range and loads only them (plus the chapter before each, for
 // transitions; see pageQuery), so a chapter that is mid-edit elsewhere can't break the render. --tail extends
-// the range past the last chapter's end (to see a chapter's exit).
+// the range past the last chapter's end (to see a chapter's exit). --load ch02,ch03 loads only those chapters
+// without changing the range (for boundary checks).
 // The range is split at chapter boundaries (long chapters into chunks), rendered by parallel Chromium workers
 // that each pipe frames into their own ffmpeg, then joined with the ffmpeg concat demuxer.
 import { chromium } from 'playwright-core';
@@ -25,15 +26,18 @@ function ffmpeg(args) {
 
 // Page query that loads only `ids` (errors in them fail the render) plus the chapter before each one, loaded
 // leniently (an error there just leaves it black), because transitions paint the previous chapter too.
-export function pageQuery(timings, ids) {
+// With next = true the chapter after each one loads leniently too (to see an exit reveal what comes next).
+export function pageQuery(timings, ids, { next = false } = {}) {
   const order = timings.chapters.map((c) => c.id);
-  const soft = [...new Set(ids.map((id) => order[order.indexOf(id) - 1]).filter((id) => id && !ids.includes(id)))];
+  const near = ids.flatMap((id) => [order[order.indexOf(id) - 1], next ? order[order.indexOf(id) + 1] : undefined]);
+  const soft = [...new Set(near.filter((id) => id && !ids.includes(id)))];
   return `?only=${ids.join(',')}` + (soft.length ? `&soft=${soft.join(',')}` : '');
 }
 
 function plan(timings, { from, to, fps }) {
-  const n0 = Math.round(from * fps);
-  const n1 = Math.round(to * fps);
+  // First and last frame at or after the range's ends, so a chapter's draft starts on its own first frame.
+  const n0 = Math.ceil(from * fps - 1e-6);
+  const n1 = Math.ceil(to * fps - 1e-6);
   const cuts = new Set([n0, n1]);
   for (const c of timings.chapters) {
     const n = Math.round(c.start * fps);
@@ -72,7 +76,8 @@ export async function render(opts) {
   console.log(`render ${o.from.toFixed(3)}-${o.to.toFixed(3)} s, ${w}x${h} @${o.fps} fps, ${segs.length} segments, ${workers} workers`);
 
   const server = await serve();
-  const url = `http://127.0.0.1:${server.address().port}/index.html${o.chapters ? pageQuery(timings, o.chapters) : ''}`;
+  const load = o.load ?? o.chapters;
+  const url = `http://127.0.0.1:${server.address().port}/index.html${load ? pageQuery(timings, load, { next: !!o.tail }) : ''}`;
   const queue = segs.map((s, i) => ({ ...s, i }));
   const t0 = Date.now();
   let frames = 0;
@@ -130,7 +135,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const opts = {
     from: num('from'), to: num('to'), scale: num('scale'), crf: num('crf'), workers: num('workers'), tail: num('tail'),
     preset: get('preset'), out: get('out'), final: a.includes('--final'),
-    chapters: get('chapters')?.split(','),
+    chapters: get('chapters')?.split(','), load: get('load')?.split(','),
   };
   if (num('fps') !== undefined) opts[a.includes('--final') ? 'fpsOverride' : 'fps'] = num('fps');
   for (const k of Object.keys(opts)) if (opts[k] === undefined) delete opts[k];
