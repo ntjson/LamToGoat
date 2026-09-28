@@ -19,6 +19,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch06 USP 1: before approval | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
 | ch07 USP 2: after publication | 8 | 9 | 8 | 8 | 8 | 9 | 9 | 4 | integrated |
+| ch08 Competition | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
 | ch09 Business | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
 | ch11 Close | 8 | 9 | 8 | 8 | 9 | 8 | 8 | 4 | integrated |
@@ -182,6 +183,17 @@ the badge (the pair is pixel-matched), and only the integrity card is ever in fr
 bubble is ch01's construction (same text, seed 11) and lands under "Phản ánh gốc". Accepted additions from the voice's
 own subtitles: "LẦN / NGƯỢC" (L24) and "MÃ BĂM" (L25), so 7.3 and 7.4 have readable type on the phone. Text check:
 14 texts, none under 28 px.
+
+### ch08 Competition
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch08 v4 | 8 | 9 | 8 | 8 | 8 | 8 | 8 | cream cover with the two orange criteria columns; five competitor strips stop short of the first column, one per beat; the navy LÀM TỔ strip runs through both and is punched where it crosses them; the five strips fall away; "LÀM TỔ / CÓ CẢ HAI." slams; the navy strip grows over the frame (exit) |
+
+Director's check: the cover (`kit.cover`) passes over ch07's pushed badge plate by +0.33 s, with the columns riding
+it on the top layer and then swapping down. The source caption rides with the strips (not in a corner). The exit
+leaves a solid navy frame that matches ch09's first frame (0 px difference, per the builder). Column labels are the
+shotlist's 40 px: legible, not strong, on the phone. Text check: 12 texts, none under 28 px.
 
 ### ch09 Business
 
