@@ -1,5 +1,10 @@
 # Shotlist: direction C (Saul Bass title sequence)
 
+> **No voice-over since 2026-09-28.** The film is music and sound effects only.
+> - The "Draft voice" lines below are now story beats whose message is carried on screen: `docs/onscreen.json` lists
+>   each beat's text, including the 13 additions.
+> - The times now come from reading time on a 108 BPM grid (`docs/timeline.md`); the estimates below are historical.
+
 **Status:** approved at gate 1 (2026-09-28). Wording now lives in `docs/vo_script.md` (built from `docs/vo_lines.json`),
 and current times live in `docs/vo_timings.json`. The times in this file are the gate-1 estimate.
 
