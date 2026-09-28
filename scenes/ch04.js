@@ -1,9 +1,10 @@
 // ch04 Who hurts (shots 4.1-4.4). A BLACK curtain drops over the market chart in three strips; three ORANGE panels
-// hang in, one per role, each with a BLACK cut-paper figure. As the voice names a role, its panel steps forward and its
-// pain lands on cream tags; then it FLIPs to NAVY and shows LamTo's answer. In the exit the three columns part like
-// doors (left out left, centre down, right out right) onto ch05's CREAM ground.
-// Facts: deck, "Nhu cầu và tranh chấp Làm Tổ giải quyết", via docs/shotlist.md ch04. Timing: L12-L14 only.
-import { spring, track, rng } from '../lib/motion.js';
+// hang in, one per role, each with a BLACK cut-paper figure. Each role in turn steps forward and its pain lands on cream
+// tags; then it FLIPs to NAVY and shows LamTo's answer. Once all three are answered they lift together, and in the exit
+// the three columns part like doors (left out left, centre down, right out right) onto ch05's CREAM ground.
+// Facts: deck, "Nhu cầu và tranh chấp Làm Tổ giải quyết", via docs/shotlist.md ch04 and docs/onscreen.json (L12-L14).
+// Timing: reading time on the music's grid (docs/timeline.json); every hit sits on a ctx.syl/ctx.line grid time.
+import { spring, track, rng, step } from '../lib/motion.js';
 import { C, el, rough, rect, bubble, blob, clip, jagged } from '../lib/paper.js';
 import { W, H, text, tag, flip, vis } from '../lib/kit.js';
 import { EXIT, FLIP_EDGE } from '../lib/handoff.js';
@@ -19,12 +20,13 @@ const TOP = -120; // the curtain strips reach this far above the frame (room for
 const HEM = H + 60; // the strips' hand-cut bottom edge at rest
 const TXT = 30; // text inset inside a panel
 
-// On-screen text, word for word from docs/shotlist.md (ch04). Answer 3 takes one extra line break at its comma:
-// "vào việc gì, cho nhà thầu nào" is 640 px at 48 px and can't fit a 520 px panel on one line.
+// On-screen text, word for word from docs/onscreen.json (L12-L14). Answer 3 takes one extra line break at its comma:
+// "vào việc gì, cho nhà thầu nào" is 640 px at 48 px and can't fit a 520 px panel on one line. The resident's pain
+// says who pays: "Đóng phí, nhưng / không rõ tiền đi đâu" (added when the voice was dropped), one tag per line.
 const ROLES = [
   { name: 'BAN QUẢN TRỊ', desc: 'người quyết định mua', pain: ['Bị nghi ngờ,', 'kể cả khi làm đúng'], answer: 'Lịch sử thu chi / không thể sửa lén' },
   { name: 'BAN QUẢN LÝ', desc: 'người dùng hằng ngày', pain: ['Phản ánh qua Zalo,', 'không ai theo dõi'], answer: 'Gửi phản ánh 24/7, / AI gợi ý, có lưu vết' },
-  { name: 'CƯ DÂN', desc: 'người thụ hưởng', pain: ['Không rõ tiền đi đâu'], answer: 'Biết từng khoản chi / vào việc gì, / cho nhà thầu nào' },
+  { name: 'CƯ DÂN', desc: 'người thụ hưởng', pain: ['Đóng phí, nhưng', 'không rõ tiền đi đâu'], answer: 'Biết từng khoản chi / vào việc gì, / cho nhà thầu nào' },
 ];
 
 const CURTAIN = { f: 1.25, z: 0.72 }; // heavy drop, one small bounce
@@ -32,6 +34,16 @@ const HANG = { f: 1.3, z: 0.62 }; // a panel dropping on its string and catching
 const SWING = { f: 0.85, z: 0.28 }; // the pendulum after the catch
 const SCROLL = { f: 2.4, z: 0.85 }; // chat stack, as in ch01
 const DOOR = { f: 0.7, z: 1 }; // heavy doors: ease in, gone before the exit window ends
+const HIT = 0.034; // hits lead their grid point by two frames at 60 fps at most (the guide allows 0.05 s), never trail
+
+// Seconds after a spring starts at which it first reaches its target.
+function firstReach(preset) {
+  let t = 0;
+  while (step(t, preset) < 1 && t < 3) t += 0.001;
+  return t;
+}
+const HANG_LAND = firstReach(HANG);
+const CURTAIN_LAND = firstReach(CURTAIN);
 
 // ---- cut-paper geometry (clockwise polygons, panel coordinates) ----
 
@@ -127,27 +139,41 @@ export default {
   build(ctx) {
     const root = ctx.root;
     const L12 = ctx.line('L12');
+    const L13 = ctx.line('L13');
+    const L14 = ctx.line('L14');
+    const s12 = (k) => ctx.syl('L12', k);
+    const s13 = (k) => ctx.syl('L13', k);
+    const s14 = (k) => ctx.syl('L14', k);
 
-    // Beats (chapter-local seconds), all derived from the voice lines. A flip's hit is the moment its back face
-    // shows (edge-on), so it starts FLIP_EDGE earlier.
-    const hang0 = Math.max(0.5, L12.start - 0.45);
+    // Beats (chapter-local seconds). Every hit is a grid time from ctx.line/ctx.syl, led by HIT so its first frame
+    // never trails the music. A flip's hit is the moment its back face shows (edge-on), so it starts FLIP_EDGE
+    // earlier; a panel's hang lands when its string first catches (HANG_LAND after it starts).
+    // L12 (the board): the panels hang in; its pain lands in two tags, then the tick stamps.
+    // L13 (the manager): the board flips to its answer; the chat pours out, the pain lands, the chat drifts off.
+    // L14 (the residents): the pain lands early, the manager flips, the residents flip with time to read the answer,
+    // then all three lift together before the doors.
+    const at = (g) => g - HIT;
     const T = {
-      curtain: [0, 0.06, 0.12], // three strips, left to right
-      hang: [hang0, hang0 + 0.12, hang0 + 0.24], // the panels drop in on their strings
-      fwd: [ctx.syl('L12', 3) - 0.06, ctx.syl('L13', 0) - 0.06, ctx.syl('L14', 0) - 0.06], // "bị" / "Ban" / "Cư"
+      // three strips, left to right, thump down on consecutive 16ths (the first one starts a frame before t = 0,
+      // still off-frame); the last lands well inside the underlap
+      curtain: [3, 4, 5].map((k) => at(k * ctx.grid) - CURTAIN_LAND),
+      hang: [0, 1, 2].map((k) => at(L12.start + k * ctx.grid) - HANG_LAND), // the panels land on 16ths from L12's start
+      fwd: [at(s12(3)), at(L13.start), at(L14.start)], // each panel steps forward with its pain
       tags: [
-        [ctx.syl('L12', 3) - 0.06, ctx.syl('L12', 6) - 0.06], // "bị nghi ngờ" / "kể cả khi làm đúng"
-        [ctx.syl('L13', 4) - 0.06, ctx.syl('L13', 9) - 0.06], // "phản ánh qua Zalo" / "không ai theo dõi"
-        [ctx.syl('L14', 4) - 0.04], // on "nhưng", the start of its clause "nhưng không rõ tiền đi đâu": the flip
-        // comes on "tiền", so the tag needs every syllable it can get
+        [at(s12(3)), at(s12(6))], // "Bị nghi ngờ," / "kể cả khi làm đúng"
+        [at(s13(3)), at(s13(8))], // "Phản ánh qua Zalo," / "không ai theo dõi"
+        [at(s14(1)), at(s14(2))], // "Đóng phí, nhưng" / "không rõ tiền đi đâu": early, so it reads before its flip
       ],
-      tick: ctx.syl('L12', 10) - 0.06, // "đúng"
-      flip: [ctx.syl('L13', 2) - 0.1, ctx.syl('L14', 2) - 0.1, ctx.syl('L14', 7) - 0.05].map((hit) => hit - FLIP_EDGE), // "lý" / "đóng" / "tiền"
-      bubbles: [3, 4, 5, 6, 7, 8].map((k) => ctx.syl('L13', k) - 0.05), // "nhận phản ánh qua Zalo"
-      lost: ctx.syl('L13', 9) - 0.06, // "không ai theo dõi": the chat drifts off the panel
+      tick: at(s12(9)), // the tick stamps after "kể cả khi làm đúng"
+      // the residents' flip splits the rest of L14 so the pain and the answer both get their reading time
+      flip: [at(s13(1)), at(s14(3)), at(ctx.snap((s14(5) + s14(6)) / 2))].map((hit) => hit - FLIP_EDGE),
+      bubbles: [2, 3, 4, 5, 6, 7].map((k) => at(s13(k))), // the chat pours out of the phone
+      lost: at(s13(8)), // with "không ai theo dõi" the chat drifts off the panel
+      chord: at(s14(8)), // all three answered: the panels lift together
       door: ctx.dur,
     };
-    T.back = [T.fwd[1], T.fwd[2], T.flip[2] + FLIP_EDGE + 0.35]; // each panel steps back when the next comes forward
+    // Each panel steps back when the next comes forward; the residents' panel after its flip, on the grid.
+    T.back = [T.fwd[1], T.fwd[2], ctx.snap(T.flip[2] + FLIP_EDGE + 0.45)];
 
     // ---- ground: three BLACK strips that drop as the curtain and part as the doors ----
     const seam = SEAMS.map((x, i) => jagged([x, TOP], [x, HEM], { seed: 430 + i, amp: 9, wave: 90 }));
@@ -204,7 +230,7 @@ export default {
       const tags = role.pain.map((s, i) => {
         const tg = tag(over, s, { size: 48, color: C.black, bg: C.cream, padX: 0.36, padY: 0.16, seed: 460 + k * 3 + i, rot: i ? 1.1 : -1.4 });
         const y = role.pain.length === 1 ? 588 : 574 + i * 82;
-        Object.assign(tg.el.style, { left: `${16 + i * 10}px`, top: `${y}px` });
+        Object.assign(tg.el.style, { left: `${Math.min(16 + i * 10, PW - 12 - tg.w)}px`, top: `${y}px` }); // inside the panel
         return { ...tg, t0: T.tags[k][i] };
       });
 
@@ -212,8 +238,12 @@ export default {
       const tilt = [2.4, -2.0, 2.6][k];
       const hangY = (t) => spring(t, T.hang[k], -1000, 0, HANG);
       const swing = (t) => spring(t, T.hang[k] + 0.3, tilt, 0, SWING);
-      const scale = track(1, [[T.fwd[k], 1.06, 'snap'], [T.back[k], 1, 'settle']]);
-      const lift = track(0, [[T.fwd[k], -26, 'snap'], [T.back[k], 0, 'settle']]);
+      // Forward with its pain, back when the next role comes forward, all three forward together at the end. The
+      // board's panel takes the tick's stamp: a quick knock down and back.
+      const knock = k === 0 ? [[T.tick, 1.075, 'slam'], [T.tick + 0.1, 1.06, 'snap']] : [];
+      const knockY = k === 0 ? [[T.tick, -14, 'slam'], [T.tick + 0.1, -26, 'snap']] : [];
+      const scale = track(1, [[T.fwd[k], 1.06, 'snap'], ...knock, [T.back[k], 1, 'settle'], [T.chord, 1.05, 'snap']]);
+      const lift = track(0, [[T.fwd[k], -26, 'snap'], ...knockY, [T.back[k], 0, 'settle'], [T.chord, -32, 'snap']]);
       return { outer, inner, front, back, over, tags, hangY, swing, scale, lift, tickFront };
     });
 
