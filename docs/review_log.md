@@ -19,6 +19,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch06 USP 1: before approval | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
 | ch09 Business | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
+| ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
 
 ## Gate 1: style frames (2026-09-28)
 
@@ -179,3 +180,14 @@ edge; the frame is black by +0.42 s, under ch10. Accepted deviations: the hard c
 "200 TRIỆU" slam) instead of in the breath, so there's no empty frame; the capital is not drawn as an 8-month span,
 because 8 months from 10/2026 ends before the 08/2027 break-even and a span would imply something the deck doesn't
 say. Text check: 26 texts, none under 28 px.
+
+### ch10 Team
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch10 v4 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | five name bands slide in from alternating sides, in the order the voice names the schools; the stack closes up and "ĐỘI KAWAIBU" slams; both sides settle to one edge on "kết hợp" |
+
+Director's check: black ground under ch09's exit, first band after it. Names, roles and schools exactly as the deck's
+"Đội ngũ" slide, with stacked marks (Ễ, Ạ, Â, Ư, Ộ) intact at 100 %. This chapter's builder found the cut-text
+filter bug, fixed film-wide in 259a4c4. Role and school lines are 40 px, above the shotlist's 36. Text check: 11 texts,
+none under 28 px.
