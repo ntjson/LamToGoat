@@ -18,6 +18,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
 | ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch06 USP 1: before approval | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 4 | integrated |
+| ch07 USP 2: after publication | 8 | 9 | 8 | 8 | 8 | 9 | 9 | 4 | integrated |
 | ch09 Business | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
 | ch11 Close | 8 | 9 | 8 | 8 | 9 | 8 | 8 | 4 | integrated |
@@ -168,6 +169,19 @@ The six numeric labels in 6.4 are the scale's tick labels plus the band and the 
 not a wall of numbers. Two devices beyond the shotlist are accepted: the orange layer bar (6.2) and the navy strip
 under "NGƯỜI QUYẾT ĐỊNH." (6.5), which echoes ch05's navy tag. The chapter ends on its black ground with nothing on
 its top layer, as ch07's tear expects. Text check: 18 texts, none under 28 px.
+
+### ch07 USP 2: after publication
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch07 v4 | 8 | 9 | 8 | 8 | 8 | 9 | 9 | cream tear over ch06, the "2" on a navy layer-two bar; publish lock, checkbox and button plates with the NIÊM PHONG seal; a façade window on the verified expense, scrolled to the chain with a bracket climbing 4 → 1, then the original report with the hook's bubble snapping flush (the loop); MÃ BĂM and four navy copies, the red edit, SỬA LÉN? / BÁO LỖI NGAY. on the verified → mismatch cut; push onto the red badge |
+
+Director's check: the tear takes ch06's black frame from 105.45 s; every plate comes from `docs/crops.json` via
+`kit.plate`, including the zoom-2 push plate. A pixel diff across the explorer's hard cut shows changes only inside
+the badge (the pair is pixel-matched), and only the integrity card is ever in frame. The loop pays off: the complaint
+bubble is ch01's construction (same text, seed 11) and lands under "Phản ánh gốc". Accepted additions from the voice's
+own subtitles: "LẦN / NGƯỢC" (L24) and "MÃ BĂM" (L25), so 7.3 and 7.4 have readable type on the phone. Text check:
+14 texts, none under 28 px.
 
 ### ch09 Business
 
