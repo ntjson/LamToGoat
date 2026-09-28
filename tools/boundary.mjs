@@ -14,7 +14,7 @@ const val = (k, d) => {
   const i = args.indexOf(`--${k}`);
   return i >= 0 ? Number(args[i + 1]) : d;
 };
-const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/vo_timings.json'), 'utf8'));
+const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/timeline.json'), 'utf8'));
 const order = timings.chapters.map((c) => c.id);
 const k = order.indexOf(id);
 if (k < 1) throw new Error(`usage: node tools/boundary.mjs <chNN> (ch02-ch11)`);

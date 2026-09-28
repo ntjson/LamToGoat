@@ -18,12 +18,28 @@ rules still hold unless a decision below overrides them. Work is on branch **`fi
 The whole film renders: `node render.mjs --out out/roughcut.mp4 --workers 10` (960×540, 30 fps, 180.0 s, about 2.5 min).
 Every chapter scored 8 or higher on all seven criteria (summary table at the top of `docs/review_log.md`).
 
+## Change of plan (2026-09-28, after gate 5): no voice-over
+
+The film is **music and sound effects only**; the on-screen text carries the whole story.
+- **Timing is reading time on the music's grid.** `tools/timeline.py` builds `docs/timeline.json` (and the readable
+  `docs/timeline.md`) from the on-screen text in `docs/onscreen.json`. The engine and every tool read it.
+  - Beats sit on 8th notes and chapters on bar lines at 108 BPM. `ctx.syl` snaps to 16ths, and `ctx.snap()` snaps
+    any other time.
+  - The length is **188.9 s (3:08.9), 85 bars**, at reading pace 0.82 (about 17 characters/s, standard subtitle
+    speed). The same text needs 3:32 fully relaxed, and 3:00 would need about 20 characters/s.
+  - `uv run python tools/timeline.py --bars N` changes the length: 81 bars = 3:00, 85 = 3:09, 90 = 3:20.
+- **Every story beat's message is on screen.** Thirteen beats got text added (list and reasons in
+  `docs/onscreen.json`, under `added`).
+- **The voice pipeline is kept for a possible later voice** (`tools/vo.py`, `docs/vo_lines.json`,
+  `docs/vo_script.md`, `docs/vo_timings.json`). `tools/timeline.py --voice` puts the timeline back on it.
+- **Sound:** a ch01 sketch first. The whole film waits for the user's OK on it.
+
 ## Decisions the user made in chat (still in force)
 
 1. **Direction C, Saul Bass title sequence.** The shotlist and voice script are approved.
-2. **The user records the voice**, so there are **no ElevenLabs calls, ever**. The README credits "Voice: recorded by
-   the team (Đội Kawaibu)".
-3. **Timing:** estimate at 3 syllables/s until real timing arrives.
+2. **No voice-over** (superseding "the user records the voice"). There are no ElevenLabs calls, and the README
+   needs no voice credit.
+3. **Timing:** reading time on a 108 BPM grid (see above). The L04-L08 test read is no longer needed.
 4. **ch01's look is approved.** Engine changes must keep its frames pixel-identical. The 22 reference frames are in
    `out/diff/before/` (not committed); re-create them from commit 470e6b4 if needed.
 5. **The screenshot set is final.** Crops live in `docs/crops.json`; the demo manager shows as "Kawaibu".

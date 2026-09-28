@@ -56,7 +56,7 @@ function plan(timings, { from, to, fps }) {
 export async function render(opts) {
   const o = { fps: 30, scale: 0.5, crf: 18, preset: 'veryfast', out: 'out/draft.mp4', ...opts };
   if (o.final) Object.assign(o, { fps: 60, scale: 1, crf: 16, preset: 'slow' }, opts.fpsOverride ? { fps: opts.fpsOverride } : {});
-  const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/vo_timings.json'), 'utf8'));
+  const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/timeline.json'), 'utf8'));
   if (o.chapters) {
     const sel = timings.chapters.filter((c) => o.chapters.includes(c.id));
     if (!sel.length) throw new Error(`no such chapters: ${o.chapters}`);

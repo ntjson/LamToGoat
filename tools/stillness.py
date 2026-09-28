@@ -33,7 +33,7 @@ def main():
     d = np.abs(np.diff(frames, axis=0))
     diff = d.reshape(len(d), 9, H // 9, 12, W // 12).mean(axis=(2, 4)).max(axis=(1, 2))
     times = a.offset + (np.arange(len(diff)) + 1) / FPS
-    chapters = json.loads((ROOT / "docs" / "vo_timings.json").read_text())["chapters"]
+    chapters = json.loads((ROOT / "docs" / "timeline.json").read_text())["chapters"]
     where = lambda t: next((c["id"] for c in chapters if c["start"] <= t < c["end"]), chapters[-1]["id"])
 
     print(f"{len(frames)} frames at {FPS} fps, {len(frames) / FPS:.1f} s")

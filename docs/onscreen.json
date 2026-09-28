@@ -1,0 +1,884 @@
+{
+ "note": "On-screen text per story beat (the ids of the old voice lines L01-L35), what the viewer must read while the beat holds. tools/timeline.py turns it into reading time. kind: disp (DISPLAY), label (LABEL ≥ 40 px), cap (caption ≤ 36 px), mono, ui (a screenshot: glanced, not read). how: read, skim (half), glance (fixed), known (seen before). 'added' lists text added when the voice was dropped (2026-09-28): each line's message must be on screen.",
+ "lines": {
+  "L01": {
+   "items": [
+    [
+     "Thang máy B kẹt cửa ở tầng 3, / phải bấm nhiều lần mới mở được.",
+     "label",
+     "skim"
+    ],
+    [
+     "PHẢN ÁNH GỬI VÀO NHÓM CHAT, / RỒI TRÔI MẤT.",
+     "disp",
+     "read"
+    ]
+   ],
+   "added": [
+    [
+     "PHẢN ÁNH GỬI VÀO NHÓM CHAT,",
+     "disp",
+     "ORANGE caption strip pasted on the chat sheet (upper right), BLACK DISPLAY; cut and dropped with the sheet"
+    ],
+    [
+     "RỒI TRÔI MẤT.",
+     "disp",
+     "second strip under it, slams as the complaint leaves the frame"
+    ]
+   ],
+   "why": "the chat shows a lost message but no words say it; the hook needs its sentence"
+  },
+  "L02": {
+   "items": [
+    [
+     "Quỹ bảo trì",
+     "label",
+     "read"
+    ],
+    [
+     "981.500.000 đ",
+     "disp",
+     "read"
+    ],
+    [
+     "SỐ DƯ QUỸ LẶNG LẼ THAY ĐỔI.",
+     "disp",
+     "read"
+    ]
+   ],
+   "added": [
+    [
+     "SỐ DƯ QUỸ LẶNG LẼ THAY ĐỔI.",
+     "disp",
+     "BLACK caption strip with CREAM DISPLAY above the balance strip; swallowed by the tear"
+    ]
+   ],
+   "why": "the cut-out digits show a change; the words 'quietly changes' were only spoken"
+  },
+  "L03": {
+   "items": [
+    [
+     "TIỀN QUỸ / ĐI ĐÂU?",
+     "disp",
+     "read"
+    ]
+   ]
+  },
+  "L04": {
+   "items": [
+    [
+     "1.363",
+     "disp",
+     "read"
+    ],
+    [
+     "tòa chung cư tại Hà Nội",
+     "label",
+     "read"
+    ],
+    [
+     "Nguồn: CBRE, Savills",
+     "cap",
+     "skim"
+    ]
+   ]
+  },
+  "L05": {
+   "items": [
+    [
+     "17%",
+     "disp",
+     "read"
+    ],
+    [
+     "cụm, tòa chung cư thương mại / có tranh chấp, khiếu kiện",
+     "label",
+     "read"
+    ],
+    [
+     "129/745 · Thanh tra Chính phủ",
+     "mono",
+     "skim"
+    ]
+   ]
+  },
+  "L06": {
+   "items": [
+    [
+     "36%",
+     "disp",
+     "read"
+    ],
+    [
+     "vụ tranh chấp là về quỹ bảo trì",
+     "label",
+     "read"
+    ],
+    [
+     "Bộ Xây dựng",
+     "cap",
+     "skim"
+    ],
+    [
+     "quỹ bảo trì",
+     "label",
+     "known"
+    ]
+   ]
+  },
+  "L07": {
+   "items": [
+    [
+     "52%",
+     "disp",
+     "read"
+    ],
+    [
+     "chung cư thương mại chưa được / bàn giao quỹ bảo trì",
+     "label",
+     "read"
+    ]
+   ]
+  },
+  "L08": {
+   "items": [
+    [
+     "BÁO CÁO THU – CHI",
+     "disp",
+     "read"
+    ],
+    [
+     "vài lần mỗi năm",
+     "label",
+     "read"
+    ],
+    [
+     "KHÔNG KÈM CHỨNG TỪ",
+     "disp",
+     "read"
+    ]
+   ]
+  },
+  "L09": {
+   "items": [
+    [
+     "Mô hình B2B2C",
+     "label",
+     "skim"
+    ],
+    [
+     "Ban quản trị trả phí",
+     "label",
+     "read"
+    ],
+    [
+     "Cư dân hưởng lợi",
+     "label",
+     "read"
+    ],
+    [
+     "20.000đ /căn/tháng",
+     "disp",
+     "read"
+    ]
+   ]
+  },
+  "L10": {
+   "items": [
+    [
+     "KHÁCH / HÀNG",
+     "disp",
+     "read"
+    ],
+    [
+     "300–700 căn",
+     "label",
+     "read"
+    ],
+    [
+     "dưới 10 năm",
+     "label",
+     "read"
+    ],
+    [
+     "có Ban quản trị",
+     "label",
+     "read"
+    ]
+   ]
+  },
+  "L11": {
+   "items": [
+    [
+     "TAM 96–120 tỷ đ/năm",
+     "label",
+     "skim"
+    ],
+    [
+     "SAM 32,4 tỷ đ/năm",
+     "disp",
+     "read"
+    ],
+    [
+     "thị trường mục tiêu",
+     "label",
+     "read"
+    ],
+    [
+     "SOM 0,54–5,4 tỷ đ/năm",
+     "label",
+     "skim"
+    ]
+   ]
+  },
+  "L12": {
+   "items": [
+    [
+     "BAN QUẢN TRỊ / người quyết định mua",
+     "label",
+     "read"
+    ],
+    [
+     "BAN QUẢN LÝ / người dùng hằng ngày",
+     "label",
+     "skim"
+    ],
+    [
+     "CƯ DÂN / người thụ hưởng",
+     "label",
+     "skim"
+    ],
+    [
+     "Bị nghi ngờ, / kể cả khi làm đúng",
+     "label",
+     "read"
+    ]
+   ]
+  },
+  "L13": {
+   "items": [
+    [
+     "Phản ánh qua Zalo, / không ai theo dõi",
+     "label",
+     "read"
+    ],
+    [
+     "Lịch sử thu chi / không thể sửa lén",
+     "label",
+     "read"
+    ]
+   ]
+  },
+  "L14": {
+   "items": [
+    [
+     "Đóng phí, nhưng / không rõ tiền đi đâu",
+     "label",
+     "read"
+    ],
+    [
+     "Gửi phản ánh 24/7, / AI gợi ý, có lưu vết",
+     "label",
+     "read"
+    ],
+    [
+     "Biết từng khoản chi / vào việc gì, / cho nhà thầu nào",
+     "label",
+     "read"
+    ]
+   ],
+   "added": [
+    [
+     "Đóng phí, nhưng / không rõ tiền đi đâu",
+     "label",
+     "replaces the pain tag 'Không rõ tiền đi đâu' on the CƯ DÂN panel"
+    ]
+   ],
+   "why": "the pain tag dropped 'residents pay fees', half of the line's point"
+  },
+  "L15": {
+   "items": [
+    [
+     "Từ một phản ánh / đến khoản chi / ai cũng kiểm chứng được",
+     "label",
+     "read"
+    ]
+   ]
+  },
+  "L16": {
+   "items": [
+    [
+     "CƯ DÂN GỬI / PHẢN ÁNH",
+     "disp",
+     "read"
+    ],
+    [
+     "Ảnh · vị trí · 24/7",
+     "label",
+     "read"
+    ],
+    [
+     "app: report form, picker, photo",
+     "ui",
+     "glance"
+    ]
+   ],
+   "added": [
+    [
+     "CƯ DÂN GỬI / PHẢN ÁNH",
+     "disp",
+     "CREAM DISPLAY beside the façade window, above 'Ảnh · vị trí · 24/7'"
+    ]
+   ],
+   "why": "the frame showed what (photo, location, 24/7) but not who does it"
+  },
+  "L17": {
+   "items": [
+    [
+     "Phản ánh của bạn đã được ghi nhận.",
+     "ui",
+     "glance"
+    ],
+    [
+     "AI GỢI Ý",
+     "disp",
+     "read"
+    ],
+    [
+     "nhóm sự cố · mức khẩn · hạn xử lý",
+     "label",
+     "read"
+    ],
+    [
+     "web: report #7, AI suggestion",
+     "ui",
+     "glance"
+    ]
+   ],
+   "added": [
+    [
+     "nhóm sự cố",
+     "label",
+     "tag hanging under the first orange bracket (Thang máy)"
+    ],
+    [
+     "mức khẩn",
+     "label",
+     "tag under the second bracket (Cao)"
+    ],
+    [
+     "hạn xử lý",
+     "label",
+     "tag under the third bracket (240 phút)"
+    ]
+   ],
+   "why": "the brackets pointed at UI words too small for the phone; the three suggestion types were only spoken"
+  },
+  "L18": {
+   "items": [
+    [
+     "NGƯỜI QUYẾT ĐỊNH",
+     "disp",
+     "read"
+    ],
+    [
+     "Kawaibu",
+     "ui",
+     "glance"
+    ],
+    [
+     "mọi bước đều lưu vết",
+     "label",
+     "read"
+    ],
+    [
+     "web: confirm panel, chain",
+     "ui",
+     "glance"
+    ]
+   ]
+  },
+  "L19": {
+   "items": [
+    [
+     "1",
+     "disp",
+     "read"
+    ],
+    [
+     "Hai lớp bảo vệ quỹ chung",
+     "label",
+     "read"
+    ],
+    [
+     "TRƯỚC KHI / DUYỆT CHI",
+     "disp",
+     "read"
+    ]
+   ]
+  },
+  "L20": {
+   "items": [
+    [
+     "Ví dụ",
+     "cap",
+     "read"
+    ],
+    [
+     "AI đưa ra khung giá hợp lý",
+     "label",
+     "read"
+    ],
+    [
+     "từ những việc tương tự đã làm",
+     "label",
+     "read"
+    ],
+    [
+     "18–34tr",
+     "disp",
+     "read"
+    ],
+    [
+     "0 · 18tr · 34tr · 46tr",
+     "mono",
+     "skim"
+    ]
+   ],
+   "added": [
+    [
+     "AI đưa ra khung giá hợp lý",
+     "label",
+     "replaces the label 'Khung giá hợp lý'"
+    ],
+    [
+     "từ những việc tương tự đã làm",
+     "label",
+     "second label line under it"
+    ]
+   ],
+   "why": "the band showed a price range but not that AI produces it or where it comes from"
+  },
+  "L21": {
+   "items": [
+    [
+     "Báo giá 46tr",
+     "label",
+     "read"
+    ],
+    [
+     "VƯỢT KHUNG",
+     "disp",
+     "read"
+    ],
+    [
+     "cảnh báo trước khi duyệt",
+     "label",
+     "read"
+    ]
+   ]
+  },
+  "L22": {
+   "items": [
+    [
+     "AI GỢI Ý.",
+     "disp",
+     "read"
+    ],
+    [
+     "NGƯỜI QUYẾT ĐỊNH.",
+     "disp",
+     "read"
+    ],
+    [
+     "AI có bước tự kiểm tra · ảnh và thông tin cá nhân / cư dân không gửi cho AI",
+     "cap",
+     "read"
+    ]
+   ]
+  },
+  "L23": {
+   "items": [
+    [
+     "2",
+     "disp",
+     "read"
+    ],
+    [
+     "SAU KHI / CÔNG BỐ",
+     "disp",
+     "read"
+    ],
+    [
+     "khoản chi được niêm phong, / không thể chỉnh sửa",
+     "label",
+     "read"
+    ],
+    [
+     "NIÊM PHONG",
+     "disp",
+     "read"
+    ],
+    [
+     "web: lock note, checkbox, publish button",
+     "ui",
+     "glance"
+    ]
+   ],
+   "added": [
+    [
+     "khoản chi được niêm phong, / không thể chỉnh sửa",
+     "label",
+     "BLACK LABEL under 'SAU KHI / CÔNG BỐ'"
+    ]
+   ],
+   "why": "'không thể chỉnh sửa' was only in the UI's small text"
+  },
+  "L24": {
+   "items": [
+    [
+     "Cư dân",
+     "label",
+     "read"
+    ],
+    [
+     "LẦN / NGƯỢC",
+     "disp",
+     "read"
+    ],
+    [
+     "từ khoản chi / về phản ánh ban đầu",
+     "label",
+     "read"
+    ],
+    [
+     "Phản ánh gốc",
+     "label",
+     "read"
+    ],
+    [
+     "app: verified expense, chain, original report",
+     "ui",
+     "glance"
+    ],
+    [
+     "Thang máy B kẹt cửa ở tầng 3, …",
+     "label",
+     "known"
+    ]
+   ],
+   "added": [
+    [
+     "Cư dân",
+     "label",
+     "CREAM LABEL above 'LẦN / NGƯỢC'"
+    ],
+    [
+     "từ khoản chi / về phản ánh ban đầu",
+     "label",
+     "CREAM LABEL under 'LẦN / NGƯỢC'"
+    ]
+   ],
+   "why": "'LẦN NGƯỢC' said the verb; who traces, and from what to what, was only spoken"
+  },
+  "L25": {
+   "items": [
+    [
+     "MÃ BĂM",
+     "disp",
+     "read"
+    ],
+    [
+     "4 nơi độc lập",
+     "label",
+     "read"
+    ],
+    [
+     "9f2a…c1",
+     "mono",
+     "read"
+    ],
+    [
+     "web: explorer card",
+     "ui",
+     "glance"
+    ]
+   ]
+  },
+  "L26": {
+   "items": [
+    [
+     "4b70…e8",
+     "mono",
+     "read"
+    ],
+    [
+     "SỬA LÉN?",
+     "disp",
+     "read"
+    ],
+    [
+     "BÁO LỖI NGAY.",
+     "disp",
+     "read"
+    ],
+    [
+     "Phát hiện sai lệch toàn vẹn",
+     "ui",
+     "glance"
+    ]
+   ]
+  },
+  "L27": {
+   "items": [
+    [
+     "KHÔNG AI XÓA / ĐƯỢC DẤU VẾT.",
+     "disp",
+     "read"
+    ],
+    [
+     "Phát hiện sai lệch toàn vẹn",
+     "ui",
+     "known"
+    ]
+   ],
+   "added": [
+    [
+     "KHÔNG AI XÓA / ĐƯỢC DẤU VẾT.",
+     "disp",
+     "CREAM DISPLAY on the NAVY field above the pushed-in badge"
+    ]
+   ],
+   "why": "7.7 had no type at all; the line was only spoken"
+  },
+  "L28": {
+   "items": [
+    [
+     "CHƯA ĐỐI THỦ NÀO CÓ",
+     "disp",
+     "read"
+    ],
+    [
+     "AI xử lý yêu cầu / thực chất",
+     "label",
+     "read"
+    ],
+    [
+     "Sổ thu chi / chống sửa đổi",
+     "label",
+     "read"
+    ],
+    [
+     "CYHOME · PIHOME · HOMEID · BUILDING CARE · LANDSOFT",
+     "disp",
+     "skim"
+    ],
+    [
+     "LÀM TỔ",
+     "disp",
+     "read"
+    ],
+    [
+     "Nguồn: website và công bố của các nhà cung cấp",
+     "cap",
+     "skim"
+    ]
+   ],
+   "added": [
+    [
+     "CHƯA ĐỐI THỦ NÀO CÓ",
+     "disp",
+     "BLACK DISPLAY header over the competitor strips, reading into the two columns"
+    ]
+   ],
+   "why": "the strips stopping short showed the gap graphically; the claim itself was only spoken"
+  },
+  "L29": {
+   "items": [
+    [
+     "LÀM TỔ / CÓ CẢ HAI.",
+     "disp",
+     "read"
+    ]
+   ]
+  },
+  "L30": {
+   "items": [
+    [
+     "500 căn × 20.000đ",
+     "label",
+     "read"
+    ],
+    [
+     "10 TRIỆU/THÁNG",
+     "disp",
+     "read"
+    ],
+    [
+     "lợi nhuận ròng",
+     "label",
+     "read"
+    ],
+    [
+     "59,2%",
+     "disp",
+     "read"
+    ]
+   ]
+  },
+  "L31": {
+   "items": [
+    [
+     "CẦN 200 TRIỆU",
+     "disp",
+     "read"
+    ],
+    [
+     "cho 8 tháng đầu",
+     "label",
+     "read"
+    ],
+    [
+     "10/2026",
+     "mono",
+     "skim"
+    ],
+    [
+     "HÒA VỐN VẬN HÀNH",
+     "disp",
+     "read"
+    ],
+    [
+     "08/2027",
+     "mono",
+     "read"
+    ]
+   ],
+   "added": [
+    [
+     "CẦN 200 TRIỆU",
+     "disp",
+     "the capital strip now says 'CẦN' (need) before '200 TRIỆU'"
+    ]
+   ],
+   "why": "'200 TRIỆU cho 8 tháng đầu' read like revenue or cost; the line says it is the capital needed"
+  },
+  "L32": {
+   "items": [
+    [
+     "GĐ0 · Hoàn thiện MVP · 10/2026–01/2027",
+     "cap",
+     "skim"
+    ],
+    [
+     "GĐ1 · Thí điểm · 02–05/2027",
+     "cap",
+     "skim"
+    ],
+    [
+     "GĐ2 · Thương mại hóa · 06–11/2027",
+     "cap",
+     "skim"
+    ],
+    [
+     "GĐ3 · Mở rộng quy mô · 12/2027–11/2028",
+     "cap",
+     "read"
+    ],
+    [
+     "20–25 TÒA",
+     "disp",
+     "read"
+    ],
+    [
+     "MRR 160–200 TRIỆU",
+     "disp",
+     "read"
+    ]
+   ]
+  },
+  "L33": {
+   "items": [
+    [
+     "NGUYỄN VĂN THÁI HƯNG · Trưởng nhóm · Điều phối, nhân sự · ĐH Ngoại thương",
+     "label",
+     "skim"
+    ],
+    [
+     "NGUYỄN HOÀNG SƠN · Tài chính · Phát triển kinh doanh · Học viện Tài chính",
+     "label",
+     "skim"
+    ],
+    [
+     "NGUYỄN THÁI SƠN · Lập trình · An toàn thông tin · ĐH Công nghệ",
+     "label",
+     "skim"
+    ],
+    [
+     "PHẠM NGỌC LÂM · AI · Dữ liệu · ĐH Ngoại thương",
+     "label",
+     "skim"
+    ],
+    [
+     "CÔNG BẢO CHÂU · Thiết kế · Marketing, Sales · ĐH Ngoại thương",
+     "label",
+     "skim"
+    ]
+   ]
+  },
+  "L34": {
+   "items": [
+    [
+     "ĐỘI KAWAIBU",
+     "disp",
+     "read"
+    ],
+    [
+     "Công nghệ kết hợp / kinh doanh và tài chính.",
+     "label",
+     "read"
+    ]
+   ],
+   "added": [
+    [
+     "Công nghệ kết hợp / kinh doanh và tài chính.",
+     "label",
+     "CREAM LABEL to the right of 'ĐỘI KAWAIBU'"
+    ]
+   ],
+   "why": "the line was only spoken"
+  },
+  "L35": {
+   "items": [
+    [
+     "SỔ QUỸ KHÔNG AI / SỬA LÉN ĐƯỢC.",
+     "disp",
+     "read"
+    ],
+    [
+     "github.com/ntjson/LamTo",
+     "mono",
+     "read"
+    ],
+    [
+     "Đội Kawaibu",
+     "label",
+     "read"
+    ],
+    [
+     "RnD to Startup 2026",
+     "label",
+     "read"
+    ]
+   ],
+   "added": [
+    [
+     "SỔ QUỸ KHÔNG AI / SỬA LÉN ĐƯỢC.",
+     "disp",
+     "NAVY DISPLAY tagline beside the logo (the logo carries 'LÀM TỔ'), above the credit bars"
+    ]
+   ],
+   "why": "the closing line, the film's promise, was only spoken"
+  }
+ }
+}

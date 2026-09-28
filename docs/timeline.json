@@ -1,0 +1,502 @@
+{
+ "generated_by": "tools/timeline.py",
+ "source": "reading",
+ "bpm": 108,
+ "beat": 0.5555555555555556,
+ "grid": 0.1388888888888889,
+ "pace": 0.82,
+ "bars": 85,
+ "film_length": 188.8889,
+ "end": 188.8889,
+ "end_hold": 3.3333,
+ "chapters": [
+  {
+   "id": "ch01",
+   "start": 0.0,
+   "end": 11.1111,
+   "bars": 5.0
+  },
+  {
+   "id": "ch02",
+   "start": 11.1111,
+   "end": 33.3333,
+   "bars": 10.0
+  },
+  {
+   "id": "ch03",
+   "start": 33.3333,
+   "end": 48.8889,
+   "bars": 7.0
+  },
+  {
+   "id": "ch04",
+   "start": 48.8889,
+   "end": 68.8889,
+   "bars": 9.0
+  },
+  {
+   "id": "ch05",
+   "start": 68.8889,
+   "end": 88.8889,
+   "bars": 9.0
+  },
+  {
+   "id": "ch06",
+   "start": 88.8889,
+   "end": 113.3333,
+   "bars": 11.0
+  },
+  {
+   "id": "ch07",
+   "start": 113.3333,
+   "end": 135.5556,
+   "bars": 10.0
+  },
+  {
+   "id": "ch08",
+   "start": 135.5556,
+   "end": 146.6667,
+   "bars": 5.0
+  },
+  {
+   "id": "ch09",
+   "start": 146.6667,
+   "end": 166.6667,
+   "bars": 9.0
+  },
+  {
+   "id": "ch10",
+   "start": 166.6667,
+   "end": 180.0,
+   "bars": 6.0
+  },
+  {
+   "id": "ch11",
+   "start": 180.0,
+   "end": 188.8889,
+   "bars": 4.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "L01",
+   "ch": "ch01",
+   "start": 1.1111,
+   "end": 5.0,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 9,
+   "read": 4.26,
+   "anim": 2.55,
+   "display": "Phản ánh gửi vào nhóm chat, rồi trôi mất."
+  },
+  {
+   "id": "L02",
+   "ch": "ch01",
+   "start": 5.5556,
+   "end": 8.6111,
+   "dur": 3.0556,
+   "beats": 5.5,
+   "syllables": 7,
+   "read": 3.43,
+   "anim": 1.98,
+   "display": "Số dư quỹ lặng lẽ thay đổi."
+  },
+  {
+   "id": "L03",
+   "ch": "ch01",
+   "start": 9.1667,
+   "end": 11.1111,
+   "dur": 1.9444,
+   "beats": 3.5,
+   "syllables": 4,
+   "read": 1.07,
+   "anim": 1.13,
+   "display": "Tiền quỹ đi đâu?"
+  },
+  {
+   "id": "L04",
+   "ch": "ch02",
+   "start": 12.2222,
+   "end": 16.1111,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 13,
+   "read": 2.95,
+   "anim": 3.68,
+   "display": "Hà Nội có 1.363 tòa chung cư."
+  },
+  {
+   "id": "L05",
+   "ch": "ch02",
+   "start": 16.6667,
+   "end": 20.8333,
+   "dur": 4.1667,
+   "beats": 7.5,
+   "syllables": 13,
+   "read": 4.68,
+   "anim": 3.68,
+   "display": "17% chung cư thương mại / có tranh chấp, khiếu kiện."
+  },
+  {
+   "id": "L06",
+   "ch": "ch02",
+   "start": 21.3889,
+   "end": 25.2778,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 13,
+   "read": 3.69,
+   "anim": 3.68,
+   "display": "36% vụ tranh chấp là về quỹ bảo trì."
+  },
+  {
+   "id": "L07",
+   "ch": "ch02",
+   "start": 25.8333,
+   "end": 28.8889,
+   "dur": 3.0556,
+   "beats": 5.5,
+   "syllables": 10,
+   "read": 3.53,
+   "anim": 2.83,
+   "display": "52% chưa được bàn giao quỹ."
+  },
+  {
+   "id": "L08",
+   "ch": "ch02",
+   "start": 29.4444,
+   "end": 33.3333,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 13,
+   "read": 3.58,
+   "anim": 3.68,
+   "display": "Báo cáo thu chi chỉ vài lần mỗi năm, / không kèm chứng từ."
+  },
+  {
+   "id": "L09",
+   "ch": "ch03",
+   "start": 34.4444,
+   "end": 38.3333,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 12,
+   "read": 4.17,
+   "anim": 3.4,
+   "display": "Ban quản trị trả 20.000 đồng / mỗi căn mỗi tháng."
+  },
+  {
+   "id": "L10",
+   "ch": "ch03",
+   "start": 38.8889,
+   "end": 43.6111,
+   "dur": 4.7222,
+   "beats": 8.5,
+   "syllables": 16,
+   "read": 3.88,
+   "anim": 4.53,
+   "display": "Khách hàng: tòa 300–700 căn, / dưới 10 năm, có Ban quản trị."
+  },
+  {
+   "id": "L11",
+   "ch": "ch03",
+   "start": 44.1667,
+   "end": 48.8889,
+   "dur": 4.7222,
+   "beats": 8.5,
+   "syllables": 13,
+   "read": 4.02,
+   "anim": 3.68,
+   "display": "Thị trường mục tiêu: 32,4 tỷ đồng mỗi năm."
+  },
+  {
+   "id": "L12",
+   "ch": "ch04",
+   "start": 50.0,
+   "end": 55.8333,
+   "dur": 5.8333,
+   "beats": 10.5,
+   "syllables": 11,
+   "read": 6.2,
+   "anim": 3.12,
+   "display": "Ban quản trị bị nghi ngờ, / kể cả khi làm đúng."
+  },
+  {
+   "id": "L13",
+   "ch": "ch04",
+   "start": 56.3889,
+   "end": 60.5556,
+   "dur": 4.1667,
+   "beats": 7.5,
+   "syllables": 13,
+   "read": 4.47,
+   "anim": 3.68,
+   "display": "Ban quản lý nhận phản ánh qua Zalo, / không ai theo dõi."
+  },
+  {
+   "id": "L14",
+   "ch": "ch04",
+   "start": 61.1111,
+   "end": 68.8889,
+   "dur": 7.7778,
+   "beats": 14.0,
+   "syllables": 10,
+   "read": 8.07,
+   "anim": 2.83,
+   "display": "Cư dân đóng phí, / nhưng không rõ tiền đi đâu."
+  },
+  {
+   "id": "L15",
+   "ch": "ch05",
+   "start": 70.0,
+   "end": 74.1667,
+   "dur": 4.1667,
+   "beats": 7.5,
+   "syllables": 14,
+   "read": 3.23,
+   "anim": 3.97,
+   "display": "Làm Tổ biến một phản ánh / thành khoản chi ai cũng kiểm chứng được."
+  },
+  {
+   "id": "L16",
+   "ch": "ch05",
+   "start": 74.7222,
+   "end": 78.8889,
+   "dur": 4.1667,
+   "beats": 7.5,
+   "syllables": 14,
+   "read": 3.13,
+   "anim": 3.97,
+   "display": "Cư dân gửi phản ánh bất kỳ lúc nào, / kèm ảnh và vị trí."
+  },
+  {
+   "id": "L17",
+   "ch": "ch05",
+   "start": 79.4444,
+   "end": 83.3333,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 13,
+   "read": 4.08,
+   "anim": 3.68,
+   "display": "AI gợi ý nhóm sự cố, / mức khẩn và hạn xử lý."
+  },
+  {
+   "id": "L18",
+   "ch": "ch05",
+   "start": 83.8889,
+   "end": 88.8889,
+   "dur": 5.0,
+   "beats": 9.0,
+   "syllables": 15,
+   "read": 3.33,
+   "anim": 4.25,
+   "display": "Nhưng người quyết định / là một quản lý có tên; // mọi bước đều lưu vết."
+  },
+  {
+   "id": "L19",
+   "ch": "ch06",
+   "start": 90.0,
+   "end": 93.8889,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 13,
+   "read": 3.36,
+   "anim": 3.68,
+   "display": "Quỹ chung có hai lớp bảo vệ. / Lớp một: trước khi duyệt chi."
+  },
+  {
+   "id": "L20",
+   "ch": "ch06",
+   "start": 94.4444,
+   "end": 100.5556,
+   "dur": 6.1111,
+   "beats": 11.0,
+   "syllables": 15,
+   "read": 6.55,
+   "anim": 4.25,
+   "display": "AI đưa ra khung giá hợp lý / từ những việc tương tự đã làm."
+  },
+  {
+   "id": "L21",
+   "ch": "ch06",
+   "start": 101.1111,
+   "end": 105.0,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 13,
+   "read": 3.26,
+   "anim": 3.68,
+   "display": "Một báo giá 46 triệu vượt khung, / bị cảnh báo ngay."
+  },
+  {
+   "id": "L22",
+   "ch": "ch06",
+   "start": 105.5556,
+   "end": 113.3333,
+   "dur": 7.7778,
+   "beats": 14.0,
+   "syllables": 13,
+   "read": 6.89,
+   "anim": 3.68,
+   "display": "AI chỉ gợi ý; / ban quản lý xem lại và quyết định."
+  },
+  {
+   "id": "L23",
+   "ch": "ch07",
+   "start": 114.4444,
+   "end": 119.1667,
+   "dur": 4.7222,
+   "beats": 8.5,
+   "syllables": 15,
+   "read": 5.25,
+   "anim": 4.25,
+   "display": "Lớp hai: sau khi công bố, / khoản chi được niêm phong, // không thể chỉnh sửa."
+  },
+  {
+   "id": "L24",
+   "ch": "ch07",
+   "start": 119.7222,
+   "end": 124.7222,
+   "dur": 5.0,
+   "beats": 9.0,
+   "syllables": 13,
+   "read": 5.36,
+   "anim": 3.68,
+   "display": "Cư dân lần ngược từ khoản chi / về đúng phản ánh ban đầu."
+  },
+  {
+   "id": "L25",
+   "ch": "ch07",
+   "start": 125.2778,
+   "end": 128.8889,
+   "dur": 3.6111,
+   "beats": 6.5,
+   "syllables": 12,
+   "read": 3.25,
+   "anim": 3.4,
+   "display": "Mã băm của bản ghi / được giữ ở 4 nơi độc lập."
+  },
+  {
+   "id": "L26",
+   "ch": "ch07",
+   "start": 129.4444,
+   "end": 132.5,
+   "dur": 3.0556,
+   "beats": 5.5,
+   "syllables": 10,
+   "read": 2.75,
+   "anim": 2.83,
+   "display": "Ai sửa lén số cũ, hệ thống báo lỗi ngay."
+  },
+  {
+   "id": "L27",
+   "ch": "ch07",
+   "start": 133.0556,
+   "end": 135.5556,
+   "dur": 2.5,
+   "beats": 4.5,
+   "syllables": 6,
+   "read": 1.72,
+   "anim": 1.7,
+   "display": "Không ai xóa được dấu vết."
+  },
+  {
+   "id": "L28",
+   "ch": "ch08",
+   "start": 136.6667,
+   "end": 144.4444,
+   "dur": 7.7778,
+   "beats": 14.0,
+   "syllables": 20,
+   "read": 8.12,
+   "anim": 5.67,
+   "display": "Chưa đối thủ nào có / AI xử lý yêu cầu thực chất, // hay sổ thu chi chống sửa đổi."
+  },
+  {
+   "id": "L29",
+   "ch": "ch08",
+   "start": 145.0,
+   "end": 146.6667,
+   "dur": 1.6667,
+   "beats": 3.0,
+   "syllables": 5,
+   "read": 1.27,
+   "anim": 1.42,
+   "display": "Làm Tổ có cả hai."
+  },
+  {
+   "id": "L30",
+   "ch": "ch09",
+   "start": 147.7778,
+   "end": 153.0556,
+   "dur": 5.2778,
+   "beats": 9.5,
+   "syllables": 18,
+   "read": 3.79,
+   "anim": 5.1,
+   "display": "Tòa 500 căn: 10 triệu mỗi tháng, / lợi nhuận ròng 59,2%."
+  },
+  {
+   "id": "L31",
+   "ch": "ch09",
+   "start": 153.6111,
+   "end": 159.1667,
+   "dur": 5.5556,
+   "beats": 10.0,
+   "syllables": 19,
+   "read": 4.62,
+   "anim": 5.38,
+   "display": "Cần 200 triệu cho 8 tháng đầu; / hòa vốn vận hành tháng 8/2027."
+  },
+  {
+   "id": "L32",
+   "ch": "ch09",
+   "start": 159.7222,
+   "end": 166.6667,
+   "dur": 6.9444,
+   "beats": 12.5,
+   "syllables": 20,
+   "read": 6.94,
+   "anim": 5.67,
+   "display": "Giai đoạn 3: 20–25 tòa, / 160–200 triệu mỗi tháng."
+  },
+  {
+   "id": "L33",
+   "ch": "ch10",
+   "start": 167.7778,
+   "end": 175.5556,
+   "dur": 7.7778,
+   "beats": 14.0,
+   "syllables": 21,
+   "read": 8.31,
+   "anim": 5.95,
+   "display": "Đội Kawaibu: 5 thành viên / từ Đại học Ngoại thương, // Học viện Tài chính / và Đại học Công nghệ."
+  },
+  {
+   "id": "L34",
+   "ch": "ch10",
+   "start": 176.1111,
+   "end": 180.0,
+   "dur": 3.8889,
+   "beats": 7.0,
+   "syllables": 9,
+   "read": 3.14,
+   "anim": 2.55,
+   "display": "Công nghệ kết hợp kinh doanh và tài chính."
+  },
+  {
+   "id": "L35",
+   "ch": "ch11",
+   "start": 181.1111,
+   "end": 185.5556,
+   "dur": 4.4444,
+   "beats": 8.0,
+   "syllables": 9,
+   "read": 4.36,
+   "anim": 2.55,
+   "display": "Làm Tổ: sổ quỹ không ai sửa lén được."
+  }
+ ]
+}

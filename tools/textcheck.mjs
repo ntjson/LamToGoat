@@ -12,7 +12,7 @@ import { serve, ROOT } from './serve.mjs';
 import { pageQuery } from '../render.mjs';
 
 export async function textcheck(id, { step = 0.25 } = {}) {
-  const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/vo_timings.json'), 'utf8'));
+  const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/timeline.json'), 'utf8'));
   const ch = timings.chapters.find((c) => c.id === id);
   const server = await serve();
   const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', args: ['--font-render-hinting=none', '--hide-scrollbars'] });

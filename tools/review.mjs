@@ -33,7 +33,7 @@ if (!args.includes('--no-render')) {
   await render(opts);
 }
 
-const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/vo_timings.json'), 'utf8'));
+const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/timeline.json'), 'utf8'));
 const start = timings.chapters.find((c) => c.id === ch).start;
 const [num, den] = execFileSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=r_frame_rate',
   '-of', 'csv=p=0', video]).toString().trim().split('/').map(Number);

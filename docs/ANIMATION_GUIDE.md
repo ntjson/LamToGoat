@@ -12,7 +12,7 @@ ch01, and noted in the chapter's review file.
 |---|---|
 | `scenes/chNN.js` (your chapter only) | `lib/*`, `index.html`, `render.mjs`, `tools/*` |
 | `docs/review/chNN.md` (your review rounds) | other chapters, `docs/*` except your review file |
-| scratch files under `out/tmp/chNN/` | `docs/vo_lines.json`, `docs/vo_timings.json`, `docs/crops.json` |
+| scratch files under `out/tmp/chNN/` | `docs/timeline.json`, `docs/onscreen.json`, `docs/vo_*.json`, `docs/crops.json` |
 
 - Chapters are built in parallel. Never commit, never push, never touch another chapter's files.
 - Cap Chromium at 2 workers (`--workers 2`).
@@ -20,7 +20,8 @@ ch01, and noted in the chapter's review file.
   under **Proposals** in your report; the director decides.
 - Facts come only from the deck and README, via `docs/shotlist.md` ("Where every figure comes from") and
   `docs/vo_script.md`. Never invent a number, name, date, source or claim. Wording on screen follows the shotlist.
-  If you need a word the shotlist doesn't give, take it from the voice line's subtitle text. The deck slides are
+  If you need a word the shotlist doesn't give, take it from the beat's text in `docs/onscreen.json` or the old voice
+  line's subtitle text (`docs/vo_script.md`). The deck slides are
   `refs/slide-NN.png` if you need to confirm something.
 
 ## 2. Module API
@@ -54,8 +55,9 @@ export default {
   - `t` runs past `ctx.dur` during the next chapter's underlap and your own exit (section 7). After those windows,
     hold your final state for any larger `t`.
 - **`ctx`**:
-  - `ctx.line(id)` → `{ start, end, dur, syllables }` of a voice line, in chapter-local seconds.
-  - `ctx.syl(id, k)` → the time of syllable `k` (0-based) of that line (proportional until word timings exist).
+  - `ctx.line(id)` → `{ start, end, dur, syllables }` of a story beat (L01-L35), in chapter-local seconds, on the grid.
+  - `ctx.syl(id, k)` → subdivision `k` (0-based) of that beat, snapped to 16th notes (section 3).
+  - `ctx.snap(t, division = 4)`, `ctx.beat`, `ctx.grid`, `ctx.bpm`: the music's grid (section 3).
   - `ctx.dur`: your chapter's length. It ends when your last line ends.
   - `ctx.crop(shot)` → the `docs/crops.json` entry for a UI shot (`'5.5a'`).
   - `ctx.image(src)` → Promise of a decoded image.
@@ -75,23 +77,39 @@ export default {
 - **Seeds.** Use your chapter number × 100 + k for every `rough`/`jagged`/`blob`/`rng` seed (ch04 uses 400-499),
   so no two chapters share an edge.
 
-## 3. Timing: the voice drives everything
+## 3. Timing: reading time on the beat grid
 
-- **Anchors.** Every beat derives from `ctx.line(id)` / `ctx.syl(id, k)`. Small offsets from an anchor are fine
-  (`ctx.syl('L05', 0) - 0.05`, `L06.end + 0.3`). Never use film-absolute seconds or hard-coded chapter lengths
-  (`ctx.dur` is the only length). The timeline is an estimate at 3 syllables/s and will re-flow when the real voice
-  arrives: your chapter must survive every line getting 20 % longer or shorter. Collect beats in one `T = {...}` object
-  in `build` like ch01 does.
-- **Hitting words.** Land visual hits on the word they illustrate. Count syllables in the *spoken* text
-  (`docs/vo_script.md`, "Read this" column; 1 syllable per space-separated word, "Ây-ai" = 2).
-  - Figures SLAM or finish COUNTing on the syllable that says the number.
-  - Tags land on their phrase.
-  - A hit may lead its word by up to 0.1 s; never trail it by more than 0.15 s.
-- **Breaths.** Each chapter opens with a music-only breath of about 1 s before its first line: the transition plays
-  here. Gaps between lines (0.4-0.8 s) are where the frame changes shot.
+**The film has no voice-over** (decision 2026-09-28): music and sound effects only, so the on-screen text carries
+the whole story.
+
+- **Timeline.** `docs/timeline.json` is built by `tools/timeline.py` from `docs/onscreen.json` and must not be edited
+  by hand. It holds the 35 story beats, which keep the ids of the old voice lines L01-L35.
+  - Each beat holds long enough to read its on-screen text at a comfortable pace, including the one-beat gap that
+    follows it.
+  - Everything sits on the music's grid at 108 BPM: beats start and end on 8th notes, and every chapter is a whole
+    number of 4/4 bars, so chapter changes land on downbeats.
+  - `docs/timeline.md` is the readable table. The voice pipeline (`tools/vo.py`, `docs/vo_*.json`) is kept for a
+    possible later voice, but nothing reads it now.
+- **Anchors.** Every beat derives from `ctx.line(id)`, `ctx.syl(id, k)`, `ctx.dur` or `ctx.snap(t)`. Small offsets
+  from an anchor are fine; film-absolute seconds and hard-coded chapter lengths are not. The timeline changes whenever
+  on-screen text changes, so collect beats in one `T = {...}` object in `build` like ch01 does.
+  - `ctx.syl(id, k)` is subdivision k of a beat. It is still indexed by the syllables of the old voice line (the
+    "Read this" column of `docs/vo_script.md`), spread evenly and **snapped to 16th notes**.
+  - `ctx.snap(t, division)` snaps any chapter-local time to the grid (4 = 16ths, 2 = 8ths, 1 = beats).
+  - `ctx.beat` is seconds per beat (0.556 s) and `ctx.grid` seconds per 16th (0.139 s).
+- **Sync to the music.**
+  - SLAMs, stamps, count landings and paper landings go on grid times: `ctx.syl`/`ctx.line` times, or a slide started
+    `firstHit` early so it lands on one.
+  - A hit may lead its grid point by up to 2 frames (0.05 s); it never trails it.
+  - Cuts and HARD CUTs sit exactly on a grid time. If a cut is computed with an offset (`L05.end + 0.1`), wrap it in
+    `ctx.snap()`.
+  - The sound designer puts the music's hits on the grid, so an off-grid cut will look late.
+- **Reading holds.**
+  - A text that carries a beat's message stays fully visible and unoccluded, landed and legible, until its beat ends.
+    Its reading time was budgeted for that.
+  - Counting figures show their unit from their first frame ("59,2%", never "59,2" then "%").
 - **Rhythm.** A new visual event every 3-4 s at most (CLAUDE.md): something enters, is cut, flips, counts, slams or
-  the shot changes. Per voice line, expect at least two events. No frame holds still for more than 2 s, except the
-  holds the shotlist asks for (7.7, the end of ch11).
+  the shot changes. No frame holds still for more than 2 s, except the holds the shotlist asks for (the end of ch11).
 
 ## 4. Motion
 
@@ -188,6 +206,12 @@ export default {
   - The filter region extends 35 % of the element's height above and below it, so marks that rise above a
     single-line box at 1.1 are no longer shaved. It used to extend only 3 %, which flattened the tilde of Ễ at 72 px.
     The ch10 builder found this.
+- **Story text without a voice.** Every beat's message is on screen; `docs/onscreen.json` lists the text each beat
+  shows and, under `added`, what was added when the voice was dropped. Use that wording exactly.
+  - Set added text as DISPLAY type or as a **caption strip**: `kit.tag` with `cls: 'disp cut-text'` (or `label` for a
+    sentence), paper in the palette (BLACK on ORANGE, CREAM on BLACK or NAVY), a hand-placed tilt of ±1-3°.
+  - Place it inside the frame's main group, where the shot's idea is. Never centre it along the bottom like a
+    subtitle, and never put it in a corner.
 - **Sources.** A source caption ("Nguồn: CBRE, Savills") sits directly under the figure it sources, as part of that
   group, never in a frame corner: corner labels are banned.
 
@@ -281,13 +305,13 @@ node tools/frames.mjs chNN out/tmp/chNN <t> [<t> ...]
    - **Read**: 1080p and the 360 px phone sheet; the key message reads on the phone.
    - **Motion**: springs, craft, no dead or jittery frames.
    - **Brand**: Bass look, palette meanings, UI rules, sits beside ch01.
-   - **Voice**: hits land on their words.
+   - **Sync**: cuts and SLAMs land on the beat grid, and every text holds long enough to read at the timeline's pace.
    - **Variety**: a new event every 3-4 s, and verbs not repeated to boredom.
 6. **Fix** the 3 worst problems and repeat. Log each round in `docs/review/chNN.md`:
 
 ```md
 ### Round N
-| Hook | VN | Read | Motion | Brand | Voice | Variety | Worst problems |
+| Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems |
 |---|---|---|---|---|---|---|---|
 | 7 | 9 | 8 | 7 | 8 | 8 | 7 | ... |
 

@@ -20,7 +20,7 @@ if (!id || !outdir || !times.length) {
   process.exit(2);
 }
 const scale = Number(opt('scale', 1));
-const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/vo_timings.json'), 'utf8'));
+const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/timeline.json'), 'utf8'));
 const ch = id === 'film' ? null : timings.chapters.find((c) => c.id === id);
 if (id !== 'film' && !ch) throw new Error(`no chapter ${id}`);
 fs.mkdirSync(outdir, { recursive: true });

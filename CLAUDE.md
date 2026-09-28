@@ -11,6 +11,10 @@
 - render.mjs uses playwright-core with executablePath /usr/bin/chromium, takes --from/--to/--fps/--scale,
   renders chapters in parallel workers, then joins them with ffmpeg concat.
 - Drafts at 960x540, 30 fps. Final at 1920x1080, 60 fps, H.264 yuv420p, CRF 16.
+- Reading time drives timing (there is no voice-over): tools/timeline.py builds docs/timeline.json from the
+  on-screen text in docs/onscreen.json, so every shot holds long enough to read its text at a relaxed pace.
+  Everything sits on the music's beat grid (108 BPM; chapters on bar lines); cuts and SLAMs snap to it.
+  Scenes read the timeline through ctx and never hard-code seconds.
 
 ## Look (your call: the deck is the source of facts, not of style)
 - Choose your own visual direction: palette, type, texture, camera language. Don't copy the slides.
@@ -23,19 +27,28 @@
   glow on UI, particle bursts, walls of numbers that just sit there.
 - Numbers count up on springs. A new visual event every 3-4 s.
 
-## Voice (ElevenLabs free tier: 10,000 credits/month, non-commercial, max 2 requests at once)
-- Key is ELEVENLABS_API_KEY in .env. Never print it, log it, or write it into any other file.
-- eleven_flash_v2_5, language_code "vi", one request per line, NFC-normalized spoken text, fixed seed.
-- Before any paid call: read remaining credits, estimate the cost, and ask me if a batch is over 1,500 credits.
-- Skip lines whose spoken text hasn't changed. On a 402 or quota error, stop and list the missing lines.
-- Voice drives timing: scenes read docs/vo_timings.json; never hard-code seconds.
+## Story text (no voice-over)
+- The film is music and sound effects only; the on-screen text carries the whole story.
+- Every story beat's message (the old voice lines L01-L35) must be on screen, as display type or a caption strip
+  in the film's style, never as subtitle text along the bottom. docs/onscreen.json lists each beat's text and logs
+  what was added.
+
+## Voice (kept for a possible later voice; not in use)
+- The pipeline stays: docs/vo_lines.json, tools/vo.py, docs/vo_script.md, docs/vo_timings.json.
+  `tools/timeline.py --voice` puts the timeline back on a voice.
+- If a voice is ever generated with ElevenLabs (free tier: 10,000 credits/month, non-commercial, max 2 requests at once):
+  - Key is ELEVENLABS_API_KEY in .env. Never print it, log it, or write it into any other file.
+  - eleven_flash_v2_5, language_code "vi", one request per line, NFC-normalized spoken text, fixed seed.
+  - Before any paid call: read remaining credits, estimate the cost, and ask me if a batch is over 1,500 credits.
+  - Skip lines whose spoken text hasn't changed. On a 402 or quota error, stop and list the missing lines.
 
 ## Sound
-- Music bed and sound effects synthesized in code (no Eleven Music, no stock tracks).
-- Duck the music under the voice (sidechain). Final mix -14 LUFS, true peak at most -1 dBTP.
+- Music bed and sound effects synthesized in code (no Eleven Music, no stock tracks), following the shotlist's
+  Sound section. The music plays on the timeline's grid; effects sit on the scenes' own event times.
+- Final mix -14 LUFS, true peak at most -1 dBTP. If a voice is added, duck the music under it (sidechain).
 
 ## Before showing me anything
 1. Render a contact sheet (2 fps) and a 360 px phone test of the changed chapter, and look at them.
 2. Score 1-10: hook, Vietnamese correctness (accents, line breaks), readability, motion,
-   brand match, voice sync, variety.
+   brand match, sync (beat grid and reading time), variety.
 3. Log the scores in docs/review_log.md, fix the 3 worst problems, repeat until all are 8+. Then render.
