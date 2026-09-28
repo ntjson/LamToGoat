@@ -14,6 +14,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 |---|---|---|---|---|---|---|---|---|---|
 | ch01 Hook | 8 | 9 | 8 | 9 | 8 | 8 | 8 | 3 | approved at gate 4; frames unchanged by gate 5 (0 px) |
 | ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
+| ch03 Market | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 3 | integrated |
 | ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
 
 ## Gate 1: style frames (2026-09-28)
@@ -114,6 +115,17 @@ one figure owns each shot, so the stats never stack into a wall. The report shee
 edge-on as ch03's navy card opens out of it (33.67 → 33.77 s). Accepted deviations: the report sheet is black paper
 (a cream sheet on the contract's cream ground wouldn't read); the red tag is DISPLAY 100, not 64, as the frame's key
 message. Text check: 18 texts, none under 28 px. Render cost is the film's highest (the skyline), which is acceptable.
+
+### ch03 Market
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch03 v3 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | navy card flips out of ch02's sheet; 20.000đ counts on the voice; "KHÁCH HÀNG" + a 700-window slab filled to 300, then 700; TAM ⊃ SAM ⊃ SOM nested and counted, SAM on "ba mươi hai phẩy bốn" |
+
+Director's check: the flip meets exactly (same centre, same tilt, edge-on at `FLIP_EDGE`). The chapter reads as three
+clean ideas (price, customer, market), with at most three figures in the market shot. Weakest moment: the navy card is
+nearly blank for about 1.5 s after the flip, carried only by the small B2B2C tags. Acceptable, and worth a look at gate 6
+with the real voice. Text check: 18 texts, none under 28 px.
 
 ### ch04 Who hurts
 
