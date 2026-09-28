@@ -1,31 +1,32 @@
 // ch07 USP 2: after publication (shots 7.1-7.7). Layer two of the fund's protection, shown through the product's own
 // screens: a published expense is sealed and can't be edited; a resident traces the verified expense back to the report
 // it came from (the hook's lost complaint, word for word); the record's hash is kept at four independent places; an
-// edit is caught at once, and nobody can erase the trace. Every beat is anchored to the voice lines L23-L27
-// (ctx.line / ctx.syl); nothing uses film-absolute seconds.
+// edit is caught at once, and nobody can erase the trace. The film has no voice: every beat is anchored to the story
+// beats L23-L27 on the music's grid (ctx.line / ctx.syl; moves that land start early by their spring's first-arrival
+// time), each beat's text lands early and holds to the beat's end; nothing uses film-absolute seconds.
 //
-// 7.1  (underlap) CREAM paper tears diagonally across ch06's held BLACK frame in two pulls; a NAVY "layer two" bar
-//      shoots in on "Lớp" (ch06 opened layer one with an ORANGE bar) and the NAVY "2" slams onto it on "hai".
-// 7.2  "SAU KHI / CÔNG BỐ" rises out from behind the bar; the lock note, the checkbox line and the publish button slide
-//      in on the voice; the NAVY oval seal "NIÊM PHONG" stamps beside the button on "niêm"; an ORANGE bracket snaps
-//      under "không thể chỉnh sửa" on "không".
-// 7.3  A NAVY façade rises; its window opens like lift doors onto the verified expense (7.3a). "LẦN / NGƯỢC" rises on
-//      its words and on "ngược" the screen scrolls to the accountability chain (7.3b); a CREAM bracket climbs step
-//      4 → 1 on "khoản chi về đúng"; HARD CUT on "phản ánh" to the original report (7.3c); the hook's bubble rises and
-//      snaps flush under it on "ban đầu".
+// 7.1  (underlap) CREAM paper tears diagonally across ch06's held BLACK frame in two pulls; the NAVY "2" slams on the
+//      cream and a NAVY "layer two" bar shoots in under it (ch06 opened layer one with an ORANGE bar).
+// 7.2  "SAU KHI / CÔNG BỐ" rises out from behind the bar, then "khoản chi được niêm phong, / không thể chỉnh sửa" under
+//      it; the lock note, the checkbox line and the publish button slide in; the NAVY oval seal "NIÊM PHONG" stamps
+//      beside the button; an ORANGE bracket snaps under the UI's "không thể chỉnh sửa".
+// 7.3  A NAVY façade rises; its window opens like lift doors onto the verified expense (7.3a). "Cư dân / LẦN / NGƯỢC /
+//      từ khoản chi / về phản ánh ban đầu" rise out of slits in the façade; the screen scrolls to the accountability
+//      chain (7.3b) and a CREAM bracket climbs step 4 → 1; HARD CUT to the original report (7.3c); the hook's bubble
+//      rises and snaps flush under it.
 // 7.4  ORANGE and CREAM close in like doors; "MÃ BĂM" slams; the verified card slides up; four NAVY copies of the hash
-//      slide in on "được giữ ở bốn"; "4 nơi độc lập" counts to 4 on "bốn".
-// 7.5  In the breath, a RED torn copy "4b70…e8" slips in crooked under the stack.
-// 7.6  "SỬA LÉN?" slams on "sửa"; HARD CUT verified → mismatch on "hệ thống"; "BÁO LỖI NGAY." slides in on "báo".
-// 7.7  The fields part like doors onto NAVY while the camera pushes in on the red badge; hold.
+//      slide in and "4 nơi độc lập" counts with them.
+// 7.5  A RED torn copy "4b70…e8" slips in crooked under the stack.
+// 7.6  "SỬA LÉN?" slams; HARD CUT verified → mismatch (only the badge changes); "BÁO LỖI NGAY." slides in.
+// 7.7  The fields part like doors onto NAVY while the camera pushes in on the red badge (to 60 px below centre);
+//      "KHÔNG AI XÓA / ĐƯỢC DẤU VẾT." slams line by line on the NAVY above it; hold.
 // ch08 covers the held last frame with CREAM (its underlap + kit.cover), so nothing here animates past the push.
-import { step, spring, track, noise1, hash, lerp } from '../lib/motion.js';
+import { step, spring, track, noise1, hash, lerp, PRESETS } from '../lib/motion.js';
 import { C, el, rough, rect, bubble, clip } from '../lib/paper.js';
 import { W, H, text, tag, odometer, plate, vis } from '../lib/kit.js';
 
 const SEED = 700; // this chapter's seeds are 700-799 (the hook's bubble keeps ch01's seed 11, on purpose)
 const UNDERLAP = 0.95;
-const ARRIVE = 0.39; // a 'slide' first reaches its target this long after it starts
 
 const TEAR1 = { f: 2.6, z: 0.72 }; // the first pull of the rip, to mid-frame, catching with a jolt
 const TEAR2 = { f: 2.3, z: 1 }; // the second pull, the rest of the way
@@ -71,6 +72,19 @@ function settle(p, dist, px = 0.5) {
   for (let i = 0; i < 50; i++) {
     const m = (a + b) / 2;
     if ((1 - step(m, p)) * dist > px) a = m;
+    else b = m;
+  }
+  return b;
+}
+
+// Seconds until an underdamped spring first reaches its target (where a slide lands): scanned forward, then refined.
+function firstArrival(p) {
+  let b = 0.001;
+  while (b < 8 && step(b, p) < 1) b += 0.001;
+  let a = b - 0.001;
+  for (let i = 0; i < 40; i++) {
+    const m = (a + b) / 2;
+    if (step(m, p) < 1) a = m;
     else b = m;
   }
   return b;
@@ -185,50 +199,70 @@ export default {
     const L24 = ctx.line('L24');
     const L25 = ctx.line('L25');
     const L26 = ctx.line('L26');
+    const L27 = ctx.line('L27');
     const s23 = (k) => ctx.syl('L23', k);
     const s24 = (k) => ctx.syl('L24', k);
     const s25 = (k) => ctx.syl('L25', k);
     const s26 = (k) => ctx.syl('L26', k);
+    const s27 = (k) => ctx.syl('L27', k);
+    const arrive = (p) => firstArrival(typeof p === 'string' ? PRESETS[p] : p);
+    const SL = arrive('slide'); // a 'slide' first lands this long after it starts
+    // The first grid point at or after t (keeps the order if the timeline ever re-flows a beat shorter).
+    const up = (t) => {
+      const g = ctx.snap(t);
+      return g < t - 1e-6 ? g + ctx.grid : g;
+    };
+    const atLeast = (t, min) => Math.max(t, up(min));
 
-    // ---- Beats (chapter-local seconds), all derived from the voice lines. The max() guards keep the order when the
-    // timeline re-flows and a line or a breath gets shorter.
+    // ---- Beats (chapter-local seconds), all on the grid of the story beats. A move that lands (slide, bar, count,
+    // slip) starts early by its spring's first-arrival time so it lands on its grid point; a SLAM or stamp appears on it.
     const T = {};
-    T.tear = 0.1; // the rip starts on ch06's held frame...
-    T.tear2 = 0.55; // ...catches at mid-frame, then tears the rest; it covers the frame before the underlap (checked)
-    T.bar = Math.max(UNDERLAP + 0.03, s23(0) - 0.05); // the NAVY layer bar shoots in on "Lớp"
-    T.two = Math.max(T.bar + 0.15, s23(1) - 0.1); // 7.1 "2" slams on "hai"
-    T.title = Math.max(T.two + 0.08, s23(2) + 0.1 - ARRIVE); // "SAU KHI / CÔNG BỐ" lands on "sau khi"
-    T.note = Math.max(T.title + 0.3, s23(4) - ARRIVE); // lock note lands on "công bố"
-    T.check = Math.max(T.note + 0.3, s23(6) - ARRIVE); // checkbox line on "khoản chi"
-    T.btn = Math.max(T.check + 0.25, s23(8) - ARRIVE); // button on "được"
-    T.seal = Math.max(T.btn + 0.3, s23(9) - 0.05); // the seal stamps on "niêm"
-    T.brk = Math.max(T.seal + 0.3, s23(11) - 0.05); // the bracket snaps under "không thể chỉnh sửa" on "không"
-    T.fac = Math.max(T.brk + 0.6, L23.end - 0.2); // 7.3 the façade rises in the breath
-    T.doors = T.fac + 0.36; // its window opens like lift doors onto 7.3a as it lands
-    T.lan = Math.max(T.doors + 0.35, s24(2) + 0.08 - ARRIVE); // "LẦN" rises on "lần"
-    T.nguoc = Math.max(T.lan + 0.15, s24(3) + 0.08 - ARRIVE); // "NGƯỢC" on "ngược"
-    T.scroll = Math.max(T.doors + 0.6, s24(3) - 0.1); // the screen scrolls to the chain on "ngược"
+    T.tear = 2 * ctx.grid - arrive(TEAR1); // the rip starts on ch06's held frame, catches at mid-frame on a 16th...
+    T.tear2 = ctx.beat; // ...and tears the rest from the first beat; it covers the frame before the underlap (checked)
+    T.two = L23.start; // 7.1 the "2" SLAMs on the cream, on the beat's first grid point
+    T.bar = s23(2) - arrive(LAYER); // the NAVY layer bar shoots in under it
+    T.title = s23(3) - SL; // 7.2 "SAU KHI / CÔNG BỐ" rises out from behind the bar
+    T.sub = s23(5) - SL; // "khoản chi được niêm phong, / không thể chỉnh sửa" rises under it
+    T.note = s23(6) - SL; // the lock note slides in
+    T.check = s23(7) - SL; // the checkbox line
+    T.btn = s23(8) - SL; // the publish button
+    T.seal = s23(9); // the seal STAMPs beside the button
+    T.brk = s23(10); // the bracket snaps under the UI's "không thể chỉnh sửa"
+    T.fac = L23.end; // 7.3 the façade rises once L23 has been read...
+    T.doors = up(T.fac + SL); // ...and its window opens like lift doors onto 7.3a as it lands
+    T.cu = atLeast(s24(1), T.doors + SL) - SL; // "Cư dân" rises out of its slit
+    T.lan = s24(2) - SL; // "LẦN"
+    T.nguoc = s24(3) - SL; // "NGƯỢC"
+    T.tu = s24(4) - SL; // "từ khoản chi / về phản ánh ban đầu"
+    T.scroll = s24(4); // the screen scrolls to the chain as the last line lands
     T.scrolled = T.scroll + settle(SCROLL, 1000);
-    T.climb = [5, 6, 7, 8].map((k) => s24(k) - 0.05); // bracket at step 4 on "khoản", 3 "chi", 2 "về", 1 "đúng"
-    T.climb[0] = Math.max(T.climb[0], T.scrolled);
-    for (let i = 1; i < 4; i++) T.climb[i] = Math.max(T.climb[i], T.climb[i - 1] + 0.18);
-    T.cut3 = Math.max(T.climb[3] + 0.25, s24(9) - 0.05); // HARD CUT to the original report on "phản ánh"
-    T.bub = T.cut3 + 0.12; // the hook's bubble rises...
-    T.flush = Math.max(T.bub + 0.45, s24(11) - 0.05); // ...and snaps flush on "ban đầu"
-    T.wipe = Math.max(T.flush + 0.5, L24.end + 0.02); // 7.4 the two fields close in, in the breath
+    const c0 = atLeast(s24(6), T.scrolled); // the bracket ticks step 4, then climbs one step per 8th note
+    T.climb = [0, 1, 2, 3].map((i) => c0 + 2 * i * ctx.grid);
+    T.cut3 = atLeast(s24(9), T.climb[3] + 2 * ctx.grid); // HARD CUT to the original report
+    T.bub = T.cut3 + ctx.grid; // the hook's bubble rises...
+    T.flush = atLeast(s24(11), T.bub + 2 * ctx.grid); // ...and snaps flush
+    T.wipe = L24.end; // 7.4 the two fields close in, on the beat's end
     T.landed = T.wipe + settle(WIPE, 1400); // both at rest: they move to ctx.root and 7.3 is put away
-    T.mabam = Math.max(T.landed + 0.02, s25(0) - 0.05); // "MÃ BĂM" slams on "Mã"
-    T.card = Math.max(T.mabam + 0.2, s25(3) - ARRIVE); // the verified card slides up, lands on "bản ghi"
-    T.strips = [5, 6, 7, 8].map((k) => s25(k) - ARRIVE); // copies land on "được", "giữ", "ở", "bốn"
-    T.strips[0] = Math.max(T.strips[0], T.card + 0.25);
-    for (let i = 1; i < 4; i++) T.strips[i] = Math.max(T.strips[i], T.strips[i - 1] + 0.16);
-    T.roll = T.strips[3] + ARRIVE - 0.68; // the 4 of "4 nơi độc lập" finishes counting on "bốn" (the preset needs ~0.68 s)
-    T.four = T.roll + 0.2; // the label lands with its digit already turning past 1
-    T.red = Math.max(T.strips[3] + 0.8, L25.end + 0.12); // 7.5 the edited copy slips in, in the breath
-    T.sua = Math.max(T.red + 0.4, s26(1) - 0.05); // 7.6 "SỬA LÉN?" slams on "sửa"
-    T.alarm = Math.max(T.sua + 0.4, s26(5) - 0.03); // HARD CUT verified → mismatch on "hệ thống"
-    T.bao = Math.max(T.alarm + 0.1, s26(7) - ARRIVE); // "BÁO LỖI NGAY." lands on "báo"
-    T.push = Math.max(T.bao + 0.6, L26.end + 0.05); // 7.7 push in on the badge; the paper parts
+    T.mabam = atLeast(s25(0), T.landed); // "MÃ BĂM" SLAMs
+    T.card = atLeast(s25(2), T.mabam + SL) - SL; // the verified card slides up
+    T.strips = [3, 4, 5, 6].map((k) => s25(k) - SL); // the four copies land in turn
+    T.four = s25(4); // "4 nơi độc lập" appears as the second copy lands, its digit already turning past 1...
+    T.roll = s25(6) - arrive(COUNT); // ...and reaches 4 as the fourth lands
+    T.red = L25.end - arrive(SLY); // 7.5 the edited copy slips in, landing on the beat's end
+    T.sua = L26.start; // 7.6 "SỬA LÉN?" SLAMs in place of "MÃ BĂM"
+    T.alarm = s26(3); // HARD CUT verified → mismatch
+    T.bao = s26(6) - SL; // "BÁO LỖI NGAY." lands
+    T.push = L26.end; // 7.7 push in on the badge; the paper parts
+    T.kh = atLeast(L27.start, T.push + 0.4); // "KHÔNG AI XÓA" SLAMs on the NAVY...
+    T.dv = atLeast(s27(1), T.kh + ctx.grid); // ..."ĐƯỢC DẤU VẾT." under it; both hold to the end
+    if (T.landed > T.mabam) console.warn('ch07: the fields land after "MÃ BĂM"');
+    // Landing times of the moves above (for the sound's cues).
+    const land = {
+      bar: T.bar + arrive(LAYER), title: T.title + SL, sub: T.sub + SL, note: T.note + SL, check: T.check + SL, btn: T.btn + SL,
+      fac: T.fac + SL, cu: T.cu + SL, lan: T.lan + SL, nguoc: T.nguoc + SL, tu: T.tu + SL, card: T.card + SL,
+      strips: T.strips.map((x) => x + SL), roll: T.roll + arrive(COUNT), red: T.red + arrive(SLY), bao: T.bao + SL,
+      tear: T.tear + arrive(TEAR1),
+    };
 
     // ---- Ground: NAVY, the colour the chapter ends on. It shows only once the tear has covered ch06.
     const ground = el(root, '', { width: `${W}px`, height: `${H}px`, background: C.navy });
@@ -269,15 +303,27 @@ export default {
     const BY = 900; // bar top
     const BH = 120;
     const X2 = 110;
-    const B2 = BY - 34; // baseline of the numeral and of "CÔNG BỐ"
+    const B2 = BY - 34; // baseline of the numeral and of the label's last line
     const i2 = ink('2', 'disp', 620, 1);
-    const iT = ink('CÔNG BỐ', 'disp', 120, 1.1);
     const TX = Math.round(X2 + (i2.right - i2.left) + 80);
     const slot = el(g72, '', { width: `${W}px`, height: `${BY + BH - 6}px`, overflow: 'hidden' });
+    // Flush left at TX, bottom-up: the label "khoản chi được niêm phong, / không thể chỉnh sửa" (BLACK LABEL 52) with its
+    // last baseline on the numeral's, and "SAU KHI / CÔNG BỐ" 36 px over the label's marks. Both rise from behind the bar.
+    const SUB = ['khoản chi được niêm phong,', 'không thể chỉnh sửa'];
+    const SUB_LH = 1.2;
+    const iS1 = ink(SUB[0], 'label', 52, SUB_LH);
+    const iS2 = ink(SUB[1], 'label', 52, SUB_LH);
+    const sub = text(slot, 'label', SUB.join(' / '), { size: 52, color: C.black, lh: SUB_LH });
+    const subTop = Math.round(B2 - 52 * SUB_LH - iS2.base);
+    place(sub.el, TX - iS1.left, subTop);
+    const subRise = Math.round(BY + BH - (subTop + iS1.top) + 10);
+    const iTa = ink('SAU KHI', 'disp', 120, 1.1);
+    const iT = ink('CÔNG BỐ', 'disp', 120, 1.1);
     const title = text(slot, 'disp cut-text', 'SAU KHI / CÔNG BỐ', { size: 120, color: C.black });
-    const titleTop = B2 - 132 - iT.base;
+    const titleTop = Math.round(subTop + iS1.top - 36 - 132 - iT.base);
     place(title.el, TX - iT.left, titleTop);
-    const titleRise = Math.round(BY + BH - titleTop + 10);
+    const titleRise = Math.round(BY + BH - (titleTop + iTa.top) + 10);
+    const titleInk = { top: titleTop + iTa.top, right: TX - iT.left + Math.max(iTa.right, iT.right) };
     const bar = el(g72, '', {
       left: '-60px', top: `${BY}px`, width: '2040px', height: `${BH}px`, background: C.navy,
       clipPath: clip(rough(rect(0, 0, 2040, BH), { seed: SEED + 5, amp: 4 })),
@@ -290,8 +336,12 @@ export default {
     const pNote = await plate(ctx, '7.2a', { backing: C.navy, seed: SEED + 10 });
     const pCheck = await plate(ctx, '7.2b', { backing: C.navy, seed: SEED + 11 });
     const pBtn = await plate(ctx, '7.2c', { backing: C.navy, seed: SEED + 12 });
-    const NOTE = { x: XR - pNote.w, y: 150 };
-    const CHECK = { x: XR - pCheck.w, y: NOTE.y + pNote.h + 64 };
+    // The column starts 150 px down, higher if the checkbox line (the widest piece) would come within 44 px of the title.
+    const GAP_NC = 44; // lock note -> checkbox line
+    let colY = 150;
+    if (titleInk.right > XR - pCheck.w - 30) colY = Math.min(colY, titleInk.top - 44 - (pNote.h + GAP_NC + pCheck.h + 14));
+    const NOTE = { x: XR - pNote.w, y: Math.round(colY) };
+    const CHECK = { x: XR - pCheck.w, y: NOTE.y + pNote.h + GAP_NC };
     const BTN = { x: XR - pBtn.w, y: CHECK.y + pCheck.h + 74 };
     place(pNote.el, NOTE.x, NOTE.y);
     place(pCheck.el, CHECK.x, CHECK.y);
@@ -348,21 +398,40 @@ export default {
       clipPath: clip(rough(rect(0, 0, tickW, 12), { seed: SEED + 41 + i, amp: 1.5 })),
     }));
     const climb = track(yStep[3], [[T.climb[1], yStep[2], 'snap'], [T.climb[2], yStep[1], 'snap'], [T.climb[3], yStep[0], 'snap']]);
-    // "LẦN / NGƯỢC", rising out of two slots on its words.
+    // "Cư dân / LẦN / NGƯỢC / từ khoản chi / về phản ánh ban đầu": a flush-left CREAM column on the façade, each piece
+    // rising out of its own slit (LABEL 52 above and under the DISPLAY 150 pair), the block centred on the frame.
     const LX = 120;
+    const lineH = 165;
+    const LBL = 52 * 1.2; // a label line's pitch
+    const iC = ink('Cư dân', 'label', 52, 1.2);
     const iL = ink('LẦN', 'disp', 150, 1.1);
     const iN = ink('NGƯỢC', 'disp', 150, 1.1);
-    const lineH = 165;
-    const lanTop = Math.round(H / 2 - lineH - 10);
-    const slots = [['LẦN', iL, lanTop], ['NGƯỢC', iN, lanTop + lineH]].map(([s, m, y]) => {
-      const slotTop = Math.round(y + m.top - 12);
-      const slot = el(top, '', { left: `${LX - 20}px`, top: `${slotTop}px`, width: '760px', height: `${Math.round(m.bottom - m.top + 24)}px`, overflow: 'hidden' });
-      const w = text(slot, 'disp cut-text', s, { size: 150 });
+    const iU1 = ink('từ khoản chi', 'label', 52, 1.2);
+    const iU2 = ink('về phản ánh ban đầu', 'label', 52, 1.2);
+    // Element tops relative to LẦN's: the label's ink 22 px over LẦN's marks, the two lines 26 px under NGƯỢC's dot.
+    const rel = { cu: iL.top - 22 - iC.bottom, lan: 0, nguoc: lineH };
+    rel.tu = lineH + iN.bottom + 26 - iU1.top;
+    const blockTop = rel.cu + iC.top;
+    const blockBot = rel.tu + LBL + iU2.bottom;
+    const lanTop = Math.round(H / 2 - (blockTop + blockBot) / 2);
+    const riser = (s, cls, size, lh, y, m0, mN) => {
+      const lines = s.split(' / ').length;
+      const inkTop = y + m0.top;
+      const inkBot = y + (lines - 1) * size * lh + mN.bottom;
+      const slotTop = Math.round(inkTop - 12);
+      const slot = el(top, '', { left: `${LX - 20}px`, top: `${slotTop}px`, width: '900px', height: `${Math.round(inkBot - inkTop + 24)}px`, overflow: 'hidden' });
+      const w = text(slot, cls, s, { size, lh });
       grainText(w.el, C.cream);
-      w.el.style.backgroundPosition = `${-(LX)}px ${-(y)}px`;
+      w.el.style.backgroundPosition = `${-LX}px ${-y}px`;
       place(w.el, 20, y - slotTop);
-      return { slot, el: w.el, drop: Math.round(m.bottom - m.top + 40) };
-    });
+      return { slot, el: w.el, drop: Math.round(inkBot - inkTop + 40) };
+    };
+    const slots = [
+      riser('Cư dân', 'label', 52, 1.2, lanTop + rel.cu, iC, iC),
+      riser('LẦN', 'disp cut-text', 150, 1.1, lanTop, iL, iL),
+      riser('NGƯỢC', 'disp cut-text', 150, 1.1, lanTop + rel.nguoc, iN, iN),
+      riser('từ khoản chi / về phản ánh ban đầu', 'label', 52, 1.2, Math.round(lanTop + rel.tu), iU1, iU2),
+    ];
     // "Phản ánh gốc" over the report, and the hook's bubble under it.
     const goc = text(top, 'label', 'Phản ánh gốc', { size: 52 });
     grainText(goc.el, C.cream);
@@ -428,16 +497,32 @@ export default {
     const by = BADGE_76[1] * c76.scale;
     place(pZ.el, CARD.x + bx - 2 * bx, CARD.y + by - 2 * by);
     pZ.el.style.transformOrigin = `${(2 * bx).toFixed(2)}px ${(2 * by).toFixed(2)}px`;
-    const PUSH_TO = { x: W / 2 - (CARD.x + bx), y: H / 2 - (CARD.y + by) };
+    // The badge comes to rest centred, 60 px below the frame's centre line, leaving the NAVY above it for the last line.
+    const REST = { x: W / 2, y: H / 2 + 60 };
+    const PUSH_TO = { x: REST.x - (CARD.x + bx), y: REST.y - (CARD.y + by) };
     const cardRise = H + 40 - CARD.y;
+    // 7.7 "KHÔNG AI XÓA / ĐƯỢC DẤU VẾT." (CREAM DISPLAY 150) on the NAVY ground, flush left above where the pushed card
+    // comes to rest (its top edge ends at REST.y - 2·by), 48 px clear of it, so it is never over the UI. Line by line
+    // SLAMs.
+    const PZ_TOP = REST.y - 2 * by;
+    const K = ['KHÔNG AI XÓA', 'ĐƯỢC DẤU VẾT.'];
+    const KS = 150;
+    const iK = K.map((v) => ink(v, 'disp', KS, 1.1));
+    const k2 = Math.round(PZ_TOP - 48 - iK[1].bottom);
+    const trace = K.map((v, i) => {
+      const e = text(root, 'disp cut-text', v, { size: KS, color: C.cream, transformOrigin: '0 60%' }).el;
+      place(e, 150 - iK[i].left, i ? k2 : k2 - Math.round(KS * 1.1));
+      return e;
+    });
+    if (k2 - Math.round(KS * 1.1) + iK[0].top < 50) console.warn('ch07: the last line runs into the top of the frame');
 
     return {
-      T, ground, tearSheet, dir, TEAR_D, tearPos,
-      g72, bar, two: two.el, title: title.el, titleRise, pNote, pCheck, pBtn, NOTE, CHECK, BTN, seal: sealP.el, brk72, bw,
+      T, land, ground, tearSheet, dir, TEAR_D, tearPos,
+      g72, bar, two: two.el, title: title.el, titleRise, sub: sub.el, subRise, pNote, pCheck, pBtn, NOTE, CHECK, BTN, seal: sealP.el, brk72, bw,
       cA, cB, s3, pA, pS, pB, pC, WA, WB, WC, fTop, fBot, fLeft, fRight, fRise, RISE,
       brBar, brBarPaper, BRX, yStep, ticks, climb, slots, goc: goc.el, bub, bk, bubX, bubY, bubRot,
       creamTop, orangeTop, gCream, gOrange, IN, mabam: mabam.el, sua: sua.el, bao: bao.el, four, noi: noi.el, copies, red,
-      pV, pM, pZ, PUSH_TO, cardRise,
+      pV, pM, pZ, PUSH_TO, cardRise, trace,
     };
   },
 
@@ -453,9 +538,10 @@ export default {
       s.tearSheet.style.transform = `translate(${f2(-k * s.dir[0])}px, ${f2(-k * s.dir[1])}px)`;
     }
 
-    // 7.2 The numeral slams on "hai"; the title rises; the UI slides in; the seal stamps; the bracket snaps.
-    const on72 = vis(s.g72, t >= T.bar && t < T.doors);
-    if (on72) {
+    // 7.1-7.2 The numeral slams; the bar shoots in under it; the title and its label rise; the UI slides in; the seal
+    // stamps; the bracket snaps.
+    const on72 = vis(s.g72, t >= Math.min(T.two, T.bar) && t < T.doors);
+    if (on72 && vis(s.bar, t >= T.bar)) {
       s.bar.style.transform = `translateX(${f2(spring(t, T.bar, -2140, 0, LAYER))}px)`;
     }
     if (on72 && vis(s.two, t >= T.two)) {
@@ -463,6 +549,7 @@ export default {
     }
     if (on72) {
       if (vis(s.title, t >= T.title)) s.title.style.transform = `translateY(${f2(spring(t, T.title, s.titleRise, 0, 'slide'))}px)`;
+      if (vis(s.sub, t >= T.sub)) s.sub.style.transform = `translateY(${f2(spring(t, T.sub, s.subRise, 0, 'slide'))}px)`;
       if (vis(s.seal, t >= T.seal)) s.seal.style.transform = `rotate(${f2(spring(t, T.seal, -14, -6, 'slam'))}deg) scale(${spring(t, T.seal, 1.6, 1, 'slam').toFixed(4)})`;
     }
     for (const [p, t0, P] of [[s.pNote, T.note, s.NOTE], [s.pCheck, T.check, s.CHECK], [s.pBtn, T.btn, s.BTN]]) {
@@ -502,7 +589,7 @@ export default {
       Object.assign(s.pS.img.style, { left: `${f2(-rx * s3)}px`, top: `${f2(-ry * s3)}px` });
     }
     vis(s.pC.el, on73 && cut);
-    // The CREAM bracket climbs the chain: a tick at step 4 on "khoản", then the bar snaps up one step per syllable.
+    // The CREAM bracket climbs the chain: a tick at step 4, then the bar snaps up one step per 8th note.
     const climbing = on73 && !cut && t >= T.climb[0];
     vis(s.brBar, climbing);
     if (climbing) {
@@ -515,7 +602,7 @@ export default {
       const t0 = T.climb[3 - i];
       if (vis(e, climbing && t >= t0)) e.style.transform = `scaleX(${Math.max(0.001, spring(t, t0, 0, 1, 'snap')).toFixed(4)})`;
     });
-    const lanOn = [T.lan, T.nguoc];
+    const lanOn = [T.cu, T.lan, T.nguoc, T.tu];
     s.slots.forEach((sl, i) => {
       vis(sl.slot, on73 && t >= lanOn[i]);
       if (on73 && t >= lanOn[i]) sl.el.style.transform = `translateY(${f2(spring(t, lanOn[i], sl.drop, 0, 'slide'))}px)`;
@@ -561,7 +648,7 @@ export default {
       const k = step(t - T.red, SLY);
       s.red.style.transform = `translateX(${f2(900 * (1 - k))}px) rotate(${f2(-2 - 3 * k)}deg)`;
     }
-    // The explorer card slides up; HARD CUT to the mismatch on "hệ thống"; then the push on the red badge.
+    // The explorer card slides up; HARD CUT to the mismatch (only the badge changes); then the push on the red badge.
     const cardOn = t >= T.card;
     const cardY = spring(t, T.card, s.cardRise, 0, 'slide');
     if (vis(s.pV.el, cardOn && t < T.alarm)) s.pV.el.style.transform = `translateY(${f2(cardY)}px)`;
@@ -570,5 +657,50 @@ export default {
       const k = step(t - T.push, 'settle');
       s.pZ.el.style.transform = `translate(${f2(s.PUSH_TO.x * k)}px, ${f2(s.PUSH_TO.y * k)}px) scale(${(0.5 + 0.5 * k).toFixed(4)})`;
     }
+    // 7.7 The last line SLAMs onto the NAVY above the card, line by line, and holds to the end.
+    [T.kh, T.dv].forEach((t0, i) => {
+      if (vis(s.trace[i], t >= t0)) s.trace[i].style.transform = `scale(${spring(t, t0, 1.2, 1, 'slam').toFixed(4)})`;
+    });
+  },
+
+  // Event times (chapter-local) for the sound: a move that lands carries `land` (its hit, on the grid); the rest hit
+  // on `t`.
+  cues(s) {
+    const { T, land: L } = s;
+    return [
+      { t: T.tear, name: 'tear', land: L.tear },
+      { t: T.tear2, name: 'tear' },
+      { t: T.two, name: 'slam' },
+      { t: T.bar, name: 'bar', land: L.bar },
+      { t: T.title, name: 'rise', land: L.title },
+      { t: T.sub, name: 'rise', land: L.sub },
+      { t: T.note, name: 'slide', land: L.note },
+      { t: T.check, name: 'slide', land: L.check },
+      { t: T.btn, name: 'slide', land: L.btn },
+      { t: T.seal, name: 'stamp' },
+      { t: T.brk, name: 'snap' },
+      { t: T.fac, name: 'rise', land: L.fac },
+      { t: T.doors, name: 'doors' },
+      { t: T.cu, name: 'rise', land: L.cu },
+      { t: T.lan, name: 'rise', land: L.lan },
+      { t: T.nguoc, name: 'rise', land: L.nguoc },
+      { t: T.tu, name: 'rise', land: L.tu },
+      { t: T.scroll, name: 'scroll' },
+      ...T.climb.map((t, i) => ({ t, name: 'climb', i })),
+      { t: T.cut3, name: 'cut' },
+      { t: T.bub, name: 'bubble', land: T.flush },
+      { t: T.wipe, name: 'doors' },
+      { t: T.mabam, name: 'slam' },
+      { t: T.card, name: 'slide', land: L.card },
+      ...T.strips.map((t, i) => ({ t, name: 'slide', land: L.strips[i], i })),
+      { t: T.roll, name: 'count', land: L.roll },
+      { t: T.red, name: 'sly', land: L.red },
+      { t: T.sua, name: 'slam' },
+      { t: T.alarm, name: 'stab' },
+      { t: T.bao, name: 'slide', land: L.bao },
+      { t: T.push, name: 'push' },
+      { t: T.kh, name: 'slam' },
+      { t: T.dv, name: 'slam' },
+    ];
   },
 };
