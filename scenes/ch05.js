@@ -1,19 +1,22 @@
 // ch05 Demo 1 (shots 5.1-5.6). The product, shown only through its own screenshots: a resident's report goes in
 // through a window of the building, the AI suggests how to triage it, and a named manager decides, every step on
-// record. Every beat is anchored to the voice lines L15-L18 (ctx.line / ctx.syl); nothing uses film-absolute time.
+// record. Timing is reading time on the music's grid: every beat derives from L15-L18 (ctx.line / ctx.syl / ctx.snap),
+// every hit sits on a grid time; nothing uses film-absolute time.
 //
 // 5.1  ch04's NAVY doors part over our CREAM ground (ch04 owns that exit; until EXIT.ch04 we paint the ground only).
-// 5.2  The logo slides in at left on "Làm Tổ"; the line slides in at right, line by line; "kiểm chứng được" slams.
-// 5.3  A NAVY façade (8 × 5 windows) rises; one window lights ORANGE and the camera pushes into it. The app rises in
-//      the window, which snaps taller as the report fills in (5.3a → 5.3b → 5.3c); "Ảnh · vị trí · 24/7" assembles
-//      word by word as the voice says them.
+// 5.2  The logo slides in at left; the line slides in at right, line by line; "kiểm chứng được" slams as the top of
+//      the façade rises under it. The line stays whole until L15 ends.
+// 5.3  The whole NAVY façade (8 × 5 windows) rises; one window lights ORANGE and the camera pushes into it. The app
+//      rises in the window, "CƯ DÂN GỬI / PHẢN ÁNH" slams beside it, and the window snaps taller as the report fills in
+//      (5.3a → 5.3b → 5.3c) while "Ảnh · vị trí · 24/7" assembles under the DISPLAY.
 // 5.4  The window closes onto "Gửi phản ánh", then opens out of it onto the confirmation.
-// 5.5  HARD CUT to CREAM. "AI GỢI Ý" slams, report #7 slides in, the AI suggestion slides up over it, and three
-//      ORANGE brackets snap under "Thang máy", "Cao" and "240 phút", one per phrase of L17.
+// 5.5  HARD CUT to CREAM with "AI GỢI Ý"; report #7 slides in; the AI suggestion rises under it, tucked into a NAVY
+//      pocket that shows only its first line; three ORANGE brackets snap under "Thang máy", "Cao" and "240 phút", each
+//      with a tag hanging from it: "nhóm sự cố", "mức khẩn", "hạn xử lý".
 // 5.6  The confirm panel slides in; the NAVY tag and the button land; the manager (Kawaibu) snaps in; a NAVY band
-//      slides along the bottom and reveals the all-green accountability chain one step per tick.
+//      slides along the bottom and reveals the all-green accountability chain one step per 8th note.
 // ch06 covers the held last frame with BLACK (its underlap + kit.cover), so nothing here animates past ctx.dur.
-import { spring, track, noise1, clamp } from '../lib/motion.js';
+import { spring, track, noise1, clamp, step } from '../lib/motion.js';
 import { C, el, rough, rect, clip, jagged } from '../lib/paper.js';
 import { W, H, text, tag, aperture, plate, vis, prog } from '../lib/kit.js';
 import { EXIT } from '../lib/handoff.js';
@@ -27,10 +30,9 @@ const SEED = 500; // this chapter's seeds are 500-599
 const WORDS_55B = [[270, 607], [948, 1064], [2035, 2296]]; // "Thang máy", "Cao", "240 phút"
 const DESC_55B = 158; // lowest descender of that line (g, y, p); the brackets hang below it
 const NEXT_55B = 235; // top of the next line ("Vị trí diễn giải", its tilde included); the brackets stay above it
-// 5.5a, same file: the separator under the "Vị trí" row ends at 492 and "Trạng thái" starts at 555. The AI card covers
-// 5.5a from midway between the two, so its edge never cuts a line of text.
-const SEP_55A = 492;
-const NEXT_55A = 555;
+// 5.5a, same file: the photo pill of its last row ("Ảnh báo cáo") ends 900 px below the crop's top (972 px tall). The AI
+// card overlaps 5.5a only below midway between the two, so its edge never cuts a row.
+const BOTTOM_55A = 900;
 // 5.3c, app/flow-01-form-filled@3x.png: the "Gửi phản ánh" button starts 885 px below the crop's top.
 const BTN_53C = 885;
 // 5.6a, web/desktop-report-triage@4x.png: the form fields (Danh mục, Mức khẩn) start 80 px in; the button aligns there.
@@ -39,10 +41,22 @@ const FIELD_56A = 80;
 // where the reveal stops after each tick: Báo cáo | Phân loại | Công việc | Công bố đề xuất | Thanh toán | Công bố.
 const GAPS_56D = [532, 976, 1384, 1898, 2326];
 
-const ARRIVE = 0.39; // a 'slide' first reaches its target this long after it starts
+const HIT = 0.034; // hits lead their grid point by two frames at 60 fps at most (the guide allows 0.05 s), never trail
 const PUSH = { f: 1.8, z: 1 }; // the camera pushing into the lit window
 const RISE = { f: 1.8, z: 0.8 }; // the app rising in the window; its overshoot stays inside SPARE
+const HANG = { f: 1.7, z: 0.3 }; // a tag swinging on its bracket after it drops in
+
+// Seconds after a spring starts at which it first reaches its target.
+function firstReach(preset) {
+  let t = 0;
+  while (step(t, preset) < 1 && t < 3) t += 0.001;
+  return t;
+}
+const ARRIVE = firstReach('slide'); // 0.39 s
+const RISE_LAND = firstReach(RISE);
 const SPARE = 16; // 5.3a is this much taller than its window (the grey margin under the box), so the rise may overshoot
+const DS = 120; // "CƯ DÂN GỬI / PHẢN ÁNH", DISPLAY: the frame's key message reads on the phone
+const TAGS55 = ['nhóm sự cố', 'mức khẩn', 'hạn xử lý']; // hanging under the three brackets (added with the voice gone)
 const GROW = { f: 3.2, z: 1 }; // the window snapping taller, never past the plate it shows
 const OPEN = { f: 2.6, z: 1 }; // the window opening out of the button onto the confirmation
 const TICK = { f: 3.4, z: 0.85 }; // the chain's reveal, one step per tick
@@ -141,35 +155,54 @@ export default {
     const s17 = syl('L17');
     const s18 = syl('L18');
 
-    // Beats (chapter-local seconds), all derived from the voice lines. The max() guards keep the order if the
-    // timeline re-flows and a breath gets short.
+    // Beats (chapter-local seconds) on the music's grid: every hit and landing is a ctx.line/ctx.syl time (or a
+    // 16th/8th counted from one), led by HIT so its first frame never trails the music; a slide starts ARRIVE before
+    // its landing. Each beat's text lands early and stays whole until the beat ends. The max() guards keep the order
+    // if the timeline re-flows and a beat gets short.
+    const g = ctx.grid;
+    const at = (t) => t - HIT;
+    const ceilGrid = (t) => {
+      const s = ctx.snap(t);
+      return s < t - 1e-6 ? s + g : s;
+    };
     const T = {};
-    T.logo = Math.max(EXIT.ch04, s15(0) - ARRIVE); // the logo lands on "Làm Tổ", never before ch04's doors are gone
-    T.lines = [s15(4), s15(7), s15(9)].map((t) => Math.max(T.logo + 0.3, t - ARRIVE)); // "phản ánh", "khoản chi", "ai cũng"
-    T.verify = s15(11) - 0.04; // "kiểm chứng được" slams on "kiểm"
-    T.band52 = T.verify - ARRIVE + 0.06; // the top of the façade rises under the promise, landing as "kiểm chứng được" slams
-    T.fac = Math.max(T.verify + 0.6, L15.end - 0.15); // then the whole façade rises over 5.2 in the breath
+    // L15: the logo lands on the first 16th after ch04's doors are gone; the promise slides in line by line and
+    // "kiểm chứng được" slams as the façade's top rises under it. It stays unoccluded until L15 ends.
+    T.logo = at(ceilGrid(Math.max(L15.start, EXIT.ch04 + ARRIVE + HIT))) - ARRIVE;
+    T.lines = [s15(3), s15(5), s15(7)].map((t) => Math.max(T.logo + 0.3, at(t) - ARRIVE));
+    T.verify = at(s15(9));
+    T.band52 = T.verify - ARRIVE; // lands as "kiểm chứng được" slams
+    T.fac = L15.end; // then the whole façade rises over 5.2 in the gap (it lands just before the next 16th)
     T.covered = T.fac + 0.8; // 5.2 is fully under the façade
-    T.lit = T.fac + 0.42; // the resident's window lights
-    T.push = Math.max(T.lit + 0.1, L16.start - 0.08); // push in on "Cư dân"
-    T.rise = Math.max(T.push + 0.3, s16(2) - 0.36); // the app rises, in place on "gửi phản ánh"
-    T.b = Math.max(T.rise + 0.6, s16(5) - 0.05); // location picker, and "24/7", on "bất kỳ lúc nào"
-    T.c = Math.max(T.b + 0.6, s16(9) - 0.05); // the filled report on "kèm ảnh và vị trí"
-    T.anh = Math.max(T.c + 0.15, s16(10) - 0.05); // "Ảnh ·" on "ảnh"
-    T.vitri = Math.max(T.anh + 0.15, s16(12) - 0.05); // "vị trí ·" on "vị trí"
-    T.press = Math.max(T.vitri + 0.3, L16.end - 0.12); // the window closes onto "Gửi phản ánh"
-    T.conf = T.press + clamp(0.3 * (L17.start - L16.end), 0.2, 0.32); // ...and opens onto the confirmation (5.4)
-    T.cut = Math.max(T.conf + 0.5, L17.start - 0.1); // HARD CUT to cream (5.5)
-    T.tag55 = Math.max(T.cut + 0.03, L17.start - 0.05); // "AI GỢI Ý" slams on "Ây-ai"
-    T.p55b = Math.max(T.tag55 + 0.3, s17(2) - 0.1); // the AI suggestion slides up on "gợi ý"
-    T.br = [4, 7, 10].map((k) => s17(k) - 0.05); // brackets on "nhóm sự cố", "mức khẩn", "hạn xử lý"
-    T.exit55 = Math.max(T.br[2] + 0.8, L17.end - 0.1); // 5.5 leaves to the left...
-    T.p56a = Math.max(T.exit55, L18.start - ARRIVE); // ...as the confirm panel slides in, landing on "Nhưng"
-    T.tag56 = s18(1) - 0.05; // "NGƯỜI QUYẾT ĐỊNH" on "người quyết định"
-    T.btn = s18(3) - 0.08; // "Xác nhận phân loại" on "định"
-    T.id = s18(6) - 0.08; // the manager on "quản lý có tên"
-    T.band = s18(10) - ARRIVE - 0.03; // the band lands on "mọi"
-    T.ticks = [1, 2, 3, 4, 5].map((k) => s18(10 + 0.8 * k) - 0.03); // steps 2-6, the last one on "vết"
+    T.lit = at(ceilGrid(T.fac + ARRIVE)); // the resident's window lights as the façade lands
+    // L16: push in; the app rises in the window; "CƯ DÂN GỬI / PHẢN ÁNH" slams beside it, then the form fills in
+    // with "24/7", "Ảnh ·", "vị trí ·"; the window closes onto "Gửi phản ánh" and opens on the confirmation.
+    T.push = Math.max(T.lit + 0.1, at(L16.start));
+    T.rise = Math.max(T.push + 0.3, at(s16(3)) - RISE_LAND); // the app is in place on a 16th
+    T.disp = [at(s16(4)), at(s16(5))].map((t) => Math.max(T.rise + 0.3, t)); // "CƯ DÂN GỬI", "PHẢN ÁNH"
+    T.b = Math.max(T.disp[1] + 0.3, at(s16(7))); // location picker, and "24/7"
+    T.c = Math.max(T.b + 0.5, at(s16(9))); // the filled report, and "Ảnh ·"
+    T.anh = T.c;
+    T.vitri = Math.max(T.anh + 0.15, at(s16(10))); // "vị trí ·"
+    T.press = Math.max(T.vitri + 0.3, at(s16(12))); // the window closes onto "Gửi phản ánh"
+    T.conf = T.press + 2 * g; // ...and opens onto the confirmation (5.4), which holds to the cut
+    // L17: HARD CUT to cream on the beat; "AI GỢI Ý" slams with it, report #7 slides in, the suggestion rises in its
+    // NAVY pocket, and each bracket snaps with its tag hanging under it. 5.5 leaves as L17 ends.
+    T.cut = ceilGrid(Math.max(T.conf + 0.5, L17.start));
+    T.tag55 = T.cut;
+    T.p55a = Math.max(T.cut, at(T.cut + 3 * g) - ARRIVE);
+    T.p55b = Math.max(T.p55a + 0.2, at(s17(3)) - ARRIVE);
+    T.br = [4, 6, 8].map((k) => Math.max(T.p55b + ARRIVE + 0.2, at(s17(k)))); // "nhóm sự cố", "mức khẩn", "hạn xử lý"
+    T.exit55 = Math.max(T.br[2] + 1.2, L17.end); // 5.5 leaves to the left...
+    // L18: ...as the confirm panel slides in, landing on L18's start; the tag, the button and the manager land on
+    // 16ths; the band lands and the chain reveals one step per 8th note.
+    T.p56a = Math.max(T.exit55, at(L18.start) - ARRIVE);
+    T.tag56 = Math.max(T.p56a + ARRIVE, at(s18(1)));
+    T.btn = Math.max(T.tag56 + 0.3, at(s18(3)));
+    T.id = Math.max(T.btn + 0.3, at(s18(5)));
+    const bandLand = ceilGrid(Math.max(T.id + 0.3 + ARRIVE, s18(7)));
+    T.band = at(bandLand) - ARRIVE;
+    T.ticks = [1, 2, 3, 4, 5].map((k) => at(bandLand + (k * ctx.beat) / 2)); // steps 2-6
 
     // Ground.
     el(ctx.root, '', { width: `${W}px`, height: `${H}px`, background: C.cream });
@@ -255,7 +288,17 @@ export default {
     const win = el(ctx.top, '', { overflow: 'hidden' });
     for (const p of [p53a, p53b, p53c, p54]) win.appendChild(p.el);
     const navy = el(ctx.top, 'grained', { width: `${W}px`, height: `${H}px`, backgroundColor: C.navy });
-    const label = el(ctx.top, 'label', { left: `${AP.x + AP.w + 100}px`, top: `${AP.y - 4}px`, fontSize: '56px', lineHeight: 1.2, whiteSpace: 'nowrap' });
+    // Who sends it (added when the voice was dropped): CREAM DISPLAY flush left beside the window, its cap line level
+    // with the window's top edge; "Ảnh · vị trí · 24/7" sits under it.
+    const DX = AP.x + AP.w + 100;
+    const DLH = Math.round(DS * 1.1);
+    const DY = AP.y - Math.round(DS * 0.2);
+    const disp = ['CƯ DÂN GỬI', 'PHẢN ÁNH'].map((s, i) => {
+      const d = text(ctx.top, 'disp cut-text', s, { size: DS, color: C.cream, left: `${DX}px`, top: `${DY + i * DLH}px`, transformOrigin: '0% 70%' });
+      grainText(d.el, C.cream);
+      return d.el;
+    });
+    const label = el(ctx.top, 'label', { left: `${DX}px`, top: `${DY + 2 * DLH + 18}px`, fontSize: '56px', lineHeight: 1.2, whiteSpace: 'nowrap' });
     const bits = ['Ảnh ·', 'vị trí ·', '24/7'].map((s, i) => {
       if (i) label.appendChild(document.createTextNode(' '));
       const b = piece(label, s, { transformOrigin: '50% 60%' });
@@ -270,10 +313,47 @@ export default {
     const p55b = await plate(ctx, '5.5b', { backing: C.navy, seed: SEED + 22 });
     const TAG55 = { x: 80, y: 72 };
     const P55A = { x: TAG55.x + tag55.w + 70, y: 90 };
-    const P55B = { x: TAG55.x, y: P55A.y + Math.round(((SEP_55A + NEXT_55A) / 2) * ctx.crop('5.5a').scale) };
+    // 5.5b rises to sit just under report #7, over nothing but its bottom margin (its last row ends BOTTOM_55A in),
+    // so the whole report shows above the suggestion and the pocket below it holds the tags.
+    const P55B = { x: TAG55.x, y: P55A.y + Math.round(((BOTTOM_55A + ctx.crop('5.5a').crop[3]) / 2) * ctx.crop('5.5a').scale) };
     const sb = ctx.crop('5.5b').scale;
     const BR_TOP = DESC_55B * sb + 7;
     const BR_BOT = NEXT_55B * sb - 6;
+    // The pocket: 5.5b rises tucked into a NAVY sheet whose scissor-cut edge runs under the brackets' bars (between
+    // them and the next UI line), so only the suggestion's first line shows and the tags hang on paper, never on UI
+    // text. It moves with the plate (plate coordinates) and spans the frame, so it also tucks 5.5a's lower rows away.
+    // Right of the plate the pocket steps up to report #7's bottom margin, so the two cards sit in one NAVY sheet.
+    const PK = { x: -P55B.x - 80, y: BR_BOT - 11 - 130, w: W + 160, h: H + 400 };
+    const pkEdge = 130 + 5; // the edge under the brackets, in pocket coordinates
+    const pkNotch = { x: p55b.w + 4 - PK.x, y: Math.round(P55A.y + p55a.h - 12 - P55B.y - PK.y) };
+    el(p55b.el, 'grained', {
+      left: px(PK.x), top: px(PK.y), width: px(PK.w), height: px(PK.h), backgroundColor: C.navy,
+      backgroundPosition: `${-(PK.x + P55B.x)}px ${-(PK.y + P55B.y)}px`,
+      clipPath: clip([
+        ...jagged([0, pkEdge], [pkNotch.x, pkEdge], { seed: SEED + 35, amp: 3.5, wave: 60 }),
+        ...jagged([pkNotch.x, pkEdge], [pkNotch.x, pkNotch.y], { seed: SEED + 37, amp: 2.5, wave: 40 }).slice(1),
+        ...jagged([pkNotch.x, pkNotch.y], [PK.w, pkNotch.y], { seed: SEED + 38, amp: 3.5, wave: 60 }).slice(1),
+        [PK.w, PK.h], [0, PK.h],
+      ]),
+    });
+    // The tags hang from the brackets' bars (tucked 5 px under them), CREAM paper with BLACK LABEL 56, each centred
+    // under its bracket unless that crowds its neighbour; then both move apart, still hanging from their brackets.
+    const tg55 = WORDS_55B.map(([a, b], i) => ({
+      ...tag(p55b.el, TAGS55[i], { size: 56, color: C.black, bg: C.cream, padX: 0.36, padY: 0.24, seed: SEED + 36 + i, rot: [-1.5, 1.2, -1][i], grained: true }),
+      c: ((a + b) / 2) * sb,
+    }));
+    const lefts = tg55.map((tg) => tg.c - tg.w / 2);
+    for (let i = 1; i < tg55.length; i++) {
+      const over = lefts[i - 1] + tg55[i - 1].w + 40 - lefts[i];
+      if (over > 0) {
+        lefts[i - 1] -= over / 2;
+        lefts[i] += over / 2;
+      }
+    }
+    const tags55 = tg55.map((tg, i) => {
+      Object.assign(tg.el.style, { left: px(lefts[i]), top: px(BR_BOT - 5), transformOrigin: `${px(tg.c - lefts[i])} 0px` });
+      return tg.el;
+    });
     const brackets = WORDS_55B.map(([a, b], i) => {
       const x0 = a * sb - 7;
       const w = (b - a) * sb + 14;
@@ -320,9 +400,9 @@ export default {
     const reveal = track(gaps[0], [...gaps.slice(1), chainW + 12].map((g, k) => [T.ticks[k], g, TICK]));
 
     return {
-      T, logo, lines, verify, under, lit, win, navy, label, bits, bitT,
+      T, logo, lines, verify, under, lit, win, navy, disp, label, bits, bitT,
       p53: { a: p53a, b: p53b, c: p53c, f: p54 }, POS, F0, RA, D, wins, P, S, LNS: Math.log(S), OUT, OUT_IN, outLens, rise, gridLens, apLens,
-      tag55, p55a, p55b, brackets, TAG55, P55A, P55B,
+      tag55, p55a, p55b, brackets, tags55, TAG55, P55A, P55B,
       p56a, p56b, p56c, tag56, P56A, P56B, P56C, TAG56, band, shutter, reveal,
     };
   },
@@ -385,21 +465,30 @@ export default {
         if (vis(b, t >= s.bitT[i])) b.style.transform = `translateY(${spring(t, s.bitT[i], -26, 0, 'snap').toFixed(1)}px)`;
       });
     }
+    s.disp.forEach((d, i) => {
+      if (vis(d, on53 && t >= T.disp[i])) d.style.transform = `scale(${spring(t, T.disp[i], 1.14, 1, 'slam').toFixed(4)})`;
+    });
 
     // ---- 5.5
     const in55 = t >= T.cut && t < T.exit55 + 1.2;
-    const ex = spring(t, T.exit55, 0, -2200, 'drop');
+    const ex = spring(t, T.exit55, 0, -2600, 'drop'); // clear of the frame before 5.6a lands
     if (vis(s.tag55.el, in55 && t >= T.tag55)) {
       s.tag55.el.style.transform = `translate(${px(s.TAG55.x + ex)}, ${px(s.TAG55.y)}) scale(${spring(t, T.tag55, 1.25, 1, 'slam').toFixed(4)})`;
     }
     if (vis(s.p55a.el, in55)) {
-      s.p55a.el.style.transform = `translate(${px(s.P55A.x + ex + spring(t, T.cut - 0.02, W - s.P55A.x + 40, 0, 'slide'))}, ${px(s.P55A.y)})`;
+      s.p55a.el.style.transform = `translate(${px(s.P55A.x + ex + spring(t, T.p55a, W - s.P55A.x + 40, 0, 'slide'))}, ${px(s.P55A.y)})`;
     }
     if (vis(s.p55b.el, in55 && t >= T.p55b)) {
       s.p55b.el.style.transform = `translate(${px(s.P55B.x + ex)}, ${px(s.P55B.y + spring(t, T.p55b, H - s.P55B.y + 40, 0, 'slide'))})`;
     }
     s.brackets.forEach((b, i) => {
       if (vis(b, t >= T.br[i])) b.style.transform = `translateY(${spring(t, T.br[i], 12, 0, 'snap').toFixed(1)}px) scaleX(${spring(t, T.br[i], 0.3, 1, 'snap').toFixed(4)})`;
+    });
+    // Each tag drops in with its bracket and swings to rest on it.
+    s.tags55.forEach((e, i) => {
+      if (vis(e, t >= T.br[i])) {
+        e.style.transform = `translateY(${spring(t, T.br[i], -12, 0, 'snap').toFixed(1)}px) rotate(${spring(t, T.br[i], [5, -4, 4][i], 0, HANG).toFixed(3)}deg)`;
+      }
     });
 
     // ---- 5.6
