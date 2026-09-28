@@ -1,26 +1,29 @@
 // ch10 Team (shots 10.1-10.3). ch09's staircase slides out left over a BLACK ground (its exit). Five cut-paper bands,
-// one per member, SLIDE in from alternating sides, each landing on a word of L33: the three Ngoại thương members
-// first (the last of them on "Ngoại"), then Học viện Tài chính on "Tài", then the NAVY Công nghệ band on "Công",
-// which fills the last gap in the middle of the stack. In the breath before L34 the stack closes up tight and drops;
-// "ĐỘI KAWAIBU" SLAMs into the freed top; on "kết hợp" the bands from both sides glide to one common edge under
-// the title and the frame drifts in a slow PUSH. Every beat comes from ctx.line()/ctx.syl(); nothing uses
-// film-absolute seconds.
-import { spring, track } from '../lib/motion.js';
+// one per member, SLIDE in from alternating sides, one every three beats of L33, spread so each has time to be read:
+// the three Ngoại thương members first, then Học viện Tài chính, then the NAVY Công nghệ band, which fills the last gap
+// in the middle of the stack. On L33's end (a downbeat) the stack closes up tight and drops; "ĐỘI KAWAIBU" SLAMs into
+// the freed top on L34's first beat and the frame starts a slow PUSH; the L34 line "Công nghệ kết hợp / kinh doanh
+// và tài chính." slides in beside it, one line per beat, and once it has been read the bands from both sides glide to
+// one common edge under the title (the "kết hợp", five beats into L34). Every beat comes from ctx.line() and
+// whole beats (ctx.snap); nothing uses film-absolute seconds.
+import { spring, track, step } from '../lib/motion.js';
 import { C, el, rough, clip } from '../lib/paper.js';
 import { W, H, text, vis } from '../lib/kit.js';
 import { EXIT } from '../lib/handoff.js';
 
 // The team, from the deck ("Đội ngũ", refs/slide-13.png), worded as in docs/shotlist.md (ch10).
-// k: the L33 syllable its band lands on; right: enters from the right. Arrival order follows the schools as the
-// voice names them; sides alternate both by position and by arrival (R, L, R, L, R).
+// n: arrival rank (one band every three beats of L33); right: enters from the right. The schools arrive in groups
+// (Ngoại thương, Tài chính, Công nghệ), so the NAVY technology band comes last and fills the middle of the stack;
+// sides alternate both by position and by arrival (R, L, R, L, R).
 const TEAM = [
-  { name: 'NGUYỄN VĂN THÁI HƯNG', line: 'Trưởng nhóm · Điều phối, nhân sự · ĐH Ngoại thương', bg: C.orange, fg: C.black, k: 0, right: true }, // "Đội"
-  { name: 'NGUYỄN HOÀNG SƠN', line: 'Tài chính · Phát triển kinh doanh · Học viện Tài chính', bg: C.cream, fg: C.black, k: 14, right: false }, // "Tài"
-  { name: 'NGUYỄN THÁI SƠN', line: 'Lập trình · An toàn thông tin · ĐH Công nghệ', bg: C.navy, fg: C.cream, k: 19, right: true }, // "Công"
-  { name: 'PHẠM NGỌC LÂM', line: 'AI · Dữ liệu · ĐH Ngoại thương', bg: C.cream, fg: C.black, k: 5, right: false }, // "thành"
-  { name: 'CÔNG BẢO CHÂU', line: 'Thiết kế · Marketing, Sales · ĐH Ngoại thương', bg: C.orange, fg: C.black, k: 10, right: true }, // "Ngoại"
+  { name: 'NGUYỄN VĂN THÁI HƯNG', line: 'Trưởng nhóm · Điều phối, nhân sự · ĐH Ngoại thương', bg: C.orange, fg: C.black, n: 0, right: true },
+  { name: 'NGUYỄN HOÀNG SƠN', line: 'Tài chính · Phát triển kinh doanh · Học viện Tài chính', bg: C.cream, fg: C.black, n: 3, right: false },
+  { name: 'NGUYỄN THÁI SƠN', line: 'Lập trình · An toàn thông tin · ĐH Công nghệ', bg: C.navy, fg: C.cream, n: 4, right: true },
+  { name: 'PHẠM NGỌC LÂM', line: 'AI · Dữ liệu · ĐH Ngoại thương', bg: C.cream, fg: C.black, n: 1, right: false },
+  { name: 'CÔNG BẢO CHÂU', line: 'Thiết kế · Marketing, Sales · ĐH Ngoại thương', bg: C.orange, fg: C.black, n: 2, right: true },
 ];
 const TITLE = 'ĐỘI KAWAIBU';
+const LINE = ['Công nghệ kết hợp', 'kinh doanh và tài chính.']; // L34, CREAM LABEL beside the title (docs/onscreen.json)
 
 // Layout (stage px). Text is flush left at X0 once locked. Inside a band: name baseline NB, label baseline LB.
 // Measured at 72 px: caps 48 px, the Ễ stack reaches 72 px above the baseline and the Ạ/Ọ dot 13 px below; the
@@ -36,11 +39,21 @@ const SLANT = 28; // the hand-cut free end leans like "/"
 const RUN = 340; // paper that runs past the frame edge on the fixed side
 const IND_R = 110; // until the lock, right-entering bands wait this far right of X0
 const IND_L = 60; // and left-entering bands this far left of it
-const LEAD = 0.34; // a 'slide' is ~96 % home this long after it starts; it crosses its rest 0.05 s later
-const PART = 0.2; // the stack makes room this long before the next band starts to slide ('snap' is home in 0.16 s)
+const HIT = 0.02; // a landing leads its grid time by this much (the guide allows up to 0.05 s, never trailing)
+const SLAM_LEAD = 0.03; // the title appears this much before its beat (a SLAM appears on its t0)
+const PART = 3; // the stack has made room this many 16ths before the next band lands (it lands before the band moves)
 const TITLE_BASE = 170; // title baseline before the push
-const CLOSE = 'snap';
-const PUSH = { f: 0.4, z: 1 }; // slow, from the lock to the end: the final hold drifts
+const LINE_SIZE = 64; // the L34 line: LABEL, CREAM
+const LINE_PITCH = 1.15; // its line pitch (× size): line 1's descenders clear line 2's marks by 15 px
+const LINE_GAP = 72; // title's box to the line's left edge
+const PUSH = { f: 0.4, z: 1 }; // slow, from the title's slam to the end: L34 drifts while it is read
+
+// Time from a spring's start to its first arrival at the target (a slide's landing).
+function firstHit(p) {
+  let t = 0;
+  while (step(t, p) < 1 && t < 2) t += 1 / 480;
+  return t;
+}
 
 // Baseline of a text element, from its top edge (a zero-size inline-block sits on the baseline).
 function baseline(e) {
@@ -62,14 +75,21 @@ export default {
   build(ctx) {
     const L33 = ctx.line('L33');
     const L34 = ctx.line('L34');
-    const land = TEAM.map((m) => ctx.syl('L33', m.k));
+    const ARRIVE = firstHit('slide') + HIT; // a slide started this long before a grid time lands on it
+    // The close starts on L33's end and lands a 16th later: a stiff snap tuned so its first arrival is on the grid.
+    const CLOSE = { f: firstHit({ f: 1, z: 0.7 }) / (ctx.grid - HIT), z: 0.7 };
+    // Five arrivals spread over L33, the last leaving two beats of L33 to read it; each on a beat.
+    const every = (L33.dur - 2 * ctx.beat) / 4;
+    const land = TEAM.map((m) => ctx.snap(L33.start + m.n * every, 1));
+    const on34 = (n) => ctx.snap(L34.start + n * ctx.beat, 1); // n beats into L34
     const T = {
-      land, // each band is home on its syllable
-      in: land.map((l) => Math.max(EXIT.ch09, l - LEAD)), // slides start after ch09 has left the frame
-      close: L33.end + 0.02, // the stack closes up tight in the breath after L33
-      lock: ctx.syl('L34', 2) - 0.05, // "kết hợp": both sides glide to the common edge (a 'slide' crosses on "hợp")
+      land, // each band arrives on its beat
+      in: land.map((l) => Math.max(EXIT.ch09, l - ARRIVE)), // slides start after ch09 has left the frame
+      close: L33.end, // the stack closes up tight on L33's end (a downbeat on this timeline)
+      slam: L34.start - SLAM_LEAD, // "ĐỘI KAWAIBU" on L34's first beat, once the top is free
+      line: [1, 2].map((n) => on34(n) - ARRIVE), // the L34 line slides in beside the title, one line per beat
+      lock: on34(5) - ARRIVE, // once the line is read, both sides glide to the common edge (lands 5 beats into L34)
     };
-    T.slam = Math.max(L34.start - 0.05, T.close + 0.22); // "ĐỘI KAWAIBU" on the line's first word, once the top is free
 
     const root = ctx.root;
     el(root, '', { width: `${W}px`, height: `${H}px`, background: C.black });
@@ -90,7 +110,8 @@ export default {
     order.forEach((i, n) => {
       const pos = centred(order.slice(0, n + 1));
       yIn[i] = pos.get(i);
-      for (const j of order.slice(0, n)) yKeys[j].push([T.in[i] - PART, pos.get(j), 'snap']);
+      const room = land[i] - PART * ctx.grid - firstHit('snap') - HIT; // a 'snap' that lands on a 16th
+      for (const j of order.slice(0, n)) yKeys[j].push([room, pos.get(j), 'snap']);
     });
     const tightBottom = H - 24 - (LB + 9); // band 5's descenders end 24 px above the frame's bottom edge
     const bands = TEAM.map((m, i) => {
@@ -124,7 +145,18 @@ export default {
     const tb = baseline(title.el);
     Object.assign(title.el.style, { left: `${X0}px`, top: `${TITLE_BASE - tb}px`, transformOrigin: `0px ${tb - 54}px` });
 
-    return { T, world, bands, title: title.el };
+    // The L34 line, CREAM LABEL beside the title: its second line on the title's baseline, its first line's marks
+    // level with the title's Ộ, 45 px clear of the top band below.
+    const lx = X0 + title.w + LINE_GAP;
+    const pitch = Math.round(LINE_SIZE * LINE_PITCH);
+    const line = LINE.map((s, i) => {
+      const e = text(world, 'label', s, { size: LINE_SIZE, color: C.cream, lh: 1.3 }).el;
+      Object.assign(e.style, { left: `${lx}px`, top: `${TITLE_BASE - (1 - i) * pitch - baseline(e)}px` });
+      return e;
+    });
+    const LINE_IN = W - lx + 60; // from wholly off-frame right
+
+    return { T, world, bands, title: title.el, line, LINE_IN };
   },
 
   render(s, t0, ctx) {
@@ -135,6 +167,9 @@ export default {
       b.el.style.transform = `translate(${b.x(t).toFixed(2)}px, ${b.y(t).toFixed(2)}px)`;
     });
     if (vis(s.title, t >= T.slam)) s.title.style.transform = `scale(${spring(t, T.slam, 1.2, 1, 'slam')})`;
-    s.world.style.transform = `scale(${spring(t, T.lock, 1, 1.025, PUSH)})`;
+    s.line.forEach((e, i) => {
+      if (vis(e, t >= T.line[i])) e.style.transform = `translateX(${spring(t, T.line[i], s.LINE_IN, 0, 'slide').toFixed(1)}px)`;
+    });
+    s.world.style.transform = `scale(${spring(t, T.slam, 1, 1.025, PUSH)})`;
   },
 };
