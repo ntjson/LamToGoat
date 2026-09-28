@@ -13,6 +13,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Rounds | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | ch01 Hook | 8 | 9 | 8 | 9 | 8 | 8 | 8 | 3 | approved at gate 4; frames unchanged by gate 5 (0 px) |
+| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 4 | integrated |
 | ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 3 | integrated |
 
 ## Gate 1: style frames (2026-09-28)
@@ -101,6 +102,18 @@ Each chapter was built by its own builder against `docs/ANIMATION_GUIDE.md` and 
 was 8 or higher (`docs/review/chNN.md`). Timing is still the 3 syllables/s estimate. At integration the director
 re-ran `node tools/review.mjs chNN --workers 2` (with `--tail` for chapters that own an exit), viewed the sheets, and
 checked the cut from the previous chapter with `node tools/boundary.mjs chNN`.
+
+### ch02 Problem
+
+| Chapter | Hook | VN | Read | Motion | Brand | Voice | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch02 v4 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | skyline + 1.363 counted digit by digit on the voice; push into a tower; 745-cell façade with 129 cells to orange; 36% strip cut, piece to navy; 13 of 25 "quỹ" boxes cut out; black report sheet with red stamp, flipping into ch03 |
+
+Director's check: an orange field with a scissor-cut edge covers ch01's held question by +0.36 s (boundary strip), and
+one figure owns each shot, so the stats never stack into a wall. The report sheet ends exactly at `SHEET` and turns
+edge-on as ch03's navy card opens out of it (33.67 → 33.77 s). Accepted deviations: the report sheet is black paper
+(a cream sheet on the contract's cream ground wouldn't read); the red tag is DISPLAY 100, not 64, as the frame's key
+message. Text check: 18 texts, none under 28 px. Render cost is the film's highest (the skyline), which is acceptable.
 
 ### ch04 Who hurts
 
