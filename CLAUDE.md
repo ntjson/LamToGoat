@@ -3,6 +3,8 @@
 ## Truth
 - Facts only from refs/pitchdeck.pdf and ~/Projects/LamTo/README.md. Never invent numbers or names.
 - Product UI only from assets/screens/{web,app}. Crop, mask and animate the real screenshots; never redraw UI.
+- Team photos only from assets/team/ (real photos, used with consent; tools/team.py extracts them from the deck).
+  Never redraw, distort or AI-alter them beyond cutout and colour treatment.
 
 ## Engine
 - One timeline; chapters in scenes/chNN.js, each a pure function of local time. window.seek(t) paints frame t.
