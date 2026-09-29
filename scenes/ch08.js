@@ -262,9 +262,31 @@ export default {
     const E = Math.max(1.45 * need, need / step(EXIT.ch08 - 0.1, EXPAND));
     const grow = (t) => E * step(t - T.expand, EXPAND);
 
+    // For the sound (cues() below): when each move lands, from the same springs and times render() uses...
+    const landing = {
+      cover: T.stand[0] + firstArrival(STAND), // the columns stand up as the wipe lands (the chapter's 4th 16th)
+      labs: T.lab.map((t0) => t0 + firstArrival('snap')),
+      strips: T.slide.map((t0) => t0 + arrive), // each torn end hits its stop
+      navy: T.navy + firstArrival(LONG),
+      // Exit: the upper blade has cleared the frame top with its hand-cut edge (need), so the frame is all NAVY.
+      full: (() => {
+        let t = T.expand;
+        while (grow(t) < need && t < T.expand + EXIT.ch08) t += 0.001;
+        return t;
+      })(),
+    };
+    // ...and where they sit across the frame (-1 left … 1 right), from the layout.
+    const across = (x) => Math.round(((2 * x) / W - 1) * 100) / 100;
+    const pans = {
+      strips: across(tornX / 2), // the black strips, in frame from the left edge to their torn ends
+      head: across(TX - 2 + head.w / 2),
+      h1: across(TX - 6 + h1.w / 2),
+      cols: colX.map((x) => across(x + CW / 2)), // the two columns: their labels, and the holes punched over them
+    };
+
     return {
       T, cov, coverX, cols, labs: labs.map((l) => l.el), labDrop: LAB_Y + Math.max(...labs.map((l) => l.h)) + 30, headBox, head: head.el, cap: cap.el, capTrack, strips, fallAt, nWrap, nPaper, nLab: nLab.el, clips, nOff, chads,
-      h1: h1.el, h2: h2.el, wrapU, bladeU, wrapD, bladeD, grow, cy, BLADE_H,
+      h1: h1.el, h2: h2.el, wrapU, bladeU, wrapD, bladeD, grow, cy, BLADE_H, landing, pans,
     };
   },
 
@@ -341,5 +363,26 @@ export default {
       // Lower blade: bottom edge at cy - 10 + e (stage), inside a window whose top is at cy - 1.
       s.bladeD.style.transform = `translateY(${(s.cy - 10 + e - s.BLADE_H - (s.cy - 1)).toFixed(2)}px)`;
     }
+  },
+
+  // Event times (chapter-local) for the sound: a move that lands carries `land` (its hit, on the grid); the rest hit
+  // on `t`. `pan` where the event sits in one half of the frame (the strips left, the columns right).
+  cues(s) {
+    const { T, landing: L, pans: P } = s;
+    return [
+      { t: 0, name: 'wipe', land: L.cover }, // 8.1 the CREAM cover (coverX starts with the chapter), columns riding it
+      { t: T.head, name: 'slam', pan: P.head }, // "CHƯA ĐỐI THỦ NÀO CÓ"
+      ...L.labs.map((t, i) => ({ t, name: 'snap', i, pan: P.cols[i] })), // the column labels drop in and settle
+      ...T.slide.flatMap((t, i) => [
+        { t, name: 'slide', land: L.strips[i], i, pan: P.strips }, // 8.2 a black strip shoots in...
+        { t: L.strips[i], name: 'thud', i, pan: P.strips }, // ...and hits its stop, short of the column
+      ]),
+      { t: T.navy, name: 'slide', land: L.navy }, // the NAVY strip's long run through both columns
+      ...T.punch.map((t, i) => ({ t, name: 'punch', i, pan: P.cols[i] })),
+      { t: T.fall, name: 'flutter', pan: P.strips }, // 8.3 the strips, then the header, fall away (0.04 s apart)
+      { t: T.slam[0], name: 'slam', pan: P.h1 }, // "LÀM TỔ"
+      { t: T.slam[1], name: 'stab' }, // "CÓ CẢ HAI."
+      { t: T.expand, name: 'wipe', land: L.full }, // exit (9.1): the NAVY strip grows until it fills the frame
+    ];
   },
 };
