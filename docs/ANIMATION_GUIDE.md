@@ -354,14 +354,22 @@ Return to the director:
 
 ## 12. Sound cues
 
-The film's sound is mixed by `tools/sound.py`: the music bed on the timeline's grid, and synthesized effects on the
-scenes' own event times. Each chapter tells the sound where its events are with `cues(state, ctx)`.
+The film's sound is mixed by `tools/sound.py`: the music bed on the timeline's grid, and synthesized effects (`tools/synth.py`)
+on the scenes' own event times. Each chapter tells the sound where its events are with `cues(state, ctx)`.
 - **The bed** is "Upbeat Jazz" by Francisco Alvear (Mixkit), stretched to 108 BPM and arranged on the film's 81 bars
-  by `tools/bed.py` (`CLAUDE.md`, Sound).
-- Effects that sound notes (stabs, chimes, pitched thumps and ticks, the rising tone, the bell, the loop's warm
-  chord, the bow) take them from what the bed plays on that beat. ch01's approved hits keep theirs.
-- The synthesized score is still there (`--music synth`); where the table says what the music does, it gives the
-  bed first.
+  by `tools/bed.py` (`CLAUDE.md`, Sound). It is one hi-hat on every straight 8th, a plucked bass note on every 8th and staccato
+  keys chords (`docs/bed_kit.md`); it has no kick, snare, ride, cymbal or brass. Its harmony, beat by beat, is
+  `docs/bed_harmony.json` (`tools/bedharmony.py`): F minor is home (Fm7); the intro sits on D.
+- **Paper and UI sounds** (every row below except the pitched ones) are unpitched noise. Each belongs to a class (`CLASSES` in
+  `tools/sound.py`) whose EQ is matched to a designed spectrum, off the bass and out of the dense low mids, with the music's own
+  spectral gaps carved in; each event's level is set from the music around it, at most +3 dB over it in loudness and in the
+  250 Hz - 4 kHz mids (`tools/meter.py`; `tools/sfxcheck.py` checks it from the stems).
+- **Pitched effects** (stab, alarm, drop's bass, ch01's cluster, the loop's warm chord, chime, bell, climb, band, slab, push's
+  low note) are tuned to the bed's A4 = 441.3 Hz (`tools/tunecheck.py`), voiced on the chord the bed plays on their beat, and
+  played on the bed's own voices (keys and bass). A layer the bed already plays within 45 ms of the cue (its bass note, its keys
+  chord: `tools/bedhits.py`) is left out.
+- Rhythmic effects are straight: nothing here is swung.
+- The synthesized score is still there (`--music synth`); where the table says what the music does, it gives the bed first.
 
 - **What it returns:** a new array of `{ t, name, ... }` in chapter-local seconds.
   - `t` is when the sound starts. For an instant event (a SLAM appears, a stamp or snip hits) that is the hit.
@@ -382,13 +390,13 @@ scenes' own event times. Each chapter tells the sound where its events are with 
 
 | Cue | On screen | Sound |
 |---|---|---|
-| `stab` | A SLAM the music marks: "TIỀN QUỸ / ĐI ĐÂU?" (ch01), the "1" (ch06), the "2" (ch07), "LÀM TỔ / CÓ CẢ HAI." (ch08), "20–25 TÒA" (ch09), "ĐỘI KAWAIBU" (ch10). `soft: true` for a small one (SAM in ch03) | a stab on the notes the bed is sounding: piano over its bass note, bass in two octaves and a brush crash (piano only when soft); ch01's is the approved D-F-A-Bb-D |
-| `alarm` | A figure breaks the rule: "VƯỢT KHUNG" (ch06), the verified → mismatch cut (ch07) | two-note alarm stab: low brass and snare |
+| `stab` | A SLAM the music marks: "TIỀN QUỸ / ĐI ĐÂU?" (ch01), the "1" (ch06), the "2" (ch07), "LÀM TỔ / CÓ CẢ HAI." (ch08), "20–25 TÒA" (ch09), "ĐỘI KAWAIBU" (ch10). `soft: true` for a small one (SAM in ch03) | a keys chord on the chord the bed plays (plus its bar's own 9th or 13th) and one bass note, each left out where the bed's own note or chord lands within 45 ms (ch06, ch07 and ch10 are left to the bed's hit; ch08 and ch09 keep the chord); ch01's rings out into ch02 over the dipped bed; the soft one is the keys alone |
+| `alarm` | A figure breaks the rule: "VƯỢT KHUNG" (ch06), the verified → mismatch cut (ch07) | two-note alarm stab on the keys: a tritone stack on the chord's root, its second hit a semitone lower; a bass note under each only where the bed's own is not playing |
 | `chord` | The film resolves: the end card's chord (ch11) | nothing over the bed, whose own final chord ends the film on its last bar (synth: the final chord on vibraphone, piano and bass) |
-| `push` | The camera PUSHes in to close a chapter (ch07's badge) | the bed thins to a dark trace under one bowed note on its bass note until the chapter ends |
-| `drop` | ch01 only: the "500" falls out of frame | a falling swoosh; the bed dips out until ch02 and one bass note falls under the tear to the stab |
+| `push` | The camera PUSHes in to close a chapter (ch07's badge) | the bed thins to a dark trace under one held low note (the bed's own bass) on its bass note until the chapter ends |
+| `drop` | ch01 only: the "500" falls out of frame | a falling swoosh; the bed dips out until ch02 and one bass note, the chord's fifth falling to its root (A1 to D1 over the D pedal), falls under the tear to the stab |
 | `complaint` | The hook's complaint bubble slams in | a round pop |
-| `bubble` | A chat bubble arrives; the last of a run is muffled. With `land`: the hook's bubble returns and snaps flush (ch07) | a pitched tick; with `land`, a snap and a warm chord (the bed's notes) on the landing |
+| `bubble` | A chat bubble arrives; the last of a run is muffled. With `land`: the hook's bubble returns and snaps flush (ch07) | a tick; with `land`, a snap and a warm chord (four of the chord's notes on the keys) on the landing |
 | `caption` | A caption strip slams onto the paper | a paper stamp |
 | `slam` | DISPLAY type SLAMs | a paper stamp |
 | `stamp` | A seal or stamp tag is struck down | a deep stamp |
@@ -398,28 +406,28 @@ scenes' own event times. Each chapter tells the sound where its events are with 
 | `wipe` | A field crosses the whole frame (a cover, a wipe); `land` if it lands | a long whoosh |
 | `pan` | Everything in frame travels across together and settles (`land`) | a long, low swoosh |
 | `doors` | Paper parts like doors, or two fields close in | two swooshes, left and right |
-| `split` | The halves of a cut sheet part | two swooshes, left and right (ch01 adds its low piano cluster) |
+| `split` | The halves of a cut sheet part | two swooshes, left and right (ch01 adds its low cluster: a semitone cluster around the chord's root and its fifth) |
 | `lift` | A piece lifts off the paper | a short rising swoosh and a light snap |
 | `scroll` | A UI plate scrolls inside its window | a soft paper swoosh |
 | `scissor` | A scissor line runs across the paper | a scissor rasp ending in a snip |
 | `snip` | Scissors cut a piece out; `n: 1` for a single snip | snip-snip (one snip with `n: 1`) |
 | `tear` | Paper tears; `land` when the tear is complete | a tear |
 | `flip` | A panel turns on its vertical axis | a paper flip |
-| `chime` | A pain flips into LamTo's answer (ch04) | a warm chime on two of the bed's notes |
+| `chime` | A pain flips into LamTo's answer (ch04) | a warm chime on two of the chord's notes (keys) |
 | `cell` | One small cell or window of a façade flips or lights, in a run of many (`i`) | a tiny tick, kept down as texture |
 | `sweep` | A run of windows lights in one sweep, from `t` to `land` | a rising rattle |
 | `count` | An odometer COUNTs from `t` and locks at `land` | an odometer rattle and a lock click |
 | `tick` | A tick mark or a step clicks on | a small click |
-| `climb` | A bracket steps up a list (`i` = step) | ticks that climb through the bed's notes |
+| `climb` | A bracket steps up a list (`i` = step) | keys ticks that climb through the chord tones of each step's beat |
 | `pin` | A tag or label is pinned on | a pin |
 | `snap` | A short, stiff settle: a bracket, a flag, a tag | a snap |
 | `click` | A UI button is pressed, a clip clicks on | a click |
-| `bell` | A confirmation appears | a small bell on the bed's strongest note |
+| `bell` | A confirmation appears | a small bell on the chord's fifth (keys, bright) |
 | `open` | A façade window opens onto a UI plate | a paper creak |
-| `band` | A band grows along a scale, from `t` to `land` | a rising tone, from the bed's lowest sounding note to its highest |
+| `band` | A band grows along a scale, from `t` to `land` | a rising tone (the keys' spectrum), the chord's root up a fifth |
 | `friction` | A tag drags along a bar and stops dead at `land` | a friction slide and a thud |
 | `thud` | A heavy landing: a curtain drops, a strip stops | a low thud |
-| `slab` | A slab or step rises from the bottom edge (`i` = which, left to right) | a pitched thump on the bed's notes, rising with `i` |
+| `slab` | A slab or step rises from the bottom edge (`i` = which, left to right) | a pitched thump: a keys note of the chord, climbing with `i` |
 | `punch` | A hole is punched through paper | a punch |
 | `flutter` | Strips fall away with a spin | paper flutter |
 | `sly` | The edited copy slips in crooked, landing at `land` | a sly paper slide and a scratch |

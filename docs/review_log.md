@@ -12,17 +12,17 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 
 | Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Rounds | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| ch01 Hook | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 4 + 2 sound | sound: the approved sketch, in the film mix |
-| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 9 + 2 sound | sound: 184 cues on the frames; D minor bed |
-| ch03 Market | 9 | 9 | 8 | 8 | 8 | 9 | 8 | 8 + 2 sound | sound: soft stab on SAM |
-| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 + 2 sound | sound: a chime as each pain turns |
-| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: opens to major, bell on T.conf |
-| ch06 USP 1: before approval | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: stab on "1", alarm on "VƯỢT KHUNG" |
-| ch07 USP 2: after publication | 9 | 9 | 8 | 8 | 8 | 9 | 9 | 6 + 2 sound | sound: stab on "2", alarm, the bow under the push |
-| ch08 Competition | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: driving, stab on "CÓ CẢ HAI." |
-| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: stairs climb into the stab |
-| ch10 Team | 9 | 9 | 8 | 8 | 7 | 9 | 8 | 8 + 2 sound + 3 faces | faces: the team's photos as full-colour busts (Brand 7 accepted by the user); stab on "ĐỘI KAWAIBU" |
-| ch11 Close | 9 | 9 | 8 | 8 | 9 | 9 | 8 | 7 + 2 sound | sound: the final chord rings to 180.0 s |
+| ch01 Hook | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 4 + 2 sound + 3 remake | sound: remade to fit the bed: the cluster, the bass bend and the stab on its D pedal |
+| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 9 + 2 sound + 3 remake | sound: 164 events, noise; the skyline a keys arpeggio in F |
+| ch03 Market | 9 | 9 | 8 | 8 | 8 | 9 | 8 | 8 + 2 sound + 3 remake | sound: soft stab on SAM, D major |
+| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 + 2 sound + 3 remake | sound: a chime as each pain turns, on the bed's chords |
+| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 7 + 2 sound + 3 remake | sound: the bed's lift on the doors, bell on T.conf |
+| ch06 USP 1: before approval | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound + 3 remake | sound: "1" carried by the bed's own hit, alarm on "VƯỢT KHUNG" |
+| ch07 USP 2: after publication | 9 | 9 | 8 | 8 | 8 | 9 | 8 | 6 + 2 sound + 3 remake | sound: "2" carried by the bed's own hit, alarm, the held bass under the push |
+| ch08 Competition | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound + 3 remake | sound: keys stab on "CÓ CẢ HAI." |
+| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound + 3 remake | sound: stairs climb the chords into the stab |
+| ch10 Team | 9 | 9 | 8 | 8 | 7 | 9 | 8 | 8 + 2 sound + 3 faces + 3 remake | faces: the team's photos as full-colour busts (Brand 7 accepted by the user); "ĐỘI KAWAIBU" carried by the bed's own hit |
+| ch11 Close | 9 | 9 | 8 | 8 | 9 | 9 | 8 | 7 + 2 sound + 3 remake | sound: the bed's final chord rings to 180.0 s |
 
 Since 2026-09-28 the film has no voice-over, so the **Voice** column (voice sync) became **Sync**: cuts and SLAMs
 on the 108 BPM grid, and every text holds long enough to read. Since the sound pass (2026-09-29) **Sync** also
@@ -658,3 +658,162 @@ cream bands' names nearer the left edge for 9 s). Rounds in `docs/review/ch10.md
 `out/sound/film.wav` (the Mixkit bed). ch10's 10 cues are identical to those in `out/sound/cues.json`, which the mix
 was built from, so no re-mix. The clip's audio is the mix from its first frame's film time (157.8 s), residual
 -38.5 dB, peak -1.2 dBFS. ch01's frames are pixel-identical with the new engine (AE 0 at five times). Scores as round 2.
+
+## Sound effects remake: to fit the Mixkit bed (2026-09-29)
+
+The user's brief: remake **all** the sound effects to fit the bed, ch01's hits from the approved sketch included, and retire the
+synthesized score's byte-for-byte rebuild of ch01 (that score is no longer used):
+1. tune every pitched effect to the bed's measured tuning (A4 about 441.3 Hz) and to the chord it actually plays at each cue's bar;
+2. rhythmic effects play straight 8ths, not swung; match the bed's timbre; drop any effect that doubles a hit the track plays;
+3. paper and UI sounds (slides, snips, tears, stamps, ticks, flips) stay unpitched, EQ'd to sit in the gaps of the track's mids, none
+   poking out more than about 3 dB above the music.
+
+Every effect stays on its cue time and the picture is untouched: a fresh `node tools/cues.mjs` gives a `cues.json` identical to the one the
+mix is built from, and `docs/timeline.json`, `scenes/` and `lib/` have no diff. Picture-side sync is unchanged (`node tools/synccheck.mjs`: all 71
+appearance cues start on their frames). **VN, Read and Motion carry over. Hook, Brand, Sync and Variety are re-scored for the sound, and the
+whole remake was checked by measurement and by reading the score against the bed's chord chart, never by ear.**
+
+### What was measured first (before any effect changed)
+
+- **Tuning** (`docs/bed_harmony.json`): the body's notes sit on A4 = 441.3 Hz (bass median +1.0 cent, upper partials +0.8 cent). The old effects
+  were at A4 = 440: **5.1 cents flat of the bed**. Two constant drone lines run under the whole track (D3 at +36 cents, F#3 at +14) and the intro's
+  synth voices are diffuse (median +4 cents, spread ±22): no single offset fits the intro better than 441.3.
+- **Harmony** (`tools/bedharmony.py` -> `docs/bed_harmony.json`, read from note decompositions by hand, tiers H/M/L per bar): **the body is F
+  minor, not F major with a minor colour**. Fm7 is home; the A sections run Fm7 | Db7 | C7sus; the B sections run Bbm7, Eb7, Abmaj7, Gm7b5,
+  C7. F major appears only in passing. The intro (film bars 1-9) is a D pedal (bass C#/D/Eb, F# and D on top); the last chord is Fm6. The old
+  effects took their notes from bass-dominated chroma: **15 of their 60 pitched notes were outside the chord the bed plays** at their beat.
+- **Kit and voices** (`tools/bedhits.py` -> `docs/bed_kit.md`): the bed is one hi-hat on every straight 8th, a plucked, gated bass note on every
+  8th (25 ms attack, gate 200 ms, the 2nd harmonic dominant on the lowest notes) and staccato keys chords on the 16th grid (partials 2..6 at -16,
+  -21, -25, -28, -33 dB, ring tau about 0.3 s). **No kick, no snare, no ride, no cymbal, no brass.** Its bass note lands within 45 ms of 6 of the 7 stabs.
+- **Swing:** hat, bass and keys are straight (hat off-beat minus on-beat +2.7 ms; a swung 8th would be +55).
+- **The bed's spectrum** is smooth: its gaps in the mids are shallow (2-5 dB: about 160 Hz, 300 Hz, 600 Hz, 1.1 kHz, 1.8 kHz) and it falls about
+  7 dB per octave above 1 kHz, so it is 30 dB down at 8 kHz.
+
+### Decisions, and how "poking out" is measured (please say if you meant something else)
+
+- **Poke-out** = an event's loudest 100 ms against the music's mean over the second and a half either side, in dB, in two measures: the whole
+  signal K-weighted (loudness) and the 250 Hz - 4 kHz mids; the larger is the poke (`tools/meter.py`). The limit is +3 dB, for every paper and UI
+  sound. **I read "3 dB above the music" as a level, not as a band-by-band cap:** with the bed 30 dB down at 8 kHz, a per-band +3 dB cap would make every
+  effect follow the bed's dull tilt and would contradict "sit in the gaps" (nothing can fill a gap if it may exceed it by 3 dB). As a guard against crisp
+  noise splashing, no single 1/3-octave band from 500 Hz up may stand more than 14 dB over the music. Result: the effects sound in the upper mids and the
+  air, where the bed is thin, and are a median 3 dB *under* the music in loudness. If you meant a per-band +3 dB, the effects would be about 8-10 dB duller
+  and softer: it is one constant (`BAND_CAP`) and the class targets in `tools/sound.py`.
+- **Levels come from the music.** No effect has a hand-set dB any more: paper and UI events are set to their class's poke (hit 2.7, cut 2.7, move
+  1.7, tick 1.7, texture -3, plus a per-cue `rel`), pitched hits to a level over the music (`Film.hit`), so they follow the music's dynamics. The music
+  they are judged against is the bed without its two designed dips and with its fade-in bar replaced by the second bar. Four events sound inside the dips (ch01's
+  drop swoosh and tear, ch07's two slams); they are +2.7 dB or less over the music they replace and up to +21 over the dipped bed that is playing.
+- **Doubling.** The bed plays a bass note on every 8th, and keys chords about ten times a bar. A stab layer (its keys chord, its bass note) is left out where
+  the bed's own note or chord lands within 45 ms of the cue (`Film.doubled`, the detector in `tools/bedhits.py`); nothing is left out where the bed is dipped
+  (ch01). The stab's crash and the alarm's snare and brass are gone: the bed has no cymbal, snare or brass, so they were foreign timbre. **Consequence: the
+  stabs on "1" (ch06), "2" (ch07) and "ĐỘI KAWAIBU" (ch10) sound as nothing but the bed's own hit** (keys and bass within 14-35 ms of the frame); ch08's and
+  ch09's keep the keys chord. `sound.py` logs each one (`skipped`, with the reason).
+- **The old score's rebuild check is retired.** `--music synth` still runs; its ch01 is no longer the sketch byte for byte, since the synths are shared.
+
+### Changes, per chapter
+
+Every paper and UI sound in every chapter was rebuilt as unpitched noise (no sine, no narrow resonance), given its class EQ and a level from the music.
+"Poke" is over the music: the old figures are the old mix's median / max, the new the remake's (ch01's old figures are inflated by the bed's
+silent fade-in bar: read them as at least +6).
+
+| Ch | Paper and UI (cues -> events) | Poke, old -> new (median / max) | Loudness, old -> new | Pitched: what changed |
+|---|---|---|---|---|
+| ch01 | 19 -> 22: the complaint pop (a sine glide -> a falling band of noise), the bubbles' sine ticks -> noise ticks, 3 captions (the sine thump -> paper slap), scissor, split, slide, 2 snips, the drop's swoosh, the tear | +18.7 / +49.0 -> +0.3 / +2.7 | -14.1 -> -17.1 LUFS | cluster `C2 Db2 D2 G2` (D minor) -> `Db3 D3 Eb3 A3` (the intro's own C#/D/Eb motion and the fifth over the D pedal), the bed's keys, +4 LU; bass bend A1 -> D1 kept (the chord's fifth falling to its root) but on the bed's bass; stab `D3 F3 A3 Bb3 D4` + `D2 D1` + crash -> `D4 F#4 A4` + `D2 D1` (the D the bed plays), no crash, rings out into ch02, +15 LU over the intro music (was +18 over the same music, +25 over the dipped bed) |
+| ch02 | 160 -> 164: 129 cell ticks (pure sine ticks at random pitches 3-4.5 kHz, tonality 0.99 -> noise grains, 0.00), the 1.363 count and its locks, 13 snips, wipes, slides, slams, stamp, scissor, lift, click | -2.3 / +16.8 -> -3.6 / +2.7 | -16.8 -> -16.2 | the skyline's 24 low thumps -> 24 keys notes climbing through F A C over two octaves (`F3 ... C6`), -2 LU: the bed's F chord |
+| ch03 | 17 -> 26: flip, tag slides, 20.000đ count, arrow snap, 3 pins, window sweeps, TAM/SAM/SOM | +12.0 / +16.8 -> +1.7 / +2.9 | -17.9 -> -17.6 | soft stab on SAM `D3 Db4 Eb4 F#4` (2 of 4 outside the D) -> `D4 F#4 A4`, keys alone, +5 LU; the slab's thump `A3` (the F chord's 3rd) |
+| ch04 | 25 -> 30: curtain wipe and thud, panels, snaps, pins, the stamp, bubbles, flips, lift, doors | +8.4 / +15.5 -> -0.9 / +2.9 | -14.4 -> -15.4 | chimes `C5 F5`, `D5 F5`, `C5 F5` (D5 over Fm9 clashed) -> `A4 F5` over F, `C5 F5` over Fm9, `A4 F5` over F; the bed's keys, +5 LU (was +9) |
+| ch05 | 33 -> 44: slides, slams, the window's creak, cuts, snaps, the click, ticks | +6.0 / +10.3 -> -5.5 / +0.7 | -14.5 -> -12.9 | bell `Bb6` (a handbell) -> `C6`, the fifth of F7sus, in the keys' voice, +3 LU |
+| ch06 | 24 -> 35: cover, slides, bars, rises, pan, tick clicks, pin, count, friction and thud, tear, scissor, split, slams | +6.3 / +12.1 -> -3.3 / +2.8 | -13.5 -> -12.8 | stab "1" `Eb3 G3 Bb3 D4` + bass + crash (D4 outside Eb7) -> **left to the bed's own hit** (its keys chord -14 ms, its bass Eb2 +19 ms); rising tone `F4 -> C5` kept (Fm7's root and fifth), keys' spectrum; alarm brass `Bb1 E2 Bb2` then `A1 Eb2 A2` + snare + bass -> keys tritone stack `Ab3 D4 Ab4` over Abmaj7, then a semitone down `G3 Db4 G4` onto G7sus's root; the bed's bass under both hits, so none added |
+| ch07 | 36 -> 50: tears, rises, slides, checkbox click, seal stamp, snap, doors, scroll, cut, 4 copies with clicks, count, sly slide and scratch, slams | +7.4 / +19.0 -> -6.1 / +2.9 | -12.3 -> -12.8 | stab "2" `C3 Bb3 B3 Db4` + `C2 C1` (the wrong root over Db7) -> **left to the bed's own hit** (keys -35 ms, bass Db2 +1 ms); climb `Bb6 Bb7 Bb8 Bb9` (an octave a step) -> `G5 Ab5 Bb5 Db6`, each on its beat's chord (C7, then Bbm7); warm chord `Ab3 Bb3 D4 Eb4` (Ab and D outside Eb7) -> `G3 Bb3 Db4 Eb4`; alarm -> keys tritone stacks `F3 B3 F4`, then `E3 Bb3 E4` (Fm7 into Bbm7), no brass or snare, bass left out on hit 2 (the bed's own +4 ms); the bow (a bowed string) -> the bed's own bass held on Eb2, over the thinned bed |
+| ch08 | 20 -> 26: cover, slams, label snaps, five strips with stop-thuds, the navy strip, two punches, flutter | +6.1 / +11.7 -> -0.4 / +1.1 | -12.9 -> -12.8 | stab "CÓ CẢ HAI." `F3 C4` + `F2 F1` + crash -> `F4 C5 G5` (F5 and the bar's 9th), the bass left out (the bed's +32 ms), no crash |
+| ch09 | 17 -> 22: rise, counts, window sweep, slams, snip, flip, hard cut with the stamp, slide, flag snap, tick, pans, MRR count | +6.4 / +8.5 -> -7.4 / +0.3 | -13.4 -> -12.7 | four stair thumps (D E F# G, tom-like) -> `G3 C4 Eb4 G4`, each a tone of its own chord (Eb7, then Abmaj7 and its inversions); stab "20-25 TÒA" `Bb2 G3 Ab3 C4` + bass -> `Eb4 F4 Ab4 Bb4 C5 G5` (Bb7sus and the bar's 9th and 13th), the bass left out (the bed's +42 ms) |
+| ch10 | 9 -> 17: five band slides, the close, L34's lines, the glide | +8.3 / +10.5 -> -3.0 / -1.4 | -13.8 -> -14.9 | stab "ĐỘI KAWAIBU" `F3 C4` + `F2 F1` + crash -> **left to the bed's own hit** (its keys +29 ms, its bass +21 ms) |
+| ch11 | 9 -> 13: wipe, logo slide, two slams, three credit slides, the façade's rise, the windows' sweep (sine grains -> noise grains) | +9.8 / +12.0 -> -3.3 / +1.1 | -16.5 -> -16.9 | the `chord` cue stays silent: the bed's own final chord (Fm6) ends the film |
+
+(369 cues became 449 events: a slide, a bar or a lift is a swoosh plus a landing.)
+
+Code: `tools/synth.py` (new: every synth, the bed's keys, bass and hat), `tools/sound.py` (the effects, the class EQs, the level solver, the chart), `tools/meter.py`
+(new: the measurements), `tools/bedharmony.py` and `docs/bed_harmony.json` (new), `tools/bedhits.py` and `docs/bed_kit.md` (new), `tools/sfxcheck.py`,
+`tools/tunecheck.py` (new), `tools/soundcheck.py` (the harmony check reads the chart; the cue check can read the effects' stems).
+
+### Checks (`out/sound/sfxcheck.txt`, `tunecheck.txt`, `soundcheck.txt`; all from the finished stems)
+
+- **Loudness:** `out/sound/film.wav` -14.00 LUFS, true peak -1.22 dBTP; as AAC 320 kbps (as `render.mjs` muxes it) -1.23 dBTP. Two runs give identical bytes.
+- **Tuning** (`tunecheck`): 77 pitched notes measured in the stems against A4 = 441.3: median 0.0 cents, 95 % within 0.7, worst -3.3.
+- **Harmony** (`soundcheck`): 0 of 47 pitched notes and chords are outside the chord the bed plays on their beat (the chart's tones, extensions and bass, and a stab's bar
+  extensions); before, 15 of 60.
+- **Paper and UI** (`sfxcheck`, 449 events): poke-out median -3.3 dB, **max +2.9 dB, 0 over +3.0**; the single-band guard max +13.9 dB; **tonality** at most 0.026 in every class
+  (0 of 449 above 0.3; the old ticks read a median 0.53, 23 of 31 above 0.3; 129 cell ticks 0.99). The effects' spectral fine structure against the music's: **r = -0.78 in the intro,
+  -0.57 in the body**: they sound where the music is thin.
+- **Sync, sound side:** 301 of 301 hit cues have an onset in the effects' stems within 12 ms (median -0.4 ms, 95 % within 1.8 ms); 3 stabs are left to the bed's own hit.
+  **Sync, picture side:** 71 of 71 appearance cues start on their frames.
+- **Straight 8ths:** no effect is swung: of 94 intervals in runs of repeated cues, 63 lie on straight beat, 8th or 16th positions, 29 are the picture's own free timing (the
+  accelerating bubbles, the staggered skyline) and 2 are one 1.34-beat gap between ch08's last two strips (picture timing); the swing was in the retired synth score.
+- **The synth score** (`--music synth`) still runs (smoke-tested on ch01, ch02, ch05, ch07).
+
+### Round 1 (the mix as handed over, judged on the three new points)
+
+| Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems |
+|---|---|---|---|---|---|---|---|---|
+| ch01 | 7 | 9 | 9 | 8 | 6 | 8 | 8 | pitched sine ticks and pop; 5 of 12 pitched notes outside the D the bed plays; a stab +18 LU over the music (+25 over the dipped bed); captions and complaint far over the music |
+| ch02 | 8 | 9 | 8 | 8 | 6 | 8 | 8 | 129 sine ticks at random pitches (tonality 0.99); tom-like thumps under the bed's bass |
+| ch03 | 8 | 9 | 8 | 8 | 6 | 8 | 8 | the soft stab's Db and Eb outside the D; counts and pins +12 over the music |
+| ch04 | 8 | 9 | 8 | 8 | 6 | 8 | 8 | the chime's D5 over Fm9; sine bubble ticks |
+| ch05 | 8 | 9 | 8 | 8 | 7 | 8 | 8 | a handbell in a keys-and-bass track; snaps and slams +6 |
+| ch06 | 8 | 9 | 9 | 8 | 6 | 8 | 8 | stab doubling the bed's bass and keys, plus a crash the bed does not have; a brass-and-snare alarm on a bed with neither |
+| ch07 | 8 | 9 | 8 | 8 | 5 | 8 | 9 | the climb an octave a step (`Bb6 ... Bb9`); the wrong root under "2"; 5 of 15 notes outside the chord |
+| ch08 | 8 | 9 | 9 | 8 | 7 | 8 | 8 | the stab doubling the bed's bass at +32 ms, plus a crash |
+| ch09 | 8 | 9 | 9 | 8 | 7 | 8 | 8 | the stab doubling the bed's bass; thumps under its bass |
+| ch10 | 9 | 9 | 8 | 8 | 6 | 8 | 8 | the stab doubling the bed's bass and keys |
+| ch11 | 9 | 9 | 8 | 8 | 7 | 9 | 8 | sine sweep grains climbing; slams +10 |
+
+### Round 2 (the first complete remake: pitched effects on the chart, paper and UI on the classes)
+
+The three worst problems, found by reading the score and the levels against the chart and the bed, not by ear:
+- **The alarm's second hit was lowered twice** (`F#3 C4 F#4` over G7sus instead of `G3 Db4 G4`): ch06 and ch07's Brand. Fixed: both hits come from the first hit's root.
+- **ch09's stab was a tight `F G Ab Bb` cluster:** the ring ordering put a non-chord extension (G) ahead of the chord's own 4th (Eb). Fixed: chord tones always outrank extensions.
+- **ch01's stab rang 1.3 s where the shotlist says "ring out",** leaving a near-silent hole at 10.6-11.1 s before ch02, and ch01 fell to -19.1 LUFS (5 LU under the old): Hook. Fixed: the
+  stab rings 3 s (tau 0.8) with its bass held, +15 LU over the intro; ch01 is -17.1 LUFS.
+Also fixed in the tools: the check's reference had the silent fade-in bar (the first events read +89 dB), and one dense run of cell ticks did not converge under the band guard.
+
+| Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch01 | 7 | 9 | 9 | 8 | 7 | 9 | 8 | the hole after the stab; a quiet opening |
+| ch02 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | cells noise; the skyline a keys arpeggio in F |
+| ch03 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | soft stab D major |
+| ch04 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | chimes on Fm9 and F |
+| ch05 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | bell on the fifth |
+| ch06 | 8 | 9 | 9 | 8 | 7 | 9 | 8 | the alarm's second hit |
+| ch07 | 8 | 9 | 8 | 8 | 7 | 9 | 8 | the alarm's second hit |
+| ch08 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | stab keys only |
+| ch09 | 8 | 9 | 9 | 8 | 7 | 9 | 8 | the stab's cluster |
+| ch10 | 9 | 9 | 8 | 8 | 7 | 9 | 8 | stab left to the bed |
+| ch11 | 9 | 9 | 8 | 8 | 8 | 9 | 8 | none new |
+
+### Round 3 (final: the checks above are on this build)
+
+| Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch01 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | the question's stab rings out into ch02; -17.1 LUFS (was -14.1: the old stab was +18 LU over the music) |
+| ch02 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 164 events all noise except the skyline's 24 keys notes; -16.2 LUFS |
+| ch03 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | soft stab D4 F#4 A4 on SAM |
+| ch04 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | chimes A4 F5 / C5 F5 / A4 F5 on the flips' edge-on frames |
+| ch05 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | bell C6 on T.conf |
+| ch06 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | "1" is the bed's own hit; the alarm a tritone falling onto G7sus's root |
+| ch07 | 9 | 9 | 8 | 8 | 8 | 9 | 8 | "2" is the bed's own hit; climb G5 Ab5 Bb5 Db6; the held Eb2 under the push (Variety 9 -> 8: the alarm lost its brass, snare and crash) |
+| ch08 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | stab F4 C5 G5, keys alone |
+| ch09 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | stairs G3 C4 Eb4 G4 into a Bb7sus stab |
+| ch10 | 9 | 9 | 8 | 8 | 7 | 9 | 8 | "ĐỘI KAWAIBU" is the bed's own hit; Brand 7 is the faces (accepted) |
+| ch11 | 9 | 9 | 8 | 8 | 9 | 9 | 8 | the bed's final chord ends the film |
+
+Every score is 8 or higher except ch10's Brand 7 (the full-colour faces, accepted by the user). **Still to be listened to:** the intro's D-pedal hits in ch01 and ch03 (the intro's synth lines
+are diffuse and its drone is +36 and +14 cents off the grid, so those two hits may beat against them), the five joins in the bed, and the choice above (the three stabs the bed's own hit now carries).
+
+### Round 3 (confirm: the 1080p preview, rendered from a clean worktree at `7828115`)
+
+`node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out/preview_1080p.mp4 --workers 10`: 5,400 frames in 7 min 1 s from a clean worktree (scenes, engine and
+timeline as committed), so it includes ch10's faces (four of the five members are in the frame at 165 s; the fifth band arrives later).
+- **ffprobe:** video H.264 High, 1920×1080, yuv420p, 30 fps, 5,400 frames (179.999 s); audio AAC LC, 48 kHz stereo, 321 kbps, 180.000 s.
+- **Loudness on the muxed file:** ebur128 -14.0 LUFS integrated, true peak -1.2 dBFS; loudnorm input_i -14.06 LUFS, input_tp -1.23 dBTP, LRA 6.8 LU.
+- **Sync:** the file's decoded audio lines up with `out/sound/film.wav` at 0 samples of lag (codec residual -38 dB).
+- `out/roughcut_sound.mp4` (960×540, 30 fps) was re-rendered with the same mix. The per-chapter clips `out/review/chNN.mp4` still carry the previous mix; the previous preview and draft are in
+  `out/tmp/old_mix/` for comparison. Scores unchanged from round 3 above.

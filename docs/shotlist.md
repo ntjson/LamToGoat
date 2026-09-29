@@ -87,6 +87,10 @@ overlaps the UI by 4 px.
 > to 3:00 by `tools/bed.py`, which follows the arc below (sparse to ch05, brighter from ch05, driving ch08-ch09,
 > resolving ch10-ch11). The effects are still synthesized on the cues, and the stabs land on the SLAMs on the bed's
 > notes. The score described next is kept as `tools/sound.py --music synth`.
+> **The effects were remade to fit that bed (2026-09-29):** the pitched ones (stabs, alarm, chimes, bell, thumps, the bass bend,
+> ch01's cluster, the bow) are tuned to its A4 = 441.3 Hz and play its chord and its own voices, leaving out what it already
+> plays; the paper and UI ones are unpitched, EQ'd into its gaps and at most +3 dB over it. See `docs/ANIMATION_GUIDE.md`,
+> section 12, and `docs/review_log.md`, "Sound effects remake". The SFX column of each shot below still says which events sound.
 - **Music:** a walking upright-bass line, brushed snare and piano stabs at about 108 BPM with swung eighths.
   - ch01-ch04: minor and sparse.
   - ch05-ch07: opens to major with vibraphone.
