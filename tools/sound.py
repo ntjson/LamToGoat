@@ -3,27 +3,30 @@
 Reads docs/timeline.json (tempo, bars, chapters) and out/sound/cues.json (the scenes' own event times, written by
 tools/cues.mjs) and writes a stereo 48 kHz WAV for the selected chapters (default: the whole film).
 
-Two music beds:
-- `--music bed` (the default): "Upbeat Jazz" by Francisco Alvear (Mixkit), stretched to 108 BPM and arranged to the
-  film's 81 bars by tools/bed.py (out/sound/bed.wav). It dips where the score breaks: from ch01's drop to ch02, and
-  from ch07's push to ch08, where it thins to a dark trace under one bowed note.
-- `--music synth`: the synthesized score (a walking upright-bass line, brushed snare and piano stabs at 108 BPM, swung
-  eighths; minor and sparse for ch01-ch04, open to major with a vibraphone for ch05-ch07, driving for ch08-ch09,
-  resolving for ch10-ch11), with ch01 as the approved sketch, note for note.
+The music is "Upbeat Jazz" by Francisco Alvear (Mixkit), stretched to 108 BPM and arranged to the film's 81 bars by
+tools/bed.py (out/sound/bed.wav): `--music bed`, the default. It dips where the score breaks: from ch01's drop to ch02,
+and from ch07's push to ch08, where it thins to a dark trace under one held low note. `--music synth` is the old
+synthesized score (walking bass, brushes, vibraphone, swung 8ths, minor to major to D): kept, no longer used, and no
+longer the byte-for-byte rebuild of ch01's approved sketch it once was, since its synths are the ones the effects now use.
 
-The effects are synthesized in code: the cue vocabulary of docs/ANIMATION_GUIDE.md, section 12, on the cue times.
-Over the Mixkit bed, every cue that sounds notes (the stabs, chimes, pitched thumps and ticks, the rising tone, the
-bell, the loop's warm chord, the bow) takes them from the pitch classes the bed is sounding at that beat; ch01's
-approved hits keep theirs (D minor sits in the track's key). Everything is seeded, so the same inputs always give
-the same file.
+The effects are synthesized in code (tools/synth.py): the cue vocabulary of docs/ANIMATION_GUIDE.md, section 12, on the
+cue times. Two families, mixed by rule:
+- **Paper and UI sounds** (ticks, stamps, snips, slides, tears, flips, ...) are unpitched noise. Each belongs to a
+  class (`CLASSES`) whose EQ keeps it off the bass and away from the dense low mids and carves the music's own
+  spectral gaps in (tools/meter.fine_structure), and every event is set to a level over the music around it: at most
+  +3 dB, in loudness and in the 250 Hz - 4 kHz mids (tools/meter.py; tools/sfxcheck.py checks it from the stems).
+- **Pitched sounds** (the stabs, the alarm, the warm chords, the chime, the bell, the climb, the thumps, the held low
+  note, the bass bend, ch01's cluster) are tuned to the bed's A4 = 441.3 Hz and play the chord the bed plays at their bar.
+Everything is seeded, so the same inputs always give the same file.
 
 Usage: uv run --with numpy --with scipy python tools/sound.py [--chapters ch01,ch02] [--out out/sound/film.wav]
-       [--cues out/sound/cues.json] [--music bed|synth] [--stems] [--score out/sound/score.json]
+       [--cues out/sound/cues.json] [--music bed|synth] [--stems] [--stem-dir DIR] [--score out/sound/score.json]
 """
 import argparse
 import json
 import math
 import subprocess
+import sys
 import tempfile
 import zlib
 from pathlib import Path
@@ -31,587 +34,42 @@ from pathlib import Path
 import numpy as np
 from scipy.io import wavfile
 from scipy.ndimage import minimum_filter1d
-from scipy.signal import butter, lfilter, resample_poly, sosfilt
+from scipy.signal import lfilter, resample_poly
 
 ROOT = Path(__file__).resolve().parent.parent
-SR = 48000
+sys.path.insert(0, str(ROOT / "tools"))
+import meter  # noqa: E402
+from synth import (NOTE, SR, arco, band, bass_note, bell_fx, brass, brush_slap, brush_swish, cell_fx, click_fx,  # noqa: E402
+                   crash, creak_fx, cut_rasp, flip_fx, flutter_fx, friction_fx, hz, kick, keys, lock_fx, midi, midi_hz,
+                   paper_tick, piano, piano_comp, pin_fx, pluck_bass, pop, punch_fx, rattle, ride, rising_tone,
+                   rng_for, scratch_fx, shape, slab_fx, snap_fx, snare, snip, stamp, stamp_deep, sweep_fx, swoosh, tap,
+                   tear, thud_fx, tone_glide, tone_tick, vibes)
+
 TARGET_LUFS = -14.0
 TP_CEIL = -1.2  # dBTP after limiting: 0.2 dB under the -1 dBTP rule, for the AAC encode
 AAC_CEIL = -1.2  # dBTP the film's AAC encode may reach when decoded (render.mjs muxes AAC 320 kbps, 48 kHz)
-SWING = 0.6  # swung 8ths: the off-beat falls at 60 % of the beat
-
-NOTE = {n: i for i, n in enumerate(["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"])}
-NOTE.update({"Db": 1, "Eb": 3, "Gb": 6, "Ab": 8, "Bb": 10})
-
-
-def hz(name):
-    """'D2' -> Hz (A4 = 440)."""
-    pitch, octave = name[:-1], int(name[-1])
-    return 440.0 * 2 ** ((NOTE[pitch] + 12 * (octave + 1) - 69) / 12)
-
-
-def rng_for(*keys):
-    # zlib.crc32, not hash(): Python salts str hashes per process, and every render must be identical.
-    return np.random.default_rng([zlib.crc32(k.encode()) if isinstance(k, str) else int(k) for k in keys])
-
-
-# ---------------------------------------------------------------------------------------------------- DSP helpers
-def band(x, lo=None, hi=None, order=2):
-    if lo and hi:
-        sos = butter(order, [lo, hi], btype="bandpass", fs=SR, output="sos")
-    elif lo:
-        sos = butter(order, lo, btype="highpass", fs=SR, output="sos")
-    else:
-        sos = butter(order, hi, btype="lowpass", fs=SR, output="sos")
-    return sosfilt(sos, x)
-
-
-def tt(dur):
-    return np.arange(int(dur * SR)) / SR
-
-
-def decay(dur, tau, attack=0.002):
-    t = tt(dur)
-    a = np.minimum(1, t / attack) if attack else 1
-    return a * np.exp(-t / tau)
-
-
-def norm(x, peak=1.0):
-    m = np.max(np.abs(x))
-    return x * (peak / m) if m > 0 else x
-
-
-def resonator(x, f, q):
-    """Two-pole resonant band-pass at f with quality q (metal, strings)."""
-    w = 2 * math.pi * f / SR
-    r = math.exp(-w / (2 * q))
-    return lfilter([1 - r], [1, -2 * r * math.cos(w), r * r], x)
-
-
-def glide_sine(dur, f0, f1, shape=1.0):
-    """A sine whose pitch glides from f0 to f1 (exponentially), phase-continuous."""
-    t = tt(dur)
-    u = (t / dur) ** shape
-    f = f0 * (f1 / f0) ** u
-    return np.sin(2 * math.pi * np.cumsum(f) / SR)
-
-
-# ---------------------------------------------------------------------------------------------------- instruments
-def pluck_bass(f0, dur, vel=0.8, seed=0, fall=None):
-    """Upright bass: Karplus-Strong string (finger pluck, dark), a body low-pass and a soft thump; `fall` = (start s,
-    semitones, length s) bends the note down, for a note that falls."""
-    n = int(dur * SR)
-    rng = rng_for("bass", seed)
-    if fall:
-        # A falling note: additive, so the pitch can glide.
-        t = tt(dur)
-        start, semis, length = fall
-        u = np.clip((t - start) / length, 0, 1)
-        u = u * u * (3 - 2 * u)
-        f = f0 * 2 ** (-semis * u / 12)
-        ph = 2 * math.pi * np.cumsum(f) / SR
-        y = sum((0.9 ** k) / k * np.sin(k * ph) * np.exp(-t * (0.9 + 0.5 * k)) for k in range(1, 9))
-        y *= np.minimum(1, t / 0.004)
-        return norm(band(y, hi=1400), 0.9 * vel)
-    N = max(2, int(round(SR / f0 - 0.5)))
-    exc = np.zeros(n)
-    burst = rng.standard_normal(N) * np.hanning(N)
-    burst = lfilter([0.25], [1, -0.75], burst)  # finger, not pick: a dark excitation
-    exc[:N] = burst
-    a = np.zeros(N + 2)
-    a[0] = 1
-    a[N] = a[N + 1] = -0.4985
-    y = lfilter([1.0], a, exc)
-    t = tt(dur)
-    y = band(y, hi=650, order=4) + 0.35 * np.max(np.abs(y)) * np.sin(2 * math.pi * f0 * t) * np.exp(-t / 0.09)
-    rel = np.clip((dur - t) / 0.05, 0, 1)  # the next note damps this one
-    return norm(y * rel, vel)
-
-
-def piano(names, dur, vel=0.8, seed=0, spread=0.3):
-    """Additive piano: inharmonic partials, two detuned strings per note, faster decay for upper partials, a
-    two-stage envelope and a hammer knock. Returns stereo (n, 2), spread across the stereo field by pitch."""
-    rng = rng_for("piano", seed)
-    t = tt(dur)
-    out = np.zeros((len(t), 2))
-    for i, name in enumerate(names):
-        f0 = hz(name)
-        K = max(3, min(16, int(9000 / f0)))
-        y = np.zeros_like(t)
-        for k in range(1, K + 1):
-            fk = k * f0 * math.sqrt(1 + 0.00035 * k * k)
-            ak = vel ** (0.4 + 0.12 * k) / k ** 1.15
-            tau = 2.2 * (261.6 / f0) ** 0.45 / (1 + 0.28 * (k - 1))
-            det = 1 + 0.0008 * (rng.random() - 0.5)
-            ph1, ph2 = rng.random() * 6.28, rng.random() * 6.28
-            y += ak * np.exp(-t / tau) * 0.5 * (np.sin(2 * math.pi * fk * t + ph1) + np.sin(2 * math.pi * fk * det * t + ph2))
-        y *= 0.55 * np.exp(-t / 0.18) + 0.45  # the quick drop after the hammer, then the long ring
-        knock = band(rng.standard_normal(len(t)), 900, 4000) * np.exp(-t / 0.006) * 0.25 * vel
-        y = (y + knock) * np.minimum(1, t / 0.002)
-        pan = spread * ((math.log2(f0 / 261.6)) / 2)
-        th = (max(-1, min(1, pan)) + 1) * math.pi / 4
-        out[:, 0] += y * math.cos(th)
-        out[:, 1] += y * math.sin(th)
-    return norm(out, vel)
-
-
-def brush_slap(vel=0.7, seed=0):
-    rng = rng_for("slap", seed)
-    d = 0.25
-    t = tt(d)
-    noise = band(rng.standard_normal(len(t)), 1200, 7000) * np.exp(-t / 0.07)
-    body = np.sin(2 * math.pi * 185 * t) * np.exp(-t / 0.045) * 0.5
-    return norm((noise + body) * np.minimum(1, t / 0.003), vel)
-
-
-def brush_swish(dur, beat, seed=0):
-    """The brush circling on the snare head: band-passed noise swelling once per beat."""
-    rng = rng_for("swish", seed)
-    t = tt(dur)
-    x = band(rng.standard_normal(len(t)), 1800, 9000)
-    phase = (t / beat) % 1.0
-    env = 0.35 + 0.65 * np.sin(math.pi * phase) ** 2
-    return x * env
-
-
-def crash(dur=2.6, vel=0.8, seed=0):
-    """A brush crash on a ride cymbal: bright noise and a few inharmonic metal modes, long decay."""
-    rng = rng_for("crash", seed)
-    t = tt(dur)
-    wash = band(rng.standard_normal(len(t)), 3500, 14000) * np.exp(-t / 0.9)
-    metal = sum(np.sin(2 * math.pi * f * t + rng.random() * 6) * np.exp(-t / tau)
-                for f, tau in [(3240, 0.7), (4710, 0.55), (5930, 0.5), (7350, 0.4), (8820, 0.35)])
-    y = (wash + 0.12 * metal) * np.minimum(1, t / 0.004)
-    return norm(y, vel)
-
-
-# ---------------------------------------------------------------------------------------------------- effects
-def tick(pitch=1650, muffled=False, vel=0.6, seed=0):
-    """A chat bubble arriving: a short pitched 'tick' with a tiny click."""
-    rng = rng_for("tick", seed)
-    d = 0.09
-    t = tt(d)
-    y = glide_sine(d, pitch * 1.3, pitch, 0.25) * np.exp(-t / 0.016)
-    y += band(rng.standard_normal(len(t)), 2500, 9000) * np.exp(-t / 0.002) * 0.4
-    if muffled:
-        y = band(y, hi=700) * 1.4
-    return norm(y * np.minimum(1, t / 0.0008), vel)
-
-
-def pop(vel=0.8, seed=0):
-    """The complaint landing: a rounder pop with a little paper in it."""
-    rng = rng_for("pop", seed)
-    d = 0.2
-    t = tt(d)
-    y = glide_sine(d, 640, 390, 0.3) * np.exp(-t / 0.05)
-    y += band(rng.standard_normal(len(t)), 400, 2600) * np.exp(-t / 0.035) * 0.35
-    return norm(y * np.minimum(1, t / 0.001), vel)
-
-
-def stamp(vel=0.8, seed=0):
-    """A paper strip slammed down (caption, SLAM): a low thump, the paper's slap and a crack."""
-    rng = rng_for("stamp", seed)
-    d = 0.35
-    t = tt(d)
-    thump = glide_sine(d, 120, 55, 0.4) * np.exp(-t / 0.085)
-    slap = band(rng.standard_normal(len(t)), 300, 3200) * np.exp(-t / 0.04) * 0.6
-    crack = band(rng.standard_normal(len(t)), 3000, None) * np.exp(-t / 0.006) * 0.35
-    return norm((thump + slap + crack) * np.minimum(1, t / 0.0015), vel)
-
-
-def snip(vel=0.7, seed=0):
-    """One scissor snip: blades meeting (a metallic ring) and paper giving way."""
-    rng = rng_for("snip", seed)
-    d = 0.12
-    t = tt(d)
-    n = rng.standard_normal(len(t))
-    y = resonator(n, 4300, 14) * np.exp(-t / 0.02) * 0.6 + band(n, 3000, 11000) * np.exp(-t / 0.012)
-    y += np.sin(2 * math.pi * 2650 * t) * np.exp(-t / 0.01) * 0.3
-    return norm(y * np.minimum(1, t / 0.0007), vel)
-
-
-def cut_rasp(dur, vel=0.7, seed=0):
-    """Scissors running through paper: a crackling rasp that ends in a snip."""
-    rng = rng_for("rasp", seed)
-    t = tt(dur)
-    crackle = np.zeros(len(t))
-    k = 0
-    while True:
-        k += rng.exponential(1 / 110)
-        if k >= dur:
-            break
-        crackle[int(k * SR)] = rng.uniform(0.3, 1)
-    grains = lfilter([1], [1, -0.94], crackle)  # each click rings ~ a millisecond
-    body = band(rng.standard_normal(len(t)), 2200, 7000) * 0.25
-    y = band(grains, 1500, 8000) + body
-    env = np.clip(t / (0.3 * dur), 0, 1) * np.clip((dur - t) / 0.03, 0, 1)
-    y = y * env
-    y = np.concatenate([y, snip(1.0, seed + 1)])
-    return norm(y, vel)
-
-
-def swoosh(dur, f0, f1, vel=0.6, seed=0):
-    """Paper sliding: noise whose band moves from f0 to f1 (a bank of bands, cross-faded in log frequency)."""
-    rng = rng_for("swoosh", seed)
-    t = tt(dur)
-    centres = np.geomspace(250, 6000, 10)
-    x = rng.standard_normal(len(t))
-    lf = np.log(f0) + (np.log(f1) - np.log(f0)) * (t / dur)
-    y = np.zeros(len(t))
-    for c in centres:
-        w = np.exp(-((np.log(c) - lf) ** 2) / (2 * 0.35**2))
-        y += band(x, c / 1.35, c * 1.35) * w
-    env = np.sin(math.pi * np.clip(t / dur, 0, 1)) ** 1.5
-    return norm(y * env, vel)
-
-
-def tear(dur, vel=0.8, seed=0):
-    """Paper tearing open: fibres snapping faster and faster, over a dry rip."""
-    rng = rng_for("tear", seed)
-    t = tt(dur)
-    crackle = np.zeros(len(t))
-    k = 0.0
-    while k < dur:
-        rate = 60 + 700 * (k / dur) ** 1.5
-        k += rng.exponential(1 / rate)
-        if k < dur:
-            crackle[int(k * SR)] = rng.uniform(0.2, 1)
-    grains = lfilter([1], [1, -0.9], crackle)
-    rip = band(rng.standard_normal(len(t)), 700, 5000) * (0.2 + 0.8 * (t / dur) ** 2) * 0.4
-    y = band(grains, 900, 7000) + rip
-    return norm(y * np.clip((dur - t) / 0.01, 0, 1), vel)
-
-
-# ---------------------------------------------------------------------------------------------------- more instruments
-# The rest of the band, for ch02-ch11: a vibraphone for the major half, low brass and a snare for the two alarms, a
-# ride and a feathered kick for the driving half, the bass's bow for ch07's held note, and a damped piano for comping.
-def vibes(names, dur, vel=0.6, seed=0, at=0.0, motor=4.8, depth=0.3, damp=None, spread=0.4):
-    """Vibraphone: each bar rings its fundamental, the tuned 4x partial and a faint ~10x one; the resonator under it
-    swells and dips with the motor's discs (tremolo, locked to film time `at`, so it runs on from note to note); a soft
-    yarn mallet. `damp` (s after the hit) lifts the pedal. Returns stereo (n, 2), spread across the field by pitch."""
-    rng = rng_for("vibes", seed)
-    t = tt(dur)
-    trem = 1 - depth * (0.5 + 0.5 * np.sin(2 * math.pi * motor * (t + at)))
-    out = np.zeros((len(t), 2))
-    for name in names:
-        f0 = hz(name)
-        tau = 3.0 * (349.2 / f0) ** 0.4
-        y = np.sin(2 * math.pi * f0 * t + rng.random() * 6.28) * np.exp(-t / tau) * trem
-        y += 0.3 * vel * np.sin(2 * math.pi * 4 * f0 * t + rng.random() * 6.28) * np.exp(-t / (0.35 * tau))
-        y += 0.06 * vel * np.sin(2 * math.pi * 9.92 * f0 * t + rng.random() * 6.28) * np.exp(-t / 0.08)
-        y += band(rng.standard_normal(len(t)), 300, 2500) * np.exp(-t / 0.004) * 0.06 * vel
-        y *= np.minimum(1, t / 0.0015)
-        th = (max(-1, min(1, spread * math.log2(f0 / 440) / 1.5)) + 1) * math.pi / 4
-        out[:, 0] += y * math.cos(th)
-        out[:, 1] += y * math.sin(th)
-    if damp is not None:
-        out *= np.where(t < damp, 1.0, np.exp(-np.maximum(t - damp, 0) / 0.1))[:, None]
-    return norm(out, vel)
-
-
-def piano_comp(names, hold, vel=0.5, seed=0):
-    """A short comping chord: the piano, with the damper coming down after `hold` s."""
-    dur = hold + 0.3
-    t = tt(dur)
-    return piano(names, dur, vel, seed=seed, spread=0.25) * np.where(t < hold, 1.0, np.exp(-np.maximum(t - hold, 0) / 0.05))[:, None]
-
-
-def brass(names, dur, vel=0.9, seed=0):
-    """Low brass for the alarm: sawtooth-rich notes whose brightness opens with the attack and closes as the note
-    sits, a small scoop up into the pitch and a little breath."""
-    rng = rng_for("brass", seed)
-    t = tt(dur)
-    cut = 320 + 2400 * np.minimum(1, t / 0.03) * np.exp(-t / 0.22) + 380 * np.exp(-t / 1.2)  # brightness, Hz
-    out = np.zeros(len(t))
-    for name in names:
-        f0 = hz(name)
-        ph = 2 * math.pi * np.cumsum(f0 * 2 ** (-0.4 * np.exp(-t / 0.02) / 12)) / SR
-        for k in range(1, int(7000 / f0) + 1):
-            out += np.exp(-k * f0 / cut) / k ** 0.7 * np.sin(k * ph + rng.random())
-    breath = band(rng.standard_normal(len(t)), 300, 2500) * np.exp(-t / 0.05) * 0.05 * len(names)
-    env = np.minimum(1, t / 0.012) * (0.7 + 0.3 * np.exp(-t / 0.08)) * np.clip((dur - t) / 0.09, 0, 1)
-    return norm((out + breath) * env, vel)
-
-
-def snare(vel=0.9, seed=0):
-    """A stick on the snare (the alarm's accent): the head's tone, the crack and the wires' rattle."""
-    rng = rng_for("snare", seed)
-    t = tt(0.4)
-    head = np.sin(2 * math.pi * 185 * t) * np.exp(-t / 0.06) + 0.45 * np.sin(2 * math.pi * 330 * t) * np.exp(-t / 0.035)
-    wires = band(rng.standard_normal(len(t)), 1500, 9000) * np.exp(-t / 0.13)
-    crack = band(rng.standard_normal(len(t)), 700, 4500) * np.exp(-t / 0.01)
-    return norm((0.7 * head + wires + 0.8 * crack) * np.minimum(1, t / 0.0008), vel)
-
-
-def ride(vel=0.5, seed=0, dur=1.4):
-    """A brush tip on the ride cymbal: the ride's ping and wash."""
-    rng = rng_for("ride", seed)
-    t = tt(dur)
-    ping = sum(np.sin(2 * math.pi * f * t + rng.random() * 6) * np.exp(-t / tau)
-               for f, tau in [(2980, 0.55), (4150, 0.45), (5370, 0.35), (7010, 0.25), (8440, 0.18)])
-    wash = band(rng.standard_normal(len(t)), 4500, 14000) * np.exp(-t / 0.4)
-    tip = band(rng.standard_normal(len(t)), 2500, 9000) * np.exp(-t / 0.005)
-    return norm((0.15 * ping + 0.6 * wash + 0.8 * tip) * np.minimum(1, t / 0.001), vel)
-
-
-def kick(vel=0.5, seed=0):
-    """A feathered bass drum: felt on a loose head, felt more than heard."""
-    rng = rng_for("kick", seed)
-    d = 0.35
-    t = tt(d)
-    y = glide_sine(d, 85, 46, 0.3) * np.exp(-t / 0.1) + band(rng.standard_normal(len(t)), 100, 800) * np.exp(-t / 0.008) * 0.3
-    return norm(y * np.minimum(1, t / 0.002), vel)
-
-
-def arco(f0, dur, vel=0.7, seed=0):
-    """The upright bass bowed: a sawtooth-like string through a dark body, a slow bow attack, a late slow vibrato."""
-    rng = rng_for("arco", seed)
-    t = tt(dur)
-    vib = 1 + 0.0035 * np.sin(2 * math.pi * 4.6 * t) * np.clip((t - 0.5) / 0.8, 0, 1)
-    ph = 2 * math.pi * np.cumsum(f0 * vib) / SR
-    y = sum(np.sin(k * ph + rng.random() * 6) / k / (1 + (k * f0 / 500) ** 2) for k in range(1, int(3000 / f0) + 1))
-    y = y + band(rng.standard_normal(len(t)), 150, 1500) * 0.01  # the bow hair
-    env = np.sin(np.clip(t / 0.45, 0, 1) * math.pi / 2) ** 2 * np.clip((dur - t) / 0.25, 0, 1)
-    return norm(band(y, hi=1200) * env, vel)
-
-
-# ---------------------------------------------------------------------------------------------------- more effects
-# The rest of the palette (docs/ANIMATION_GUIDE.md, section 12). Each is normalized to its `vel` peak; the mix sets
-# its level.
-def stamp_deep(vel=0.8, seed=0):
-    """A seal or tag struck down: the stamp's slap and crack over a deeper, longer thump."""
-    rng = rng_for("stamp_deep", seed)
-    d = 0.45
-    t = tt(d)
-    thump = glide_sine(d, 100, 40, 0.4) * np.exp(-t / 0.11)
-    slap = band(rng.standard_normal(len(t)), 250, 2800) * np.exp(-t / 0.045) * 0.55
-    crack = band(rng.standard_normal(len(t)), 2500, None) * np.exp(-t / 0.006) * 0.3
-    return norm((thump + slap + crack) * np.minimum(1, t / 0.0015), vel)
-
-
-def flip_fx(vel=0.7, seed=0):
-    """A panel turning on its axis: air rising to the edge-on moment and falling past it, then the paper's soft flap."""
-    rng = rng_for("flip", seed)
-    d = 0.34
-    t = tt(d)
-    y = np.zeros(len(t))
-    up = swoosh(0.16, 900, 3000, 1.0, seed=seed)
-    down = swoosh(0.17, 2600, 800, 0.8, seed=seed + 1)
-    y[: len(up)] += up
-    j = int(0.13 * SR)
-    y[j: j + len(down)] += down[: len(y) - j]
-    flap = band(rng.standard_normal(len(t)), 150, 1200) * np.exp(-np.maximum(t - 0.26, 0) / 0.025) * (t >= 0.26)
-    return norm(y + 0.7 * norm(flap), vel)
-
-
-def pin_fx(vel=0.7, seed=0):
-    """A pin pushed through paper into board: the point's tick and a short woody tock."""
-    rng = rng_for("pin", seed)
-    t = tt(0.12)
-    n = rng.standard_normal(len(t))
-    y = norm(resonator(n, 1850, 10) * np.exp(-t / 0.014)) + norm(band(n, 4000, 11000) * np.exp(-t / 0.0015), 0.8)
-    y += norm(np.sin(2 * math.pi * 260 * t) * np.exp(-t / 0.025), 0.4)
-    return norm(y * np.minimum(1, t / 0.0005), vel)
-
-
-def punch_fx(vel=0.8, seed=0):
-    """A hole punched through paper: the press's thump, the die's metal chunk and the paper giving way."""
-    rng = rng_for("punch", seed)
-    d = 0.3
-    t = tt(d)
-    n = rng.standard_normal(len(t))
-    y = norm(glide_sine(d, 170, 70, 0.35) * np.exp(-t / 0.05)) + norm(resonator(n, 2400, 9) * np.exp(-t / 0.018), 0.6)
-    y += norm(band(n, 3000, None) * np.exp(-t / 0.004), 0.5) + norm(band(n, 500, 3500) * np.exp(-t / 0.035), 0.35)
-    return norm(y * np.minimum(1, t / 0.0008), vel)
-
-
-def flutter_fx(dur=1.1, vel=0.6, seed=0, strips=5):
-    """Paper strips falling away: each flaps as it tumbles (noise gated by a flapping rate), staggered."""
-    rng = rng_for("flutter", seed)
-    t = tt(dur)
-    y = np.zeros(len(t))
-    for s in range(strips):
-        n = rng.standard_normal(len(t))
-        rate = 15 + 10 * rng.random() + 6 * t / dur
-        flap = (0.5 + 0.5 * np.sin(2 * math.pi * np.cumsum(rate) / SR + rng.random() * 6)) ** 3
-        start = s * 0.07 + 0.03 * rng.random()
-        env = np.clip((t - start) / 0.05, 0, 1) * np.clip((dur - t) / (0.55 * dur), 0, 1)
-        y += band(n, 600 + 300 * rng.random(), 4000) * (0.25 + 0.75 * flap) * env
-    return norm(y, vel)
-
-
-def thud_fx(vel=0.8, seed=0):
-    """A heavy landing: a low body thump and the paper's contact."""
-    rng = rng_for("thud", seed)
-    d = 0.45
-    t = tt(d)
-    n = rng.standard_normal(len(t))
-    y = norm(glide_sine(d, 92, 44, 0.35) * np.exp(-t / 0.12)) + norm(band(n, 60, 500) * np.exp(-t / 0.04), 0.45)
-    y += norm(band(n, 800, 3000) * np.exp(-t / 0.006), 0.15)
-    return norm(y * np.minimum(1, t / 0.002), vel)
-
-
-def click_fx(vel=0.6, seed=0):
-    """A button pressed, a clip clicking on: a press and its softer release."""
-    rng = rng_for("click", seed)
-    t = tt(0.07)
-    n = rng.standard_normal(len(t))
-    c = norm(band(n, 2000, 10000) * np.exp(-t / 0.0012)) + norm(np.sin(2 * math.pi * 3200 * t) * np.exp(-t / 0.004), 0.4)
-    y = c.copy()
-    j = int(0.026 * SR)
-    y[j:] += 0.45 * c[: len(c) - j]
-    return norm(y, vel)
-
-
-def bell_fx(name="D6", vel=0.6, seed=0, dur=1.8):
-    """A small bell: a handbell's inharmonic partials and the strike."""
-    rng = rng_for("bell", seed)
-    f0 = hz(name)
-    t = tt(dur)
-    y = sum(a * np.sin(2 * math.pi * r * f0 * t + rng.random() * 6) * np.exp(-t / tau)
-            for r, a, tau in [(1, 1, 1.1), (2.0, 0.35, 0.6), (2.76, 0.3, 0.45), (5.4, 0.15, 0.2), (8.93, 0.06, 0.1)])
-    y = y + band(rng.standard_normal(len(t)), 3000, 12000) * np.exp(-t / 0.0015) * 0.3
-    return norm(y * np.minimum(1, t / 0.0008), vel)
-
-
-def creak_fx(dur=0.45, vel=0.6, seed=0):
-    """Paper giving way as a window opens: stick-slip grains at a wandering rate through two small resonances."""
-    rng = rng_for("creak", seed)
-    t = tt(dur)
-    imp = np.zeros(len(t))
-    k = 0.0
-    while True:
-        k += 1 / max(15, 45 + 30 * math.sin(2 * math.pi * 1.4 * k + 1) + 10 * rng.standard_normal())
-        if k >= dur:
-            break
-        imp[int(k * SR)] = rng.uniform(0.5, 1)
-    y = resonator(imp, 480, 7) + 0.7 * resonator(imp, 1250, 9) + 0.35 * resonator(imp, 2600, 12)
-    return norm(y * np.sin(math.pi * np.clip(t / dur, 0, 1)) ** 0.7, vel)
-
-
-def rising_tone(dur, f0, f1, vel=0.5, tail=0.35):
-    """A soft reedy tone gliding up from f0 to f1 over dur, then letting go."""
-    t = tt(dur + tail)
-    u = np.clip(t / dur, 0, 1)
-    ph = 2 * math.pi * np.cumsum(f0 * (f1 / f0) ** (u * u * (3 - 2 * u))) / SR
-    y = np.sin(ph) + 0.3 * np.sin(2 * ph) + 0.12 * np.sin(3 * ph)
-    env = np.minimum(1, t / 0.06) * np.where(t < dur, 1.0, np.exp(-np.maximum(t - dur, 0) / 0.12))
-    return norm(y * env, vel)
-
-
-def friction_fx(dur, vel=0.6, seed=0):
-    """A tag dragged along a bar: a rough scrape of stick-slip grains that slows as it goes."""
-    rng = rng_for("friction", seed)
-    t = tt(dur)
-    imp = np.zeros(len(t))
-    k = 0.0
-    while True:
-        k += 1 / max(20, 90 * (1 - 0.55 * k / dur) + 8 * rng.standard_normal())
-        if k >= dur:
-            break
-        imp[int(k * SR)] = rng.uniform(0.4, 1)
-    y = norm(resonator(imp, 1300, 4)) + norm(band(lfilter([1], [1, -0.9], imp), 2000, 7000), 0.5)
-    y += norm(band(rng.standard_normal(len(t)), 400, 2500), 0.15)
-    return norm(y * np.minimum(1, t / 0.05) * np.clip((dur - t) / 0.02, 0, 1), vel)
-
-
-def scratch_fx(dur=0.22, vel=0.6, seed=0):
-    """A nail scratching across paper: bright noise in jagged strokes."""
-    rng = rng_for("scratch", seed)
-    t = tt(dur)
-    strokes = 0.3 + 0.7 * (np.sin(2 * math.pi * 33 * t + rng.random() * 6) > 0)
-    y = band(rng.standard_normal(len(t)), 2200, 7500) * band(strokes, hi=400) * np.sin(math.pi * np.clip(t / dur, 0, 1)) ** 0.5
-    return norm(y, vel)
-
-
-def rattle(dur, vel=0.5, seed=0, pitch=2400, r0=34, r1=7):
-    """Odometer digits rolling: clicks at a rate that slows from r0 to r1 per second as the digits settle."""
-    rng = rng_for("rattle", seed)
-    t = tt(dur)
-    imp = np.zeros(len(t))
-    k = 0.0
-    while True:
-        k += 1 / (r1 + (r0 - r1) * (1 - k / dur) ** 1.6)
-        if k >= dur:
-            break
-        imp[int(k * SR)] = rng.uniform(0.6, 1)
-    y = norm(resonator(imp, pitch, 18)) + norm(band(imp, 3000, 10000), 0.5)
-    return norm(y, vel)
-
-
-def lock_fx(vel=0.7, seed=0):
-    """The count locking: a firm clack with a little body."""
-    rng = rng_for("lock", seed)
-    t = tt(0.12)
-    n = rng.standard_normal(len(t))
-    y = norm(resonator(n, 1600, 12) * np.exp(-t / 0.012)) + norm(band(n, 3000, 10000) * np.exp(-t / 0.0015), 0.8)
-    y += norm(np.sin(2 * math.pi * 420 * t) * np.exp(-t / 0.02), 0.35)
-    return norm(y * np.minimum(1, t / 0.0005), vel)
-
-
-def sweep_fx(dur, vel=0.5, seed=0):
-    """Windows lighting in a sweep: a rattle of little lamp clicks that speeds up and climbs in pitch."""
-    rng = rng_for("sweep", seed)
-    y = np.zeros(int((dur + 0.05) * SR))
-    g = tt(0.03)
-    k = 0.0
-    while True:
-        k += 1 / (14 + 70 * (k / dur) ** 1.3)
-        if k >= dur:
-            break
-        u = k / dur
-        f = 1100 * (2.5 ** u) * (1 + 0.03 * rng.standard_normal())
-        i = int(k * SR)
-        grain = np.sin(2 * math.pi * f * g) * np.exp(-g / 0.006) * rng.uniform(0.5, 1) * (0.5 + 0.5 * u)
-        y[i: i + len(g)] += grain[: len(y) - i]
-    return norm(y, vel)
-
-
-def slab_fx(name, vel=0.7, seed=0):
-    """A slab or step rising into place: a pitched thump, like a felt mallet on a tom."""
-    rng = rng_for("slab", seed)
-    f = hz(name)
-    d = 0.5
-    t = tt(d)
-    y = norm(glide_sine(d, f * 1.25, f, 0.2) * np.exp(-t / 0.16)) + norm(band(rng.standard_normal(len(t)), 150, 1200) * np.exp(-t / 0.02), 0.3)
-    return norm(y * np.minimum(1, t / 0.002), vel)
-
-
-def cell_fx(vel=0.4, seed=0):
-    """One cell of a façade flipping: a tiny, bright tick."""
-    rng = rng_for("cell", seed)
-    t = tt(0.03)
-    y = np.sin(2 * math.pi * (3000 + 1500 * rng.random()) * t) * np.exp(-t / 0.003)
-    y += band(rng.standard_normal(len(t)), 4000, 12000) * np.exp(-t / 0.001)
-    return norm(y, vel)
-
-
-def paper_tick(vel=0.5, seed=0):
-    """A HARD CUT: a small, dry paper tick."""
-    rng = rng_for("paper_tick", seed)
-    t = tt(0.05)
-    y = band(rng.standard_normal(len(t)), 1200, 7000) * np.exp(-t / 0.004) + 0.3 * np.sin(2 * math.pi * 900 * t) * np.exp(-t / 0.006)
-    return norm(y, vel)
-
-
-def snap_fx(vel=0.7, seed=0):
-    """A short, stiff settle: a crisp snap of card."""
-    rng = rng_for("snap", seed)
-    t = tt(0.09)
-    n = rng.standard_normal(len(t))
-    y = norm(band(n, 1400, 6500) * np.exp(-t / 0.007)) + norm(resonator(n, 1750, 7) * np.exp(-t / 0.012), 0.5)
-    y += norm(np.sin(2 * math.pi * 300 * t) * np.exp(-t / 0.015), 0.25)
-    return norm(y * np.minimum(1, t / 0.0005), vel)
+SWING = 0.6  # the old synthesized score's swung 8ths (the off-beat at 60 % of the beat); the bed and the effects are straight
+HOP = 0.025  # s: the level frames of tools/meter.py
+POKE_LIMIT = 3.0  # dB: the most a paper or UI sound may poke out of the music (loudness and 250 Hz - 4 kHz mids)
 
 
 # ---------------------------------------------------------------------------------------------------- the mix bus
-# Stem levels (dB) applied at mixdown: the music is a bed under the effects, the stabs are the loudest moments.
-STEMS = {"bass": -11.0, "drums": -2.0, "piano": 0.0, "sfx": 0.0, "vibes": 0.0, "brass": 0.0, "bed": 0.0}
+# Stem levels (dB) applied at mixdown. The effects set their own levels from the music (Film.fx, Film.hit), so these
+# only balance the old synthesized score's stems.
+STEMS = {"bass": -11.0, "drums": -2.0, "piano": 0.0, "sfx": 0.0, "vibes": 0.0, "brass": 0.0, "tone": 0.0, "bed": 0.0}
 BED = ROOT / "out" / "sound" / "bed.wav"  # tools/bed.py writes it (and bed.json beside it)
 BED_GAIN = -17.5  # dB: the Mixkit track (about -11 LUFS in its body) as a bed under the effects, where the old score sat
 BED_INTRO_DB = 4.0  # the sparse intro (film start to ch05) this much higher, so it is heard under ch01-ch04; the lift
 # on ch05's downbeat (+8.6 dB in the recording) stays a lift
 BED_RESOLVE_DB = -2.5  # ch10-ch11 resolve: the bed eases down this much over ch10's first two bars and stays there
+
+
+def pan_stereo(sig, pan):
+    """A mono signal placed at `pan` (-1 left ... 1 right), constant power, unity per channel at the centre."""
+    if sig.ndim == 2:
+        return sig
+    th = (max(-1, min(1, pan)) + 1) * math.pi / 4
+    return np.stack([sig * math.cos(th), sig * math.sin(th)], axis=1) * math.sqrt(2)
 
 
 class Bus:
@@ -627,15 +85,32 @@ class Bus:
             at = 0
         g = 10 ** (gain_db / 20)
         i = int(round(at * SR))
-        if sig.ndim == 1:
-            th = (max(-1, min(1, pan)) + 1) * math.pi / 4
-            sig = np.stack([sig * math.cos(th), sig * math.sin(th)], axis=1) * math.sqrt(2)
+        sig = pan_stereo(sig, pan)
         j = min(self.n, i + len(sig))
         if j > i:
             self.stems[stem][i:j] += g * sig[: j - i]
 
     def mix(self):
         return sum(x * 10 ** (STEMS[k] / 20) for k, x in self.stems.items())
+
+
+# ---------------------------------------------------------------------------------------------------- paper and UI classes
+# Each class of paper/UI sound has a `poke`, how far its loudest 100 ms stands over the music around it (the film's limit
+# is +3 dB in loudness and in the 250 Hz - 4 kHz mids; the classes sit a little under it, and a cue may go lower still
+# with `rel`), and a designed spectrum: a tilt (dB per octave, about pink), a low cut `fh` (Hz, 12 dB/oct) that keeps it off
+# the bass and the dense low mids, and a high roll-off `fl` (Hz, 12 dB/oct) above which the bed is 30 dB down. Each class's
+# EQ is matched to that spectrum (Film.finalize), with the music's own gaps carved in on top (Film.eq_points).
+CLASSES = {
+    "hit": {"poke": 2.7, "tilt": -3.0, "fh": 300, "fl": 6500},  # struck sounds: stamps, snaps, pins, clicks, thuds, punches
+    "cut": {"poke": 2.7, "tilt": -1.5, "fh": 700, "fl": 9000},  # the crisp ones: scissors, tears
+    "move": {"poke": 1.7, "tilt": -3.0, "fh": 250, "fl": 5500},  # everything that travels: slides, wipes, swooshes, flips
+    "tick": {"poke": 1.7, "tilt": -1.0, "fh": 900, "fl": 7000},  # small ticks: chat bubbles, tick marks
+    "texture": {"poke": -3.0, "tilt": -2.0, "fh": 800, "fl": 6000},  # runs of tiny sounds: cells, rattles, sweeps, flutter
+}
+BAND_CAP = 14.0  # dB: no single 1/3-octave band from 500 Hz up may stand more than this over the music
+MATCH_BOOST, MATCH_CUT = 12.0, 40.0  # dB: the most the matching EQ lifts or cuts a band
+GAP_K, GAP_MAX = 0.8, 4.0  # the carve: -0.8 dB per dB of the music's fine structure, at most 4 dB
+
 
 
 # ---------------------------------------------------------------------------------------------------- loudness (BS.1770-4)
@@ -766,10 +241,6 @@ SCALE = {"Dm": (2, 4, 5, 7, 9, 10, 0), "D": (2, 4, 6, 7, 9, 11, 1), "G": (7, 9, 
 PC_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
 
 
-def midi(name):
-    return NOTE[name[:-1]] + 12 * (int(name[-1]) + 1)
-
-
 def name_of(m):
     return f"{PC_NAMES[m % 12]}{m // 12 - 1}"
 
@@ -881,10 +352,20 @@ class Film:
         self.order = [c["id"] for c in tl["chapters"]]
         self.sel = [c for c in self.order if c in chapters]
         self.t0 = min(self.chs[c]["start"] for c in self.sel)
+        self.t1 = max(self.chs[c]["end"] for c in self.sel)
         self.by = {}
         for q in cues:
             self.by.setdefault((q["ch"], q["name"]), []).append(q)
         self.log = []
+        self.paper = []  # paper and UI events, put on the bus by finalize()
+        self.ref = None  # the music's levels (tools/meter.py), which every effect's level is set from
+        self.ref_audio = None
+        self.gaps = {}  # the music's spectral gaps, by part of the film
+        self.eqs = {}
+        self.spectra = {}
+        self._events = None  # the bed's own hits (tools/bedhits.py), found when first asked
+        self.harmony = json.loads((ROOT / "docs" / "bed_harmony.json").read_text()) if music == "bed" else None
+        self.dips = []  # (from, to): where the bed dips by design
 
     # ---- helpers
     def on(self, ch):
@@ -958,11 +439,182 @@ class Film:
         return any(a <= t < b for a, b in self.rests(ch))
 
     def seed(self, q, k, part=0):
-        """ch01 keeps the approved sketch's seeds; every other cue gets its own."""
+        """ch01 keeps its first-pass seeds (SEED01); every other cue gets its own."""
         if q["ch"] == "ch01" and q["name"] in SEED01:
             s = SEED01[q["name"]]
             return k if s is None else s[part]
         return zlib.crc32(f"{q['ch']}/{q['name']}/{k}/{part}".encode()) % 1000003
+
+    # ---- levels: every effect is set from the music around it
+    def set_reference(self, x):
+        """The music the effects are measured against: `x`, stereo at bus scale from t0 (the bed without its designed dips,
+        or the synthesized score). The bed's first bar fades in: it is replaced, in the reference only, by the second
+        bar, so the opening effects are judged against the music that is coming, not its silence. Also keeps the
+        music's spectral gaps (its fine structure, in the intro and in the body)."""
+        x = x.copy()
+        nb = int(round(4 * self.beat * SR))
+        if self.t0 < 1e-9 and self.music_mode == "bed" and len(x) > 2 * nb:
+            x[:nb] = x[nb: 2 * nb]
+        self.ref_audio = x
+        self.ref = meter.reference(x, HOP)
+        t5 = self.chs["ch05"]["start"]
+        for part, (a, b) in {"intro": (max(self.t0, 4 * self.beat), t5), "body": (max(self.t0, t5), self.t1)}.items():
+            i0, i1 = int((a - self.t0) * SR), int((b - self.t0) * SR)
+            if i1 - i0 > 6 * SR:
+                self.gaps[part] = meter.fine_structure(x[i0:i1])
+
+    def class_spectra(self):
+        """The raw spectrum of each paper/UI class: the mean over its events of their 1/3-octave levels (dB, each band's
+        loudest window), each floored 45 dB under its loudest band."""
+        acc = {}
+        for e in self.paper:
+            pad = np.zeros((max(0, int(0.16 * SR) - len(e["sig"])), 2))
+            lv = meter.levels(np.concatenate([e["sig"], pad]), HOP)["bands"]
+            lvl = meter.db(lv.max(axis=1))
+            acc.setdefault(e["cls"], []).append(np.maximum(lvl, lvl.max() - 45))
+        return {c: np.mean(v, axis=0) for c, v in acc.items()}
+
+    def eq_points(self, cls, at):
+        """A class's EQ at film time `at` (Hz, dB points): the gains that turn the class's raw spectrum into its designed
+        one (CLASSES), lifting at most MATCH_BOOST and cutting at most MATCH_CUT dB, plus the gaps of the music in that
+        part of the film carved in (the EQ gains where the music is thin and gives where it is dense, 200 Hz - 4 kHz)."""
+        part = "intro" if at < self.chs["ch05"]["start"] else "body"
+        if part not in self.gaps:
+            part = next(iter(self.gaps), None)
+        key = (cls, part)
+        if key not in self.eqs:
+            spec, f = CLASSES[cls], meter.CENTRES
+            target = spec["tilt"] * np.log2(f / 1000) - 12 * np.maximum(0, np.log2(spec["fh"] / f)) \
+                - 12 * np.maximum(0, np.log2(f / spec["fl"]))
+            g = np.clip(target - self.spectra[cls], -MATCH_CUT, MATCH_BOOST)
+            g = np.convolve(np.pad(g, 1, mode="edge"), [0.25, 0.5, 0.25], mode="valid")
+            g -= g.max()
+            grid = 60 * 2 ** (np.arange(int(6 * math.log2(16000 / 60)) + 1) / 6)
+            lg = np.interp(np.log(grid), np.log(f), g)
+            lg = np.where(grid < f[0], g[0] - 12 * np.log2(f[0] / grid), lg)  # 12 dB/oct below the first band
+            lg = np.where(grid > f[-1], g[-1] - 6 * np.log2(grid / f[-1]), lg)  # 6 dB/oct above the last
+            if part is not None:
+                fc, dev = self.gaps[part]
+                carve = np.interp(np.log(grid), np.log(fc), np.clip(-GAP_K * dev, -GAP_MAX, GAP_MAX))
+                taper = np.clip(np.log2(grid / 100), 0, 1) * np.clip(np.log2(8000 / grid), 0, 1)  # in over 100-200 Hz, out over 4-8 kHz
+                lg = lg + carve * taper
+            self.eqs[key] = tuple((round(float(a), 1), round(float(b), 2)) for a, b in zip(grid, lg))
+        return self.eqs[key]
+
+    def ref_db(self, a, key="loud"):
+        """The music's level (dB) `a` s after t0, in the reference."""
+        j = int(np.clip(round(a / HOP), 0, len(self.ref[key]) - 1))
+        return float(meter.db(self.ref[key][j]))
+
+    def fx(self, q, cls, sig, at, pan=0.0, rel=0.0):
+        """A paper or UI sound of class `cls` for cue `q`, sounding at film time `at`. Its EQ and its level are set in
+        finalize(): the class's spectrum, and the class's `poke` (plus `rel` dB) over the music around it."""
+        st = pan_stereo(sig, pan)
+        a = at - self.t0
+        if a < 0:
+            st, a = st[int(-a * SR):], 0.0
+        self.paper.append({"q": q, "cls": cls, "sig": st, "at": a, "rel": rel})
+
+    def hit(self, q, layers, at, rel, what):
+        """A pitched hit for cue `q`. `layers` is [(stem, sig, gain_db, pan)]: the balance inside the hit (gains before the
+        stems' trims). The whole hit is set to `rel` dB over the music around it (loudness, its loudest 100 ms)."""
+        n = max(len(sig) for _, sig, _, _ in layers) + SR // 4
+        mix = np.zeros((n, 2))
+        for stem, sig, g, pan in layers:
+            st = pan_stereo(sig, pan) * 10 ** ((g + STEMS[stem]) / 20)
+            mix[: len(st)] += st
+        peak = float(meter.db(meter.levels(mix, HOP)["loud"].max()))
+        shift = self.ref_db(max(at - self.t0, 0.0)) + rel - peak
+        for stem, sig, g, pan in layers:
+            self.add(sig, at, g + shift, pan=pan, stem=stem)
+        self.log.append({"hit": what, "ch": q["ch"], "t": round(q["t"], 4), "at": round(at, 4), "rel": rel, "shift_db": round(shift, 2)})
+
+    def finalize(self):
+        """Shape every paper and UI event, set its level and put it on the bus.
+        1. Each class's EQ is matched to its designed spectrum (CLASSES) from the events' raw spectra, and the music's gaps
+           are carved in.
+        2. Each event alone is set so that its loudest 100 ms stands its class's `poke` (plus its `rel`) over the music
+           around it, and no single band from 500 Hz up stands more than BAND_CAP over it.
+        3. All events together are measured the way tools/sfxcheck.py measures them, and any event that, with its
+           neighbours, still pokes out over POKE_LIMIT (or over BAND_CAP in a band) is lowered, with the events it
+           overlaps, until none does."""
+        ev = self.paper
+        if not ev:
+            return
+        n = self.bus.n
+        nf = len(self.ref["loud"])
+        self.spectra = self.class_spectra()
+        for e in ev:
+            e["sig"] = shape(e["sig"], self.eq_points(e["cls"], e["at"] + self.t0))
+            pad = np.zeros((max(0, int(0.16 * SR) - len(e["sig"])), 2))
+            r = meter.poke(meter.levels(np.concatenate([e["sig"], pad]), HOP), self.ref, int(e["at"] / HOP))
+            e["gain"] = min(CLASSES[e["cls"]]["poke"] + e["rel"] - r["poke"], BAND_CAP - r["guard"])
+            e["dur"] = len(e["sig"]) / SR
+            e["win"] = meter.event_frames(e["at"], e["dur"], nf, HOP)
+        pad = int(round(meter.WIN / HOP))  # frames in a level window
+        for it in range(10):
+            stem = np.zeros((n, 2))
+            for e in ev:
+                i = int(round(e["at"] * SR))
+                j = min(n, i + len(e["sig"]))
+                if j > i:
+                    stem[i:j] += 10 ** (e["gain"] / 20) * e["sig"][: j - i]
+            lv = meter.levels(stem, HOP)
+            red = np.zeros(len(ev))
+            for a, e in enumerate(ev):
+                f0, f1 = e["win"]
+                if f1 <= f0:
+                    continue
+                s = {k: (v[f0:f1] if k != "bands" else v[:, f0:f1]) for k, v in lv.items()}
+                r = meter.poke(s, self.ref, f0)
+                e["poke"], e["loud"], e["mids"], e["guard"] = r["poke"], r["loud"], r["mids"], r["guard"]
+                ex = max(r["poke"] - (POKE_LIMIT - 0.15) if r["poke"] > POKE_LIMIT - 0.05 else 0.0,
+                         r["guard"] - (BAND_CAP - 0.15) if r["guard"] > BAND_CAP - 0.05 else 0.0)
+                if ex > 0:
+                    for b, o in enumerate(ev):  # every event whose sound falls in one of this event's 100 ms windows
+                        if o["win"][0] - pad < f1 and f0 - pad < o["win"][1]:
+                            red[b] = max(red[b], ex)
+            if not red.any():
+                break
+            for b, o in enumerate(ev):
+                o["gain"] -= red[b]
+        for e in ev:
+            self.bus.add(e["sig"], e["at"], e["gain"], stem="sfx")
+            q = e["q"]
+            at = e["at"] + self.t0
+            self.log.append({"fx": q["name"], "ch": q["ch"], "t": round(q["t"], 4), "at": round(at, 4), "dur": round(e["dur"], 3),
+                             "cls": e["cls"], "gain_db": round(e["gain"], 2), "poke": round(e.get("poke", 0.0), 2),
+                             "loud": round(e.get("loud", 0.0), 2), "mids": round(e.get("mids", 0.0), 2),
+                             "guard": round(e.get("guard", 0.0), 2), "dip": any(a <= at < b for a, b in self.dips)})
+
+    # ---- the bed's harmony and its own hits (docs/bed_harmony.json, tools/bedharmony.py; tools/bedhits.py)
+    def harm(self, t):
+        """The chart entry (chord, bass, tones, extensions, the pitch classes that are safe and that hold) for the beat that
+        contains film time t: a hit on a beat line belongs to the beat it starts."""
+        k = int(math.floor(t / self.beat + 1e-3))
+        fs = self.harmony["film_sb"]
+        return self.harmony["beats"][fs[min(max(k, 0), len(fs) - 1)]]
+
+    def in_dip(self, t):
+        return any(a <= t < b for a, b in self.dips)
+
+    def doubled(self, t, window=0.045):
+        """Which of the bed's own hits an effect at film time t would double: for the bass and the keys, the offset (ms) of
+        the bed's nearest note or chord within `window` s, else None. Nothing is doubled where the bed is dipped out."""
+        out = {"bass": None, "keys": None}
+        if self.in_dip(t):
+            return out
+        if self._events is None:
+            import bedhits
+            self._events = bedhits.hits(bedhits.load_bed(BED), 0.0, None)
+        for e in self._events:
+            if e["cls"] in out and abs(e["t"] - t) <= window and (out[e["cls"]] is None or abs(e["t"] - t) < abs(out[e["cls"]] / 1000)):
+                out[e["cls"]] = round((e["t"] - t) * 1000, 1)
+        return out
+
+    def skip(self, q, why, whole=False):
+        """Log an effect (`whole`) or a layer of one left out because the bed already plays it."""
+        self.log.append({"skipped": q["name"], "ch": q["ch"], "t": round(q["t"], 4), "why": why, **({"whole": True} if whole else {})})
 
     # ---- music
     def music(self):
@@ -985,11 +637,12 @@ class Film:
                 self.drums(ch)
                 self.comping(ch)
         self.moments()
+        self.set_reference(self.bus.mix()[: int(round((self.t1 - self.t0) * SR))])
 
     def bed_music(self):
         """The Mixkit bed (tools/bed.py) under the selected chapters. It dips where the score breaks: nearly out from
         ch01's drop until ch02 (the bass note falls, the hole tears, the question lands alone); and from ch07's push
-        until ch08 it thins to a dark, low trace under one bowed note on its bass."""
+        until ch08 it thins to a dark, low trace under one held low note on its bass (fx_push)."""
         bed = wavfile.read(BED)[1].astype(np.float64)
         t1 = max(self.chs[c]["end"] for c in self.sel)
         i0, i1 = int(round(self.t0 * SR)), int(round(t1 * SR))
@@ -1002,6 +655,7 @@ class Film:
         g *= 10 ** (BED_INTRO_DB * np.clip((t5 - t) / 0.02, 0, 1) / 20)
         t10 = self.chs["ch10"]["start"]
         g *= 10 ** (BED_RESOLVE_DB * np.clip((t - t10) / (8 * self.beat), 0, 1) / 20)
+        g_static = g.copy()  # without the dips: the music the effects are judged against
 
         def dip(a, b, depth_db, fade_in, fade_out):
             d = 10 ** (depth_db / 20)
@@ -1013,31 +667,18 @@ class Film:
         for q in self.cue("ch01", "drop"):
             gg, _ = dip(q["t"], self.chs["ch02"]["start"], -32, 0.15, 0.02)
             g *= gg
+            self.dips.append((q["t"], self.chs["ch02"]["start"]))
             self.note("bed", "ch01", q["t"], self.chs["ch02"]["start"] - q["t"], [], what="dips out")
         for q in self.cue("ch07", "push"):
             end = self.chs["ch08"]["start"]
             gg, w = dip(q["t"], end, -26, 0.35, 0.02)
             g *= gg
+            self.dips.append((q["t"], end))
             dark += 10 ** (-9 / 20) * w
-            if self.on("ch07"):
-                _, root = self.bed_pcs(q["t"])
-                m = min(m for m in range(28, 41) if m % 12 == root)
-                self.add(arco(hz(name_of(m)), end - q["t"] + 0.02, 0.8, seed=7001), q["t"], -6, stem="bass")
-                self.note("arco", "ch07", q["t"], end - q["t"], [m], what="low sustained note")
             self.note("bed", "ch07", q["t"], end - q["t"], [], what="thins")
         lp = band(seg, hi=320, order=4)
         self.add(seg * g[:, None] + lp * dark[:, None], self.t0, BED_GAIN, stem="bed")
-
-    def bed_pcs(self, t, n=4):
-        """What the bed is sounding at film time t (this beat and the next): its strongest pitch classes, strongest
-        first (at least 45 % of the strongest), and its bass note's pitch class."""
-        k = int(math.floor(t / self.beat + 1e-3))  # a hit on a beat line belongs to the beat it starts
-        bs = self.bed_beats
-        a, b = bs[min(k, len(bs) - 1)], bs[min(k + 1, len(bs) - 1)]
-        c = 0.6 * np.array(a["chroma"]) + 0.4 * np.array(b["chroma"])
-        lo = 0.6 * np.array(a["bass"]) + 0.4 * np.array(b["bass"])
-        order = [int(i) for i in np.argsort(-c) if c[i] >= 0.45 * c.max()][:n]
-        return order, int(np.argmax(lo))
+        self.set_reference(seg * g_static[:, None] * 10 ** (BED_GAIN / 20))
 
     def ch01_music(self):
         """The approved sketch: walking bass from bar 1, brushes from bar 2 until the drop."""
@@ -1261,74 +902,63 @@ SEED01 = {"complaint": [0], "bubble": None, "caption": None, "scissor": [3], "sp
 PAN01 = {"complaint": -0.35, "caption": 0.25, "scissor": 0.1, "slide": -0.4, "snip": 0.15, "drop": 0.1, "tear": 0.05}
 
 
+
 # ---------------------------------------------------------------------------------------------------- the effects
 # The cue vocabulary of docs/ANIMATION_GUIDE.md, section 12. Handlers run name by name in this order (ch01's names
-# first, in the approved sketch's order), each over its cues chapter by chapter; k is the cue's place in its
-# chapter's run of that name.
+# first, in the first sound pass's order), each over its cues chapter by chapter; k is the cue's place in its
+# chapter's run of that name. Paper and UI sounds go through f.fx (a class, a level from the music); pitched hits go
+# through f.hit (a level over the music) or f.add.
 def fx_complaint(f, q, k, run):
-    f.add(pop(0.9, seed=f.seed(q, k)), q["t"], -11, pan=pan_of(q, "complaint"))
+    f.fx(q, "tick", pop(0.9, seed=f.seed(q, k)), q["t"], pan=pan_of(q, "complaint"), rel=0.3)
 
 
 def fx_bubble(f, q, k, run):
     if "land" in q:  # the hook's bubble comes back and snaps flush: its tick, then a warm chord
-        f.add(tick(1500, seed=f.seed(q, k)), q["t"], -17, pan=q.get("pan", -0.3))
-        f.add(snap_fx(0.6, seed=f.seed(q, k, 1)), q["land"], -19, pan=q.get("pan", -0.3))
-        if f.music_mode == "bed":
-            pcs, _ = f.bed_pcs(q["land"])
-            v = place(pcs, 55, 71)
-        else:
-            sym, key = f.chord_at(q["land"] + 0.01)
-            v = voicing(sym, key, lo=52, hi=71)
-        f.add(vibes([name_of(m) for m in v], 3.4, 0.7, seed=f.seed(q, k, 2), at=q["land"], damp=2.8), q["land"], -15, stem="vibes")
-        f.note("vibes", q["ch"], q["land"], 2.8, v, what="warm chord")
+        f.fx(q, "tick", tap(2400, 0.0035, 0.3, seed=f.seed(q, k)), q["t"], pan=q.get("pan", -0.3))
+        f.fx(q, "hit", snap_fx(0.6, seed=f.seed(q, k, 1)), q["land"], pan=q.get("pan", -0.3), rel=-1.5)
+        pitched_warm(f, q, k)
         return
     plain = [x for x in run if "land" not in x]
     i = plain.index(q)
     last = i == len(plain) - 1
-    up = 0 if q["ch"] == "ch01" else 4
-    f.add(tick(1500 + 180 * ((i * 7) % 5), muffled=last, seed=f.seed(q, i)), q["t"], (-17 if not last else -19) + up,
-          pan=0.4 if i % 2 else -0.3)
+    f.fx(q, "tick", tap(2100 + 300 * ((i * 7) % 5), 0.0035, 0.3, seed=f.seed(q, i), dull=last), q["t"],
+         pan=0.4 if i % 2 else -0.3, rel=-1.5 if last else 0.0)
 
 
 def fx_caption(f, q, k, run):
-    f.add(stamp(0.9, seed=f.seed(q, k)), q["t"] - 0.005, -9, pan=pan_of(q, "caption"))
+    f.fx(q, "hit", stamp(0.9, seed=f.seed(q, k)), q["t"] - 0.005, pan=pan_of(q, "caption"))
 
 
 def fx_scissor(f, q, k, run):
-    f.add(cut_rasp(0.42, 0.8, seed=f.seed(q, k)), q["t"], -13, pan=pan_of(q, "scissor"))
+    f.fx(q, "cut", cut_rasp(0.42, 0.8, seed=f.seed(q, k)), q["t"], pan=pan_of(q, "scissor"))
 
 
 def fx_split(f, q, k, run):
-    up = 0 if q["ch"] == "ch01" else 2
-    f.add(swoosh(0.6, 1600, 450, 0.7, seed=f.seed(q, k, 0)), q["t"], -15 + up, pan=-0.6)
-    f.add(swoosh(0.6, 1500, 420, 0.7, seed=f.seed(q, k, 1)), q["t"] + 0.07, -15 + up, pan=0.6)
-    if q["ch"] == "ch01":  # the low piano cluster under the hook's cut
-        f.add(piano(["C2", "C#2", "D2", "G2"], 2.4, 0.45, seed=f.seed(q, k, 2), spread=0.1), q["t"], -16, stem="piano")
-        f.note("piano", "ch01", q["t"], 2.4, ["C2", "C#2", "D2", "G2"], what="cluster")
+    f.fx(q, "move", swoosh(0.6, 1600, 450, 0.7, seed=f.seed(q, k, 0)), q["t"], pan=-0.6)
+    f.fx(q, "move", swoosh(0.6, 1500, 420, 0.7, seed=f.seed(q, k, 1)), q["t"] + 0.07, pan=0.6)
+    if q["ch"] == "ch01":  # the low cluster under the hook's cut
+        pitched_cluster(f, q, k)
 
 
 def fx_slide(f, q, k, run):
     dur = q.get("land", q["t"] + 0.4) - q["t"] + 0.08
     st = 2 ** (SLIDE_STEP.get(q["ch"], 0) * q.get("i", 0) / 12)
-    up = 0 if q["ch"] == "ch01" else 1.5
-    f.add(swoosh(dur, 700 * st, 1700 * st, 0.6, seed=f.seed(q, k, 0)), q["t"], -17 + up, pan=pan_of(q, "slide"))
-    f.add(stamp(0.35, seed=f.seed(q, k, 1)), q.get("land", q["t"]), -21 + up, pan=q.get("pan", 0.0) * 0.5)
+    f.fx(q, "move", swoosh(dur, 700 * st, 1700 * st, 0.6, seed=f.seed(q, k, 0)), q["t"], pan=pan_of(q, "slide"))
+    f.fx(q, "hit", stamp(0.35, seed=f.seed(q, k, 1)), q.get("land", q["t"]), pan=q.get("pan", 0.0) * 0.5, rel=-4.0)
 
 
 def fx_snip(f, q, k, run):
     if q.get("n", 2) == 1:  # one snip, in a run: kept down, as texture
-        f.add(snip(0.7, seed=f.seed(q, k)), q["t"], (-14 - 2 * (k % 2)) if len(run) > 1 else -10, pan=q.get("pan", 0.15))
+        f.fx(q, "cut", snip(0.7, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.15),
+             rel=(-2.5 - 1.5 * (k % 2)) if len(run) > 1 else 0.0)
         return
-    f.add(snip(0.8, seed=f.seed(q, k, 0)), q["t"], -12, pan=pan_of(q, "snip"))
-    f.add(snip(0.75, seed=f.seed(q, k, 1)), q["t"] + 0.11, -13, pan=q.get("pan", 0.2))
+    f.fx(q, "cut", snip(0.8, seed=f.seed(q, k, 0)), q["t"], pan=pan_of(q, "snip"))
+    f.fx(q, "cut", snip(0.75, seed=f.seed(q, k, 1)), q["t"] + 0.11, pan=q.get("pan", 0.2), rel=-1.0)
 
 
 def fx_drop(f, q, k, run):
-    f.add(swoosh(0.55, 1300, 280, 0.6, seed=f.seed(q, k)), q["t"], -18, pan=pan_of(q, "drop"))
-    stab_t = next((s["t"] for s in f.cue(q["ch"], "stab") if s["t"] > q["t"]), None)
-    ring = (stab_t if stab_t else q["t"] + 1.4) - q["t"] + 0.25  # it rings on under the tear, no gap
-    f.add(pluck_bass(hz("A1"), ring, 0.85, fall=(0.08, 7, 0.7)), q["t"] - 0.08, -9, stem="bass")  # one bass note falls
-    f.note("bass", q["ch"], q["t"] - 0.08, ring, ["A1"], what="falls a fifth")
+    f.fx(q, "move", swoosh(0.55, 1300, 280, 0.6, seed=f.seed(q, k)), q["t"], pan=pan_of(q, "drop"))
+    pitched_drop(f, q, k)
 
 
 def fx_tear(f, q, k, run):
@@ -1337,28 +967,13 @@ def fx_tear(f, q, k, run):
     else:
         stab_t = next((s["t"] for s in f.cue(q["ch"], "stab") if 0 < s["t"] - q["t"] <= 1.5), None)
         end = stab_t if stab_t else q["t"] + 0.65
-    f.add(tear(end - q["t"], 0.85, seed=f.seed(q, k)), q["t"], -12 if q["ch"] == "ch01" else -10, pan=pan_of(q, "tear"))
+    f.fx(q, "cut", tear(end - q["t"], 0.85, seed=f.seed(q, k)), q["t"], pan=pan_of(q, "tear"))
 
 
-def fx_stab(f, q, k, run):
+def legacy_stab(f, q, k, run):
+    """The synthesized score's stab (`--music synth`): piano, bass in two octaves and a brush crash, on the score's own chord."""
     ch = q["ch"]
     at = q["t"]
-    if f.music_mode == "bed" and ch != "ch01":  # over the Mixkit bed: the stab plays what the bed is sounding
-        pcs, root = f.bed_pcs(at)
-        low = min(m for m in range(43, 55) if m % 12 == root)
-        v = [low] + [m for m in place([p for p in pcs if p != root] or pcs, 55, 67) if m != low]
-        if q.get("soft"):
-            f.add(piano([name_of(m) for m in v], 2.4, 0.6, seed=f.seed(q, k)), at, -12, stem="piano")
-            f.note("piano", ch, at, 2.4, v, what="soft stab")
-            return
-        b1 = min(m for m in range(36, 48) if m % 12 == root)
-        f.add(piano([name_of(m) for m in v], 2.6, 0.95, seed=f.seed(q, k, 0)), at, -5, stem="piano")
-        f.add(pluck_bass(hz(name_of(b1)), 2.0, 1.0, seed=f.seed(q, k, 1)), at, -7, stem="bass")
-        f.add(pluck_bass(hz(name_of(b1 - 12)), 2.0, 0.9, seed=f.seed(q, k, 2)), at, -9, stem="bass")
-        f.add(crash(2.6, 0.8, seed=f.seed(q, k, 3)), at, -15, pan=0.3, stem="drums")
-        f.note("piano", ch, at, 2.6, v, what="stab")
-        f.note("bass", ch, at, 2.0, [b1, b1 - 12], what="stab")
-        return
     if q.get("soft"):  # a small stab: the piano alone, on the chord of the moment with its root
         sym, key = f.chord_at(at + 0.01)
         r = chord(sym)[0]
@@ -1377,11 +992,11 @@ def fx_stab(f, q, k, run):
     f.note("bass", ch, at, ring, [b1, b2], what="stab")
 
 
-def fx_alarm(f, q, k, run):
+def legacy_alarm(f, q, k, run):
     ch = q["ch"]
     h1, h2 = q["t"], f.alarm_second(q["t"])
     for j, (at, notes) in enumerate(zip((h1, h2), ALARM)):
-        dur = (h2 - h1) if j == 0 else (1.0 if f.music_mode == "bed" else min(1.2, f.next_bass(ch, h2) - h2 + 0.02))
+        dur = (h2 - h1) if j == 0 else min(1.2, f.next_bass(ch, h2) - h2 + 0.02)
         f.add(brass(notes, min(0.55, dur + 0.1) if j == 0 else 0.7, 0.95, seed=f.seed(q, k, 2 * j)), at, -7, pan=0.05, stem="brass")
         f.add(snare(0.9 if j == 0 else 0.8, seed=f.seed(q, k, 2 * j + 1)), at, -12, pan=0.1, stem="drums")
         f.add(pluck_bass(hz(notes[0]), dur, 0.95, seed=f.seed(q, k, 10 + j)), at, -8, stem="bass")
@@ -1403,177 +1018,373 @@ def fx_chord(f, q, k, run):
     f.note("bass", q["ch"], at, dur, list(FINAL["bass"]), what="final chord")
 
 
-def fx_push(f, q, k, run):
-    pass  # the music thins to the bow's low note (Film.moments; over the bed, Film.bed_music)
-
-
 def fx_slam(f, q, k, run):
-    f.add(stamp(0.9, seed=f.seed(q, k)), q["t"] - 0.005, -10, pan=q.get("pan", 0.0))
+    f.fx(q, "hit", stamp(0.9, seed=f.seed(q, k)), q["t"] - 0.005, pan=q.get("pan", 0.0))
 
 
 def fx_stamp(f, q, k, run):
-    f.add(stamp_deep(0.9, seed=f.seed(q, k)), q.get("land", q["t"]) - 0.005, -9, pan=q.get("pan", 0.0))
+    f.fx(q, "hit", stamp_deep(0.9, seed=f.seed(q, k)), q.get("land", q["t"]) - 0.005, pan=q.get("pan", 0.0))
 
 
 def fx_rise(f, q, k, run):
     dur = q.get("land", q["t"] + 0.35) - q["t"] + 0.05
-    f.add(swoosh(dur, 650, 2100, 0.5, seed=f.seed(q, k)), q["t"], -15, pan=q.get("pan", 0.0))
+    f.fx(q, "move", swoosh(dur, 650, 2100, 0.5, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0), rel=-0.5)
 
 
 def fx_bar(f, q, k, run):
     dur = q.get("land", q["t"] + 0.3) - q["t"] + 0.05
-    f.add(swoosh(dur, 900, 2600, 0.6, seed=f.seed(q, k, 0)), q["t"], -14, pan=q.get("pan", 0.0))
-    f.add(thud_fx(0.6, seed=f.seed(q, k, 1)), q.get("land", q["t"] + 0.3), -16, pan=q.get("pan", 0.0))
+    f.fx(q, "move", swoosh(dur, 900, 2600, 0.6, seed=f.seed(q, k, 0)), q["t"], pan=q.get("pan", 0.0))
+    f.fx(q, "hit", thud_fx(0.6, seed=f.seed(q, k, 1)), q.get("land", q["t"] + 0.3), pan=q.get("pan", 0.0), rel=-2.0)
 
 
 def fx_wipe(f, q, k, run):
     dur = max(0.35, q.get("land", q["t"] + 0.6) - q["t"] + 0.1)
-    f.add(swoosh(dur, 450, 1500, 0.7, seed=f.seed(q, k)), q["t"], -13, pan=q.get("pan", 0.0))
+    f.fx(q, "move", swoosh(dur, 450, 1500, 0.7, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0))
 
 
 def fx_pan(f, q, k, run):
     dur = max(0.3, q.get("land", q["t"] + 0.6) - q["t"] + 0.1)
-    f.add(swoosh(dur, 350, 900, 0.6, seed=f.seed(q, k)), q["t"], -18, pan=q.get("pan", -0.2))
+    f.fx(q, "move", swoosh(dur, 350, 900, 0.6, seed=f.seed(q, k)), q["t"], pan=q.get("pan", -0.2), rel=-1.5)
 
 
 def fx_doors(f, q, k, run):
-    f.add(swoosh(0.7, 1100, 380, 0.7, seed=f.seed(q, k, 0)), q["t"], -12, pan=-0.6)
-    f.add(swoosh(0.7, 1000, 350, 0.7, seed=f.seed(q, k, 1)), q["t"] + 0.05, -12, pan=0.6)
+    f.fx(q, "move", swoosh(0.7, 1100, 380, 0.7, seed=f.seed(q, k, 0)), q["t"], pan=-0.6)
+    f.fx(q, "move", swoosh(0.7, 1000, 350, 0.7, seed=f.seed(q, k, 1)), q["t"] + 0.05, pan=0.6)
 
 
 def fx_lift(f, q, k, run):
-    f.add(swoosh(0.28, 500, 1800, 0.6, seed=f.seed(q, k, 0)), q["t"], -15, pan=q.get("pan", 0.0))
-    f.add(snap_fx(0.5, seed=f.seed(q, k, 1)), q["t"] + 0.26, -17, pan=q.get("pan", 0.0))
+    f.fx(q, "move", swoosh(0.28, 500, 1800, 0.6, seed=f.seed(q, k, 0)), q["t"], pan=q.get("pan", 0.0))
+    f.fx(q, "hit", snap_fx(0.5, seed=f.seed(q, k, 1)), q["t"] + 0.26, pan=q.get("pan", 0.0), rel=-1.5)
 
 
 def fx_scroll(f, q, k, run):
-    f.add(swoosh(0.4, 1400, 800, 0.5, seed=f.seed(q, k)), q["t"], -19, pan=q.get("pan", 0.0))
+    f.fx(q, "move", swoosh(0.4, 1400, 800, 0.5, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0), rel=-2.0)
 
 
 def fx_flip(f, q, k, run):
-    f.add(flip_fx(0.7, seed=f.seed(q, k)), q["t"], -15, pan=q.get("pan", 0.0))
+    f.fx(q, "move", flip_fx(0.7, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0))
 
 
-def fx_chime(f, q, k, run):
-    # synth: an open fifth on A, a chord tone or a tension over every chord under ch04's flips; bed: two of its notes
-    notes = ["A4", "E5"]
-    if f.music_mode == "bed":
-        pcs, _ = f.bed_pcs(q["t"])
-        notes = [name_of(m) for m in place(pcs[:2], 67, 79)]
+def legacy_chime(f, q, k, run):
+    notes = ["A4", "E5"]  # an open fifth on A: a chord tone or a tension over every chord under ch04's flips
     f.add(vibes(notes, 2.2, 0.6, seed=f.seed(q, k), at=q["t"], depth=0.15), q["t"], -12, pan=q.get("pan", 0.0), stem="vibes")
     f.note("vibes", q["ch"], q["t"], 2.2, notes, what="chime")
 
 
 def fx_cell(f, q, k, run):
-    f.add(cell_fx(0.4, seed=f.seed(q, k)), q["t"], -20 - 3 * ((k * 5) % 3) / 2, pan=q.get("pan", 0.0))
+    f.fx(q, "texture", cell_fx(0.4, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0), rel=-1.5 * ((k * 5) % 3) / 1.0)
 
 
 def fx_sweep(f, q, k, run):
     dur = max(0.2, q.get("land", q["t"] + 0.6) - q["t"])
-    f.add(sweep_fx(dur, 0.5, seed=f.seed(q, k)), q["t"], -19, pan=q.get("pan", 0.0))
+    f.fx(q, "texture", sweep_fx(dur, 0.5, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0), rel=1.0)
 
 
 def fx_count(f, q, k, run):
     land = q.get("land", q["t"] + 0.6)
     if land - q["t"] > 0.08:
-        f.add(rattle(land - q["t"], 0.5, seed=f.seed(q, k, 0)), q["t"], -22, pan=q.get("pan", 0.0))
-    f.add(lock_fx(0.7, seed=f.seed(q, k, 1)), land, -14, pan=q.get("pan", 0.0))
+        f.fx(q, "texture", rattle(land - q["t"], 0.5, seed=f.seed(q, k, 0)), q["t"], pan=q.get("pan", 0.0))
+    f.fx(q, "hit", lock_fx(0.7, seed=f.seed(q, k, 1)), land, pan=q.get("pan", 0.0), rel=-0.5)
 
 
 def fx_tick(f, q, k, run):
-    f.add(tick(2600, seed=f.seed(q, k)), q.get("land", q["t"]), -15, pan=q.get("pan", 0.0))
+    f.fx(q, "tick", tap(3600, 0.003, 0.25, seed=f.seed(q, k)), q.get("land", q["t"]), pan=q.get("pan", 0.0))
 
 
-def fx_climb(f, q, k, run):
+def legacy_climb(f, q, k, run):
     steps = ["D6", "F#6", "A6", "D7"]
     note = steps[min(q.get("i", k), len(steps) - 1)]
-    if f.music_mode == "bed":  # each step a note the bed is sounding on its beat, above the step before it
-        prev = 85
-        for x in run[: run.index(q) + 1]:
-            pcs, _ = f.bed_pcs(x["t"])
-            cand = [m + 12 * o for m in place(pcs[:3], 86, 97) for o in (0, 1)]
-            prev = min((m for m in cand if m > prev), default=prev + 12)
-        note = name_of(prev)
-    f.add(tick(hz(note), seed=f.seed(q, k)), q["t"], -13, pan=q.get("pan", 0.0))
+    f.add(tone_tick(hz(note), seed=f.seed(q, k)), q["t"], -13, pan=q.get("pan", 0.0), stem="tone")
     f.note("tick", q["ch"], q["t"], 0.1, [note], what="climb")
 
 
 def fx_pin(f, q, k, run):
-    f.add(pin_fx(0.7, seed=f.seed(q, k)), q.get("land", q["t"]), -11, pan=q.get("pan", 0.0))
+    f.fx(q, "hit", pin_fx(0.7, seed=f.seed(q, k)), q.get("land", q["t"]), pan=q.get("pan", 0.0))
 
 
 def fx_snap(f, q, k, run):
-    f.add(snap_fx(0.7, seed=f.seed(q, k)), q.get("land", q["t"]), -9, pan=q.get("pan", 0.0))
+    f.fx(q, "hit", snap_fx(0.7, seed=f.seed(q, k)), q.get("land", q["t"]), pan=q.get("pan", 0.0))
 
 
 def fx_click(f, q, k, run):
-    f.add(click_fx(0.6, seed=f.seed(q, k)), q.get("land", q["t"]), -11, pan=q.get("pan", 0.0))
+    f.fx(q, "hit", click_fx(0.6, seed=f.seed(q, k)), q.get("land", q["t"]), pan=q.get("pan", 0.0))
 
 
-def fx_bell(f, q, k, run):
+def legacy_bell(f, q, k, run):
     note = "D6"
-    if f.music_mode == "bed":
-        pcs, _ = f.bed_pcs(q["t"])
-        note = name_of(place(pcs[:1], 84, 95)[0])
-    f.add(bell_fx(note, 0.6, seed=f.seed(q, k)), q["t"], -17, pan=q.get("pan", 0.0))
+    f.add(bell_fx(note, 0.6, seed=f.seed(q, k)), q["t"], -17, pan=q.get("pan", 0.0), stem="tone")
     f.note("bell", q["ch"], q["t"], 1.8, [note], what="bell")
 
 
 def fx_open(f, q, k, run):
-    f.add(creak_fx(0.45, 0.6, seed=f.seed(q, k)), q["t"], -13, pan=q.get("pan", 0.0))
+    f.fx(q, "move", creak_fx(0.45, 0.6, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0))
 
 
-def fx_band(f, q, k, run):
+def legacy_band(f, q, k, run):
     dur = max(0.2, q.get("land", q["t"] + 0.8) - q["t"])
     a, b = "D4", "A4"
-    if f.music_mode == "bed":  # from the bed's lowest sounding note to its highest, in one octave
-        pcs, _ = f.bed_pcs(q.get("land", q["t"]))
-        ms = place(pcs, 62, 73)
-        a, b = name_of(ms[0]), name_of(ms[-1] if ms[-1] > ms[0] else ms[0] + 7)
-    f.add(rising_tone(dur, hz(a), hz(b), 0.5), q["t"], -24, pan=q.get("pan", 0.0))
+    f.add(rising_tone(dur, hz(a), hz(b), 0.5), q["t"], -24, pan=q.get("pan", 0.0), stem="tone")
     f.note("tone", q["ch"], q["t"], dur, [a, b], what="rising tone")
 
 
 def fx_friction(f, q, k, run):
     land = q.get("land", q["t"] + 0.6)
-    f.add(friction_fx(land - q["t"], 0.6, seed=f.seed(q, k, 0)), q["t"], -12, pan=q.get("pan", 0.0))
-    f.add(thud_fx(0.8, seed=f.seed(q, k, 1)), land, -12, pan=q.get("pan", 0.0))
+    f.fx(q, "texture", friction_fx(land - q["t"], 0.6, seed=f.seed(q, k, 0)), q["t"], pan=q.get("pan", 0.0), rel=2.0)
+    f.fx(q, "hit", thud_fx(0.8, seed=f.seed(q, k, 1)), land, pan=q.get("pan", 0.0))
 
 
 def fx_thud(f, q, k, run):
-    f.add(thud_fx(0.8, seed=f.seed(q, k)), q.get("land", q["t"]), -13, pan=q.get("pan", 0.0))
+    f.fx(q, "hit", thud_fx(0.8, seed=f.seed(q, k)), q.get("land", q["t"]), pan=q.get("pan", 0.0))
 
 
-def fx_slab(f, q, k, run):
+def legacy_slab(f, q, k, run):
     notes = SLABS.get(q["ch"], ["D2"])
-    if f.music_mode == "bed":  # the bed's notes, rising across the run (ch02's skyline: over two octaves)
-        pcs, root = f.bed_pcs(run[len(run) // 2]["t"])
-        scale = sorted(set(pcs[:4] + [root]))
-        span = 3 if len(run) > 8 else 1
-        base = {"ch02": 50, "ch09": 50}.get(q["ch"], 41)  # ch02's skyline above the bed's bass (it re-enters there)
-        notes = [name_of(m) for m in sorted(set(base + (pc - base) % 12 + 12 * o for o in range(span) for pc in scale))]
     i = q.get("i", k)
     n = len(run)
     name = notes[min(len(notes) - 1, i * len(notes) // max(n, len(notes)))] if n > len(notes) else notes[i % len(notes)]
-    f.add(slab_fx(name, 0.7, seed=f.seed(q, k)), q.get("land", q["t"]), -13 - (8 if n > 8 else 0), pan=q.get("pan", 0.0))
+    f.add(slab_fx(name, 0.7, seed=f.seed(q, k)), q.get("land", q["t"]), -13 - (8 if n > 8 else 0), pan=q.get("pan", 0.0), stem="tone")
 
 
 def fx_punch(f, q, k, run):
-    f.add(punch_fx(0.8, seed=f.seed(q, k)), q["t"], -9, pan=q.get("pan", 0.0))
+    f.fx(q, "hit", punch_fx(0.8, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0))
 
 
 def fx_flutter(f, q, k, run):
-    f.add(flutter_fx(1.1, 0.6, seed=f.seed(q, k), strips=1 if q.get("i") is not None else 5), q["t"], -11, pan=q.get("pan", 0.0))
+    f.fx(q, "texture", flutter_fx(1.1, 0.6, seed=f.seed(q, k), strips=1 if q.get("i") is not None else 5), q["t"],
+         pan=q.get("pan", 0.0), rel=1.5)
 
 
 def fx_sly(f, q, k, run):
     land = q.get("land", q["t"] + 0.5)
-    f.add(swoosh(land - q["t"] + 0.05, 900, 500, 0.6, seed=f.seed(q, k, 0)), q["t"], -15, pan=q.get("pan", -0.2))
-    f.add(scratch_fx(0.22, 0.6, seed=f.seed(q, k, 1)), land, -15, pan=q.get("pan", -0.2))
+    f.fx(q, "move", swoosh(land - q["t"] + 0.05, 900, 500, 0.6, seed=f.seed(q, k, 0)), q["t"], pan=q.get("pan", -0.2))
+    f.fx(q, "cut", scratch_fx(0.22, 0.6, seed=f.seed(q, k, 1)), land, pan=q.get("pan", -0.2))
 
 
 def fx_cut(f, q, k, run):
-    f.add(paper_tick(0.5, seed=f.seed(q, k)), q["t"], -19, pan=q.get("pan", 0.0))
+    f.fx(q, "hit", paper_tick(0.5, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0), rel=-1.0)
+
+
+# ---------------------------------------------------------------------------------------------------- the pitched effects
+# Over the bed each one is played on the bed's own voices (synth.keys, synth.bass_note), tuned to A4 = 441.3, on the chord
+# the bed plays on its beat (Film.harm), and set to a level over the music (Film.hit). A layer the bed already plays at that
+# instant (its bass note or its keys chord within 45 ms) is left out (Film.doubled). Over the synthesized score the old
+# handlers (legacy_*) play as they did.
+def chord_order(h, ring=False):
+    """The chord's pitch classes, best first: the chart's safe list, then the rest of its tones and extensions. For a note
+    that rings, the pitch classes that hold over the next four beats come first, chord tones before extensions."""
+    order = list(h["safe"])
+    for p in list(h["tones"]) + list(h["ext"]):
+        if p not in order:
+            order.append(p)
+    if ring:
+        base = list(order)
+        order.sort(key=lambda p: (p not in h["tones"], p not in h["hold"], base.index(p)))
+    return order
+
+
+def bar_extras(f, h):
+    """The consonant extensions the bed plays somewhere in this beat's bar (its 9th, its 13th on a chord that is not minor,
+    its major 7th on a major one) that are not chord tones here and do not clash with it: colour for a ringing voicing."""
+    bar = h["bar"]
+    seen = set()
+    for b in f.harmony["beats"]:
+        if b["bar"] == bar:
+            seen |= set(b["ext"])
+    r, q = h["root"], h["quality"]
+    ok = {(r + 2) % 12}
+    if "m" not in q or "maj" in q:
+        ok.add((r + 9) % 12)
+    if "maj" in q or q in ("", "6", "69"):
+        ok.add((r + 11) % 12)
+    return sorted(p for p in seen & ok if p not in h["tones"] and p not in h["avoid"])
+
+
+def voice(h, n, lo, hi, ring=False, extras=()):
+    """Up to `n` of the chord's pitch classes as MIDI notes in [lo, hi], ascending, each at its lowest place at or above lo;
+    `extras` (pitch classes) go above the highest of them, each at its nearest place over it."""
+    base = place(chord_order(h, ring)[:n], lo, hi)
+    top = max(base)
+    return sorted(set(base + [top + 1 + (p - top - 1) % 12 for p in extras]))
+
+
+def lowest(pc, lo, hi):
+    """The lowest MIDI note with pitch class pc in [lo, hi]."""
+    return next(m for m in range(lo, hi + 1) if m % 12 == pc)
+
+
+STAB_REL, STAB_REL_HOOK, SOFT_REL = 9.0, 15.0, 5.0  # dB over the music: the stab, ch01's (the hook's question, over the dipped bed), the soft one
+
+
+def fx_stab(f, q, k, run):
+    if f.music_mode != "bed":
+        return legacy_stab(f, q, k, run)
+    ch, at, soft = q["ch"], q["t"], bool(q.get("soft"))
+    h = f.harm(at)
+    dd = f.doubled(at)
+    upper = voice(h, 3 if soft else 4, 62, 77, ring=True, extras=[] if soft else bar_extras(f, h)[:2])
+    layers, left_out = [], []
+    ring = ch == "ch01"  # the hook's question rings out into ch02 (docs/shotlist.md: "stab, ring out")
+    if dd["keys"] is None:
+        layers.append(("piano", keys(upper, 3.0 if ring else 2.2, 0.9, seed=f.seed(q, k, 0), tau=0.8 if ring else 0.28), 0.0, 0.0))
+    else:
+        left_out.append(f"the bed's keys chord {dd['keys']:+.0f} ms")
+    bass = []
+    if not soft:
+        if dd["bass"] is None:
+            b = lowest(h["bass_pc"], 36, 47)
+            bass = [b, b - 12] if ch == "ch01" else [b]
+            for i, m in enumerate(bass):
+                layers.append(("bass", bass_note(midi_hz(m), 2.6 if ring else 1.4, 0.9 if i == 0 else 0.7, seed=f.seed(q, k, 1 + i), held=True), 0.0 if i == 0 else -3.0, 0.0))
+        else:
+            left_out.append(f"the bed's bass note {dd['bass']:+.0f} ms")
+    if not layers:
+        f.skip(q, "; ".join(left_out), whole=True)
+        return
+    if left_out:
+        f.skip(q, "layer left out: " + "; ".join(left_out))
+    f.hit(q, layers, at, SOFT_REL if soft else (STAB_REL_HOOK if ch == "ch01" else STAB_REL), "soft stab" if soft else "stab")
+    if dd["keys"] is None:
+        f.note("piano", ch, at, 2.2, upper, what="soft stab" if soft else "stab")
+    if bass:
+        f.note("bass", ch, at, 1.4, bass, what="stab")
+
+
+def fx_alarm(f, q, k, run):
+    if f.music_mode != "bed":
+        return legacy_alarm(f, q, k, run)
+    ch = q["ch"]
+    h1, h2 = q["t"], f.alarm_second(q["t"])
+    base = lowest(f.harm(h1)["bass_pc"], 50, 61)  # a tritone stack on the chord's root: the alarm clashes with the chord on purpose...
+    for j, at in enumerate((h1, h2)):
+        block = [base - j + i for i in (0, 6, 12)]  # ...and its second hit falls a semitone (onto the next chord's root, if it falls there)
+        layers = [("piano", keys(block, 0.8, 0.9, seed=f.seed(q, k, 2 * j), tau=0.16, bright=5.0, knock=0.12), 0.0, 0.0)]
+        if f.doubled(at)["bass"] is None:
+            layers.append(("bass", bass_note(midi_hz(block[0] - 12), 0.8, 0.9, seed=f.seed(q, k, 2 * j + 1)), -2.0, 0.0))
+        else:
+            f.skip(q, f"hit {j + 1}: bass note left out, the bed's own plays {f.doubled(at)['bass']:+.0f} ms from it")
+        f.hit(q, layers, at, 9.0 - j, "alarm")
+        f.note("piano", ch, at, 0.8, block, what="alarm")
+
+
+def pitched_drop(f, q, k):
+    """ch01's falling bass note: the chord's fifth falls to its root (A1 to D1 over the D pedal)."""
+    if f.music_mode != "bed":
+        stab_t = next((s["t"] for s in f.cue(q["ch"], "stab") if s["t"] > q["t"]), None)
+        ring = (stab_t if stab_t else q["t"] + 1.4) - q["t"] + 0.25
+        f.add(pluck_bass(hz("A1"), ring, 0.85, fall=(0.08, 7, 0.7)), q["t"] - 0.08, -9, stem="bass")
+        f.note("bass", q["ch"], q["t"] - 0.08, ring, ["A1"], what="falls a fifth")
+        return
+    h = f.harm(q["t"])
+    stab_t = next((s["t"] for s in f.cue(q["ch"], "stab") if s["t"] > q["t"]), None)
+    ring = (stab_t if stab_t else q["t"] + 1.4) - q["t"] + 0.25  # it rings on under the tear, no gap
+    m = lowest((h["root"] + 7) % 12, 28, 40)
+    f.hit(q, [("bass", bass_note(midi_hz(m), ring, 0.9, seed=f.seed(q, k), held=True, bend=(0.08, 7, 0.7)), 0.0, 0.0)],
+          q["t"] - 0.08, 6.0, "falls a fifth")
+    f.note("bass", q["ch"], q["t"] - 0.08, ring, [m], what="falls a fifth")
+
+
+def pitched_cluster(f, q, k):
+    """ch01's low cluster under the hook's cut: a semitone cluster around the chord's root and its fifth."""
+    if f.music_mode != "bed":
+        f.add(piano(["C2", "C#2", "D2", "G2"], 2.4, 0.45, seed=f.seed(q, k, 2), spread=0.1), q["t"], -16, stem="piano")
+        f.note("piano", "ch01", q["t"], 2.4, ["C2", "C#2", "D2", "G2"], what="cluster")
+        return
+    h = f.harm(q["t"])
+    r = h["root"]
+    v = place([(r - 1) % 12, r, (r + 1) % 12, (r + 7) % 12], 49, 61)
+    f.hit(q, [("piano", keys(v, 2.4, 0.9, seed=f.seed(q, k, 2), tau=0.5, knock=0.1), 0.0, 0.0)], q["t"], 4.0, "cluster")
+    f.note("piano", "ch01", q["t"], 2.4, v, what="cluster")
+
+
+def pitched_warm(f, q, k):
+    """The loop's warm chord (ch07): four of the chord's notes, ringing."""
+    if f.music_mode != "bed":
+        sym, key = f.chord_at(q["land"] + 0.01)
+        v = voicing(sym, key, lo=52, hi=71)
+        f.add(vibes([name_of(m) for m in v], 3.4, 0.7, seed=f.seed(q, k, 2), at=q["land"], damp=2.8), q["land"], -15, stem="vibes")
+        f.note("vibes", q["ch"], q["land"], 2.8, v, what="warm chord")
+        return
+    h = f.harm(q["land"])
+    v = voice(h, 4, 55, 71, ring=True)
+    f.hit(q, [("vibes", keys(v, 3.4, 0.9, seed=f.seed(q, k, 2), tau=0.9, bright=2.0), 0.0, 0.0)], q["land"], 1.0, "warm chord")
+    f.note("vibes", q["ch"], q["land"], 2.8, v, what="warm chord")
+
+
+def fx_push(f, q, k, run):
+    """ch07's push: the bed thins to a dark trace (Film.bed_music) under one held low note, the bed's own bass held on the
+    chord's bass pitch class until ch08 begins (over the synthesized score, the bowed note in Film.moments)."""
+    if f.music_mode != "bed" or not f.on("ch07"):
+        return
+    end = f.chs["ch08"]["start"]
+    m = lowest(f.harm(q["t"])["bass_pc"], 28, 40)
+    f.hit(q, [("bass", bass_note(midi_hz(m), end - q["t"] + 0.02, 0.9, seed=7001, held=True), 0.0, 0.0)], q["t"], 2.0,
+          "low sustained note")
+    f.note("bass", "ch07", q["t"], end - q["t"], [m], what="low sustained note")
+
+
+def fx_chime(f, q, k, run):
+    if f.music_mode != "bed":
+        return legacy_chime(f, q, k, run)
+    h = f.harm(q["t"])
+    notes = place(chord_order(h, ring=True)[:2], 67, 79)
+    f.hit(q, [("vibes", keys(notes, 2.2, 0.9, seed=f.seed(q, k), tau=0.7, bright=3.0), 0.0, q.get("pan", 0.0))], q["t"], 5.0, "chime")
+    f.note("vibes", q["ch"], q["t"], 2.2, notes, what="chime")
+
+
+def fx_climb(f, q, k, run):
+    if f.music_mode != "bed":
+        return legacy_climb(f, q, k, run)
+    prev = 76
+    for x in run[: run.index(q) + 1]:  # each step a note of its own beat's chord, above the step before it
+        cand = place(chord_order(f.harm(x["t"]))[:4], 77, 96)
+        cand += [m + 12 for m in cand if m + 12 <= 96]
+        prev = min((m for m in cand if m > prev), default=prev + 12)
+    f.hit(q, [("tone", keys([prev], 0.5, 0.9, seed=f.seed(q, k), tau=0.10, bright=6.0), 0.0, q.get("pan", 0.0))], q["t"], 1.5, "climb")
+    f.note("tone", q["ch"], q["t"], 0.5, [prev], what="climb")
+
+
+def fx_bell(f, q, k, run):
+    if f.music_mode != "bed":
+        return legacy_bell(f, q, k, run)
+    h = f.harm(q["t"])
+    fifth = (h["root"] + 7) % 12
+    pc = fifth if fifth in h["tones"] else h["root"]  # a confirmation rings on the chord's fifth, else its root
+    m = lowest(pc, 84, 95)
+    f.hit(q, [("tone", keys([m], 2.0, 0.9, seed=f.seed(q, k), tau=0.9, bright=9.0), 0.0, q.get("pan", 0.0))], q["t"], 3.0, "bell")
+    f.note("tone", q["ch"], q["t"], 1.8, [m], what="bell")
+
+
+def fx_band(f, q, k, run):
+    if f.music_mode != "bed":
+        return legacy_band(f, q, k, run)
+    dur = max(0.2, q.get("land", q["t"] + 0.8) - q["t"])
+    h = f.harm(q.get("land", q["t"]))
+    a = lowest(h["root"], 62, 73)
+    b = a + 7  # the root up a fifth, both chord tones
+    f.hit(q, [("tone", tone_glide(dur, midi_hz(a), midi_hz(b), 0.9), 0.0, q.get("pan", 0.0))], q["t"], -2.0, "rising tone")
+    f.note("tone", q["ch"], q["t"], dur, [a, b], what="rising tone", ht=round(q.get("land", q["t"]), 4))
+
+
+def fx_slab(f, q, k, run):
+    if f.music_mode != "bed":
+        return legacy_slab(f, q, k, run)
+    i, n = q.get("i", k), len(run)
+    at = q.get("land", q["t"])
+    if n > 8:  # the skyline: every thump a note of the chord, climbing through it
+        pcs = chord_order(f.harm(run[n // 2]["t"]))[:4]
+        ladder = sorted({m for m in range(53, 85) if m % 12 in pcs})
+        m = ladder[min(len(ladder) - 1, i * len(ladder) // n)]
+        rel = -2.0
+    else:  # a few steps: each a note of its own chord, at least a minor third above the one before
+        prev = 52
+        for x in run[: run.index(q) + 1]:
+            cand = [m for m in range(prev + 3, 96) if m % 12 in f.harm(x.get("land", x["t"]))["tones"]]
+            prev = cand[0]
+        m = prev
+        rel = 4.0
+    f.hit(q, [("tone", keys([m], 0.6, 0.9, seed=f.seed(q, k), tau=0.16, bright=2.0, knock=0.12), 0.0, q.get("pan", 0.0))], at, rel, "thump")
+    f.note("tone", q["ch"], at, 0.6, [m], what="thump")
+
 
 
 def pan_of(q, name):
@@ -1581,7 +1392,7 @@ def pan_of(q, name):
 
 
 EFFECTS = {
-    # ch01's names first, in the approved sketch's order
+    # ch01's names first, in the first sound pass's order
     "complaint": fx_complaint, "bubble": fx_bubble, "caption": fx_caption, "scissor": fx_scissor, "split": fx_split,
     "slide": fx_slide, "snip": fx_snip, "drop": fx_drop, "tear": fx_tear, "stab": fx_stab,
     # the rest of the vocabulary
@@ -1611,7 +1422,7 @@ def main():
     ap.add_argument("--stems", action="store_true", help="print each stem's level before mastering")
     ap.add_argument("--score", default=None, help="write every note and effect placed (JSON), for the analysis")
     ap.add_argument("--stem-dir", default=None, help="also write each stem (at its level in the master) to this directory")
-    ap.add_argument("--no-aac-check", action="store_true", help="skip the AAC encode check (the approved sketch had none)")
+    ap.add_argument("--no-aac-check", action="store_true", help="skip the AAC encode check")
     ap.add_argument("--music", choices=["bed", "synth"], default="bed", help="the Mixkit bed (tools/bed.py) or the synthesized score")
     a = ap.parse_args()
     tl = json.loads((ROOT / "docs" / "timeline.json").read_text())
@@ -1627,6 +1438,7 @@ def main():
     film = Film(tl, cues, chapters, bus, music=a.music)
     film.music()
     effects(film)
+    film.finalize()
     x = bus.mix()[: int(round((t1 - t0) * SR))]
     if a.stems:
         for k, st in bus.stems.items():
@@ -1641,6 +1453,7 @@ def main():
         d.mkdir(parents=True, exist_ok=True)
         for k, st in bus.stems.items():
             wavfile.write(d / f"{k}.wav", SR, (st[: len(x)] * 10 ** (STEMS[k] / 20) * g0).astype(np.float32))
+        wavfile.write(d / "bed_ref.wav", SR, (film.ref_audio[: len(x)] * g0).astype(np.float32))  # the music without its dips
     x = master(x)
     aac = ""
     if not a.no_aac_check:

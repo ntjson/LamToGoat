@@ -8,12 +8,14 @@ and its joins (bed). The report measures:
 - the grid: every note the music plays sits on a beat or a swung 8th, except the hits that follow the scenes' cues
   (over the Mixkit bed: the bed's tracked beats against the film's grid)
 - the harmony: every comping, stab and chord note belongs to the bar's chord (tones and the usual tensions); over
-  the bed, every note a cue plays is one the bed is sounding at that beat
-- the cues: an onset in the mix within a few ms of every hit-type cue (the effects sit on the scenes' frames)
+  the bed, every note a pitched effect plays belongs to the chord the bed plays at that beat (docs/bed_harmony.json,
+  tools/bedharmony.py: the chord tones and the extensions the track itself plays, and the bass note)
+- the cues: an onset within a few ms of every hit-type cue (the effects sit on the scenes' frames); with --stem-dir,
+  in the effects' own stems (sfx, tone, piano, bass, ...), where a quiet effect is not masked by the music
 
 Usage: uv run --with numpy --with scipy --with matplotlib python tools/soundcheck.py [--wav out/sound/film.wav]
        [--cues out/sound/cues.json] [--score out/sound/score.json] [--out out/sound/analysis.png]
-       [--from s] [--to s] [--row 45]
+       [--stem-dir out/sound/stems] [--from s] [--to s] [--row 45]
 """
 import argparse
 import json
@@ -98,6 +100,7 @@ def main():
     ap.add_argument("--cues", default="out/sound/cues.json")
     ap.add_argument("--score", default="out/sound/score.json")
     ap.add_argument("--out", default="out/sound/analysis.png")
+    ap.add_argument("--stem-dir", default=None, help="find the cues' onsets in the effects' stems, not the whole mix")
     ap.add_argument("--from", dest="t_from", type=float, default=None)
     ap.add_argument("--to", dest="t_to", type=float, default=None)
     ap.add_argument("--row", type=float, default=45.0, help="seconds per row of the image")
@@ -144,21 +147,29 @@ def main():
         print(f"bed: {len(bed['plan'])} runs, {len(bed['joins'])} joins; its tracked beats in ch05-ch11 sit "
               f"{np.median(errs):.0f} ms (median) from the film's beat grid ({len(errs)} beats)")
         clash = []
+        H = json.loads((ROOT / "docs" / "bed_harmony.json").read_text())
+        PITCHED = ("stab", "soft stab", "chime", "climb", "bell", "rising tone", "warm chord", "low sustained note", "cluster",
+                   "falls a fifth", "thump")
+        n_voiced = 0
         for e in notes:
-            if e.get("what") in ("stab", "soft stab", "chime", "climb", "bell", "rising tone", "warm chord", "low sustained note") and e["ch"] != "ch01" and e["midi"]:
-                k = int(math.floor(e["t"] / beat + 1e-3))
-                bb = bed["beats"][min(k, len(bed["beats"]) - 1)]
-                bb2 = bed["beats"][min(k + 1, len(bed["beats"]) - 1)]
-                cc = 0.6 * np.array(bb["chroma"]) + 0.4 * np.array(bb2["chroma"])
-                lo = 0.6 * np.array(bb["bass"]) + 0.4 * np.array(bb2["bass"])
-                ok = {i for i in range(12) if cc[i] >= 0.45 * cc.max()} | {int(np.argmax(lo))}
-                bad = [m for m in e["midi"] if m % 12 not in ok]
-                if bad:
-                    clash.append((e["t"], e["what"], [sound.name_of(m) for m in bad]))
-        n_voiced = sum(1 for e in notes if e.get("what") in ("stab", "soft stab", "chime", "climb", "bell", "rising tone", "warm chord", "low sustained note") and e["ch"] != "ch01")
-        print(f"harmony: {n_voiced} notes and chords played over the bed; {len(clash)} with a note the bed is not sounding")
+            if e.get("what") not in PITCHED or not e["midi"]:
+                continue
+            n_voiced += 1
+            k = int(math.floor(e.get("ht", e["t"]) / beat + 1e-3))  # `ht`: the time whose chord the note was voiced on (a rising tone: where it lands)
+            hb = H["beats"][H["film_sb"][min(k, len(H["film_sb"]) - 1)]]
+            ok = set(hb["tones"]) | set(hb["ext"]) | set(hb["safe"]) | {hb["bass_pc"]}
+            if e.get("what") in ("stab", "soft stab"):  # a stab may add the bar's own consonant extensions
+                for b2 in H["beats"]:
+                    if b2["bar"] == hb["bar"]:
+                        ok |= set(b2["ext"])
+            if e.get("what") in ("cluster",):  # ch01's cluster is a semitone cluster around the chord's root, by design
+                ok |= {(hb["root"] + i) % 12 for i in (-1, 1)}
+            bad = [m for m in e["midi"] if m % 12 not in ok]
+            if bad:
+                clash.append((e["t"], e["what"], [sound.name_of(m) for m in bad], hb["chord"]))
+        print(f"harmony: {n_voiced} pitched notes and chords played over the bed; {len(clash)} with a note outside the chord the bed plays there")
         for c in clash[:12]:
-            print(f"  {c[0]:8.2f} s {c[1]:12s}: {', '.join(c[2])}")
+            print(f"  {c[0]:8.2f} s {c[1]:12s} over {c[3]:8s}: {', '.join(c[2])}")
     # ---- the grid: music onsets on beats or swung 8ths (hits that follow cues are exempt)
     free = [e for e in notes if e.get("what") not in ("stab", "soft stab", "alarm", "final chord", "warm chord", "chime",
                                                       "falls a fifth", "cluster", "low sustained note", "rising tone",
@@ -194,14 +205,21 @@ def main():
         print(f"  {c[0]:8.2f} s {c[1]:5s} {c[2]:12s} over {c[3]:6s}: {', '.join(c[4])}")
 
     # ---- the cues: an onset near every hit
-    tO, flux = onsets(x, sr)
+    src, where = x, "the mix"
+    if a.stem_dir:  # the effects alone: a quiet effect is not masked by the music there
+        d = ROOT / a.stem_dir
+        src = sum(wavfile.read(d / f"{k}.wav")[1].astype(np.float64) for k in ("sfx", "tone", "piano", "bass", "vibes", "brass", "drums")
+                  if (d / f"{k}.wav").exists())
+        where = "the effects' stems"
+    skipped = {(e["ch"], round(e["t"], 3)) for e in ev if e.get("whole")}  # cues whose effect the track already plays entirely
+    tO, flux = onsets(src, sr)
     tO = tO + t0
     peaks = np.flatnonzero((flux[1:-1] > flux[:-2]) & (flux[1:-1] >= flux[2:]) & (flux[1:-1] > np.percentile(flux, 75))) + 1
     pt = tO[peaks]
     offs = []
     missed = []
     for q in cues:
-        if q["name"] not in HITS or not (t0 <= q["t"] < t0 + len(x) / sr):
+        if q["name"] not in HITS or not (t0 <= q["t"] < t0 + len(x) / sr) or (q["ch"], round(q["t"], 3)) in skipped:
             continue
         at = q.get("land", q["t"]) if q["name"] in AT_LAND else q["t"]
         if q["name"] in ("caption", "slam", "stamp"):
@@ -214,10 +232,11 @@ def main():
         else:
             missed.append((q["name"], q["ch"], round(q["t"], 3)))
     offs = np.array(offs) * 1000
-    print(f"cues: {len(offs)} of {len(offs) + len(missed)} hit-type cues have an onset in the mix within 12 ms "
-          f"(median {np.median(offs):+.1f} ms, 95% within {np.percentile(np.abs(offs), 95):.1f} ms)")
+    print(f"cues: {len(offs)} of {len(offs) + len(missed)} hit-type cues have an onset in {where} within 12 ms "
+          f"(median {np.median(offs):+.1f} ms, 95% within {np.percentile(np.abs(offs), 95):.1f} ms)"
+          + (f"; {len(skipped)} cues' effects are left to the track's own hit" if skipped else ""))
     if missed:
-        print(f"  no clear onset (masked by a louder sound nearby): {len(missed)}: "
+        print(f"  no clear onset (masked by a louder sound nearby, or another effect within 12 ms): {len(missed)}: "
               + ", ".join(f"{n}@{t}" for n, _, t in missed[:14]) + (" ..." if len(missed) > 14 else ""))
 
     # ---- the image
