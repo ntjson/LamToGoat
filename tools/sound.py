@@ -1,16 +1,24 @@
-"""Music bed and sound effects for the whole film, synthesized in code (no samples, no stock audio), mixed to
--14 LUFS / -1 dBTP.
+"""The film's sound: the music bed and the sound effects, mixed to -14 LUFS / -1 dBTP.
 
 Reads docs/timeline.json (tempo, bars, chapters) and out/sound/cues.json (the scenes' own event times, written by
-tools/cues.mjs) and writes a stereo 48 kHz WAV for the selected chapters (default: the whole film). Follows the
-shotlist's Sound section: a walking upright-bass line, brushed snare and piano stabs at 108 BPM with swung eighths;
-minor and sparse for ch01-ch04, open to major with a vibraphone for ch05-ch07, driving for ch08-ch09, resolving for
-ch10-ch11; stabs on the SLAMs the music marks, alarm stabs (low brass and snare) where a rule is broken. Effects are
-the cue vocabulary of docs/ANIMATION_GUIDE.md, section 12, on the cue times. ch01 is the approved sketch, note for
-note. Everything is seeded, so the same inputs always give the same file.
+tools/cues.mjs) and writes a stereo 48 kHz WAV for the selected chapters (default: the whole film).
+
+Two music beds:
+- `--music bed` (the default): "Upbeat Jazz" by Francisco Alvear (Mixkit), stretched to 108 BPM and arranged to the
+  film's 81 bars by tools/bed.py (out/sound/bed.wav). It dips where the score breaks: from ch01's drop to ch02, and
+  from ch07's push to ch08, where it thins to a dark trace under one bowed note.
+- `--music synth`: the synthesized score (a walking upright-bass line, brushed snare and piano stabs at 108 BPM, swung
+  eighths; minor and sparse for ch01-ch04, open to major with a vibraphone for ch05-ch07, driving for ch08-ch09,
+  resolving for ch10-ch11), with ch01 as the approved sketch, note for note.
+
+The effects are synthesized in code: the cue vocabulary of docs/ANIMATION_GUIDE.md, section 12, on the cue times.
+Over the Mixkit bed, every cue that sounds notes (the stabs, chimes, pitched thumps and ticks, the rising tone, the
+bell, the loop's warm chord, the bow) takes them from the pitch classes the bed is sounding at that beat; ch01's
+approved hits keep theirs (D minor sits in the track's key). Everything is seeded, so the same inputs always give
+the same file.
 
 Usage: uv run --with numpy --with scipy python tools/sound.py [--chapters ch01,ch02] [--out out/sound/film.wav]
-       [--cues out/sound/cues.json] [--stems] [--score out/sound/score.json]
+       [--cues out/sound/cues.json] [--music bed|synth] [--stems] [--score out/sound/score.json]
 """
 import argparse
 import json
@@ -598,7 +606,12 @@ def snap_fx(vel=0.7, seed=0):
 
 # ---------------------------------------------------------------------------------------------------- the mix bus
 # Stem levels (dB) applied at mixdown: the music is a bed under the effects, the stabs are the loudest moments.
-STEMS = {"bass": -11.0, "drums": -2.0, "piano": 0.0, "sfx": 0.0, "vibes": 0.0, "brass": 0.0}
+STEMS = {"bass": -11.0, "drums": -2.0, "piano": 0.0, "sfx": 0.0, "vibes": 0.0, "brass": 0.0, "bed": 0.0}
+BED = ROOT / "out" / "sound" / "bed.wav"  # tools/bed.py writes it (and bed.json beside it)
+BED_GAIN = -17.5  # dB: the Mixkit track (about -11 LUFS in its body) as a bed under the effects, where the old score sat
+BED_INTRO_DB = 4.0  # the sparse intro (film start to ch05) this much higher, so it is heard under ch01-ch04; the lift
+# on ch05's downbeat (+8.6 dB in the recording) stays a lift
+BED_RESOLVE_DB = -2.5  # ch10-ch11 resolve: the bed eases down this much over ch10's first two bars and stays there
 
 
 class Bus:
@@ -859,8 +872,10 @@ class Film:
     """The score and the effects for the selected chapters, on one bus. Music follows the timeline's grid; effects
     follow the scenes' cues. `log` keeps every note and effect placed, for the analysis."""
 
-    def __init__(self, tl, cues, chapters, bus):
+    def __init__(self, tl, cues, chapters, bus, music="bed"):
         self.tl, self.bus = tl, bus
+        self.music_mode = music
+        self.bed_beats = json.loads(BED.with_suffix(".json").read_text())["beats"] if music == "bed" else None
         self.beat = tl["beat"]
         self.chs = {c["id"]: c for c in tl["chapters"]}
         self.order = [c["id"] for c in tl["chapters"]]
@@ -951,6 +966,9 @@ class Film:
 
     # ---- music
     def music(self):
+        if self.music_mode == "bed":
+            self.bed_music()
+            return
         if self.on("ch01"):
             self.ch01_music()
         walk = self.walk()
@@ -967,6 +985,59 @@ class Film:
                 self.drums(ch)
                 self.comping(ch)
         self.moments()
+
+    def bed_music(self):
+        """The Mixkit bed (tools/bed.py) under the selected chapters. It dips where the score breaks: nearly out from
+        ch01's drop until ch02 (the bass note falls, the hole tears, the question lands alone); and from ch07's push
+        until ch08 it thins to a dark, low trace under one bowed note on its bass."""
+        bed = wavfile.read(BED)[1].astype(np.float64)
+        t1 = max(self.chs[c]["end"] for c in self.sel)
+        i0, i1 = int(round(self.t0 * SR)), int(round(t1 * SR))
+        seg = np.zeros((i1 - i0, 2))
+        seg[: max(0, min(len(bed), i1) - i0)] = bed[i0: min(len(bed), i1)]
+        t = self.t0 + np.arange(len(seg)) / SR
+        g = np.ones(len(seg))  # the bed's gain
+        dark = np.zeros(len(seg))  # the low-passed trace's gain
+        t5 = self.chs["ch05"]["start"]  # the intro's lift: its extra level ends in a 20 ms ramp onto this downbeat
+        g *= 10 ** (BED_INTRO_DB * np.clip((t5 - t) / 0.02, 0, 1) / 20)
+        t10 = self.chs["ch10"]["start"]
+        g *= 10 ** (BED_RESOLVE_DB * np.clip((t - t10) / (8 * self.beat), 0, 1) / 20)
+
+        def dip(a, b, depth_db, fade_in, fade_out):
+            d = 10 ** (depth_db / 20)
+            down = np.clip((t - a) / fade_in, 0, 1)  # into the dip
+            up = np.clip((t - b) / fade_out, 0, 1)  # out of it, from the next section's first sample
+            w = np.sin(0.5 * math.pi * down) ** 2 * (1 - np.sin(0.5 * math.pi * up) ** 2)
+            return 1 - (1 - d) * w, w
+
+        for q in self.cue("ch01", "drop"):
+            gg, _ = dip(q["t"], self.chs["ch02"]["start"], -32, 0.15, 0.02)
+            g *= gg
+            self.note("bed", "ch01", q["t"], self.chs["ch02"]["start"] - q["t"], [], what="dips out")
+        for q in self.cue("ch07", "push"):
+            end = self.chs["ch08"]["start"]
+            gg, w = dip(q["t"], end, -26, 0.35, 0.02)
+            g *= gg
+            dark += 10 ** (-9 / 20) * w
+            if self.on("ch07"):
+                _, root = self.bed_pcs(q["t"])
+                m = min(m for m in range(28, 41) if m % 12 == root)
+                self.add(arco(hz(name_of(m)), end - q["t"] + 0.02, 0.8, seed=7001), q["t"], -6, stem="bass")
+                self.note("arco", "ch07", q["t"], end - q["t"], [m], what="low sustained note")
+            self.note("bed", "ch07", q["t"], end - q["t"], [], what="thins")
+        lp = band(seg, hi=320, order=4)
+        self.add(seg * g[:, None] + lp * dark[:, None], self.t0, BED_GAIN, stem="bed")
+
+    def bed_pcs(self, t, n=4):
+        """What the bed is sounding at film time t (this beat and the next): its strongest pitch classes, strongest
+        first (at least 45 % of the strongest), and its bass note's pitch class."""
+        k = int(math.floor(t / self.beat + 1e-3))  # a hit on a beat line belongs to the beat it starts
+        bs = self.bed_beats
+        a, b = bs[min(k, len(bs) - 1)], bs[min(k + 1, len(bs) - 1)]
+        c = 0.6 * np.array(a["chroma"]) + 0.4 * np.array(b["chroma"])
+        lo = 0.6 * np.array(a["bass"]) + 0.4 * np.array(b["bass"])
+        order = [int(i) for i in np.argsort(-c) if c[i] >= 0.45 * c.max()][:n]
+        return order, int(np.argmax(lo))
 
     def ch01_music(self):
         """The approved sketch: walking bass from bar 1, brushes from bar 2 until the drop."""
@@ -1173,6 +1244,18 @@ class Film:
                 self.note("arco", "ch07", q["t"], end - q["t"], ["A1"], what="low sustained note")
 
 
+def place(pcs, lo, hi):
+    """Pitch classes as MIDI notes in [lo, hi]: each at its lowest place at or above lo (wrapping down an octave if it
+    would pass hi), sorted, without doubles."""
+    out = []
+    for pc in pcs:
+        m = lo + (pc - lo) % 12
+        if m > hi:
+            m -= 12
+        out.append(m)
+    return sorted(set(out))
+
+
 SEED01 = {"complaint": [0], "bubble": None, "caption": None, "scissor": [3], "split": [5, 6, 7], "slide": [8, 9],
           "snip": [10, 11], "drop": [12], "tear": [13], "stab": [14, 99, 98, 15]}
 PAN01 = {"complaint": -0.35, "caption": 0.25, "scissor": 0.1, "slide": -0.4, "snip": 0.15, "drop": 0.1, "tear": 0.05}
@@ -1190,8 +1273,12 @@ def fx_bubble(f, q, k, run):
     if "land" in q:  # the hook's bubble comes back and snaps flush: its tick, then a warm chord
         f.add(tick(1500, seed=f.seed(q, k)), q["t"], -17, pan=q.get("pan", -0.3))
         f.add(snap_fx(0.6, seed=f.seed(q, k, 1)), q["land"], -19, pan=q.get("pan", -0.3))
-        sym, key = f.chord_at(q["land"] + 0.01)
-        v = voicing(sym, key, lo=52, hi=71)
+        if f.music_mode == "bed":
+            pcs, _ = f.bed_pcs(q["land"])
+            v = place(pcs, 55, 71)
+        else:
+            sym, key = f.chord_at(q["land"] + 0.01)
+            v = voicing(sym, key, lo=52, hi=71)
         f.add(vibes([name_of(m) for m in v], 3.4, 0.7, seed=f.seed(q, k, 2), at=q["land"], damp=2.8), q["land"], -15, stem="vibes")
         f.note("vibes", q["ch"], q["land"], 2.8, v, what="warm chord")
         return
@@ -1256,6 +1343,22 @@ def fx_tear(f, q, k, run):
 def fx_stab(f, q, k, run):
     ch = q["ch"]
     at = q["t"]
+    if f.music_mode == "bed" and ch != "ch01":  # over the Mixkit bed: the stab plays what the bed is sounding
+        pcs, root = f.bed_pcs(at)
+        low = min(m for m in range(43, 55) if m % 12 == root)
+        v = [low] + [m for m in place([p for p in pcs if p != root] or pcs, 55, 67) if m != low]
+        if q.get("soft"):
+            f.add(piano([name_of(m) for m in v], 2.4, 0.6, seed=f.seed(q, k)), at, -12, stem="piano")
+            f.note("piano", ch, at, 2.4, v, what="soft stab")
+            return
+        b1 = min(m for m in range(36, 48) if m % 12 == root)
+        f.add(piano([name_of(m) for m in v], 2.6, 0.95, seed=f.seed(q, k, 0)), at, -5, stem="piano")
+        f.add(pluck_bass(hz(name_of(b1)), 2.0, 1.0, seed=f.seed(q, k, 1)), at, -7, stem="bass")
+        f.add(pluck_bass(hz(name_of(b1 - 12)), 2.0, 0.9, seed=f.seed(q, k, 2)), at, -9, stem="bass")
+        f.add(crash(2.6, 0.8, seed=f.seed(q, k, 3)), at, -15, pan=0.3, stem="drums")
+        f.note("piano", ch, at, 2.6, v, what="stab")
+        f.note("bass", ch, at, 2.0, [b1, b1 - 12], what="stab")
+        return
     if q.get("soft"):  # a small stab: the piano alone, on the chord of the moment with its root
         sym, key = f.chord_at(at + 0.01)
         r = chord(sym)[0]
@@ -1278,7 +1381,7 @@ def fx_alarm(f, q, k, run):
     ch = q["ch"]
     h1, h2 = q["t"], f.alarm_second(q["t"])
     for j, (at, notes) in enumerate(zip((h1, h2), ALARM)):
-        dur = (h2 - h1) if j == 0 else min(1.2, f.next_bass(ch, h2) - h2 + 0.02)
+        dur = (h2 - h1) if j == 0 else (1.0 if f.music_mode == "bed" else min(1.2, f.next_bass(ch, h2) - h2 + 0.02))
         f.add(brass(notes, min(0.55, dur + 0.1) if j == 0 else 0.7, 0.95, seed=f.seed(q, k, 2 * j)), at, -7, pan=0.05, stem="brass")
         f.add(snare(0.9 if j == 0 else 0.8, seed=f.seed(q, k, 2 * j + 1)), at, -12, pan=0.1, stem="drums")
         f.add(pluck_bass(hz(notes[0]), dur, 0.95, seed=f.seed(q, k, 10 + j)), at, -8, stem="bass")
@@ -1286,6 +1389,8 @@ def fx_alarm(f, q, k, run):
 
 
 def fx_chord(f, q, k, run):
+    if f.music_mode == "bed":
+        return  # the bed's own final chord ends the film, on its last bar (tools/bed.py)
     at = q["t"]
     dur = f.tl["end"] - at + 0.05
     f.add(piano(FINAL["piano"], dur, 0.75, seed=f.seed(q, k, 0)), at, -9, stem="piano")
@@ -1299,7 +1404,7 @@ def fx_chord(f, q, k, run):
 
 
 def fx_push(f, q, k, run):
-    pass  # the music thins to the bow's low note (Film.moments)
+    pass  # the music thins to the bow's low note (Film.moments; over the bed, Film.bed_music)
 
 
 def fx_slam(f, q, k, run):
@@ -1350,9 +1455,13 @@ def fx_flip(f, q, k, run):
 
 
 def fx_chime(f, q, k, run):
-    # an open fifth on A: a chord tone or a tension over every chord under ch04's flips (A7, Gm7, Em7b5, Dm7, Bbmaj7)
-    f.add(vibes(["A4", "E5"], 2.2, 0.6, seed=f.seed(q, k), at=q["t"], depth=0.15), q["t"], -12, pan=q.get("pan", 0.0), stem="vibes")
-    f.note("vibes", q["ch"], q["t"], 2.2, ["A4", "E5"], what="chime")
+    # synth: an open fifth on A, a chord tone or a tension over every chord under ch04's flips; bed: two of its notes
+    notes = ["A4", "E5"]
+    if f.music_mode == "bed":
+        pcs, _ = f.bed_pcs(q["t"])
+        notes = [name_of(m) for m in place(pcs[:2], 67, 79)]
+    f.add(vibes(notes, 2.2, 0.6, seed=f.seed(q, k), at=q["t"], depth=0.15), q["t"], -12, pan=q.get("pan", 0.0), stem="vibes")
+    f.note("vibes", q["ch"], q["t"], 2.2, notes, what="chime")
 
 
 def fx_cell(f, q, k, run):
@@ -1377,7 +1486,16 @@ def fx_tick(f, q, k, run):
 
 def fx_climb(f, q, k, run):
     steps = ["D6", "F#6", "A6", "D7"]
-    f.add(tick(hz(steps[min(q.get("i", k), 3)]), seed=f.seed(q, k)), q["t"], -13, pan=q.get("pan", 0.0))
+    note = steps[min(q.get("i", k), len(steps) - 1)]
+    if f.music_mode == "bed":  # each step a note the bed is sounding on its beat, above the step before it
+        prev = 85
+        for x in run[: run.index(q) + 1]:
+            pcs, _ = f.bed_pcs(x["t"])
+            cand = [m + 12 * o for m in place(pcs[:3], 86, 97) for o in (0, 1)]
+            prev = min((m for m in cand if m > prev), default=prev + 12)
+        note = name_of(prev)
+    f.add(tick(hz(note), seed=f.seed(q, k)), q["t"], -13, pan=q.get("pan", 0.0))
+    f.note("tick", q["ch"], q["t"], 0.1, [note], what="climb")
 
 
 def fx_pin(f, q, k, run):
@@ -1393,7 +1511,12 @@ def fx_click(f, q, k, run):
 
 
 def fx_bell(f, q, k, run):
-    f.add(bell_fx("D6", 0.6, seed=f.seed(q, k)), q["t"], -17, pan=q.get("pan", 0.0))
+    note = "D6"
+    if f.music_mode == "bed":
+        pcs, _ = f.bed_pcs(q["t"])
+        note = name_of(place(pcs[:1], 84, 95)[0])
+    f.add(bell_fx(note, 0.6, seed=f.seed(q, k)), q["t"], -17, pan=q.get("pan", 0.0))
+    f.note("bell", q["ch"], q["t"], 1.8, [note], what="bell")
 
 
 def fx_open(f, q, k, run):
@@ -1402,8 +1525,13 @@ def fx_open(f, q, k, run):
 
 def fx_band(f, q, k, run):
     dur = max(0.2, q.get("land", q["t"] + 0.8) - q["t"])
-    f.add(rising_tone(dur, hz("D4"), hz("A4"), 0.5), q["t"], -24, pan=q.get("pan", 0.0))
-    f.note("tone", q["ch"], q["t"], dur, ["D4", "A4"], what="rising tone")
+    a, b = "D4", "A4"
+    if f.music_mode == "bed":  # from the bed's lowest sounding note to its highest, in one octave
+        pcs, _ = f.bed_pcs(q.get("land", q["t"]))
+        ms = place(pcs, 62, 73)
+        a, b = name_of(ms[0]), name_of(ms[-1] if ms[-1] > ms[0] else ms[0] + 7)
+    f.add(rising_tone(dur, hz(a), hz(b), 0.5), q["t"], -24, pan=q.get("pan", 0.0))
+    f.note("tone", q["ch"], q["t"], dur, [a, b], what="rising tone")
 
 
 def fx_friction(f, q, k, run):
@@ -1418,6 +1546,12 @@ def fx_thud(f, q, k, run):
 
 def fx_slab(f, q, k, run):
     notes = SLABS.get(q["ch"], ["D2"])
+    if f.music_mode == "bed":  # the bed's notes, rising across the run (ch02's skyline: over two octaves)
+        pcs, root = f.bed_pcs(run[len(run) // 2]["t"])
+        scale = sorted(set(pcs[:4] + [root]))
+        span = 3 if len(run) > 8 else 1
+        base = {"ch02": 50, "ch09": 50}.get(q["ch"], 41)  # ch02's skyline above the bed's bass (it re-enters there)
+        notes = [name_of(m) for m in sorted(set(base + (pc - base) % 12 + 12 * o for o in range(span) for pc in scale))]
     i = q.get("i", k)
     n = len(run)
     name = notes[min(len(notes) - 1, i * len(notes) // max(n, len(notes)))] if n > len(notes) else notes[i % len(notes)]
@@ -1478,6 +1612,7 @@ def main():
     ap.add_argument("--score", default=None, help="write every note and effect placed (JSON), for the analysis")
     ap.add_argument("--stem-dir", default=None, help="also write each stem (at its level in the master) to this directory")
     ap.add_argument("--no-aac-check", action="store_true", help="skip the AAC encode check (the approved sketch had none)")
+    ap.add_argument("--music", choices=["bed", "synth"], default="bed", help="the Mixkit bed (tools/bed.py) or the synthesized score")
     a = ap.parse_args()
     tl = json.loads((ROOT / "docs" / "timeline.json").read_text())
     cues = json.loads((ROOT / a.cues).read_text())["cues"]
@@ -1489,7 +1624,7 @@ def main():
     t0 = min(chs[c]["start"] for c in chapters)
     t1 = max(chs[c]["end"] for c in chapters)
     bus = Bus(t1 - t0)
-    film = Film(tl, cues, chapters, bus)
+    film = Film(tl, cues, chapters, bus, music=a.music)
     film.music()
     effects(film)
     x = bus.mix()[: int(round((t1 - t0) * SR))]
@@ -1517,7 +1652,9 @@ def main():
     print(f"{out.relative_to(ROOT)}: {len(x) / SR:.3f} s, {lufs(x):.2f} LUFS, true peak {true_peak_db(x):.2f} dBTP{aac}")
     if a.score:
         p = ROOT / a.score
-        p.write_text(json.dumps({"t0": t0, "t1": t1, "chords": {c: CHORDS[c] for c in chapters}, "events": film.log}, indent=0))
+        rec = {"t0": t0, "t1": t1, "music": a.music, "events": film.log}
+        rec.update({"bed": json.loads(BED.with_suffix(".json").read_text())} if a.music == "bed" else {"chords": {c: CHORDS[c] for c in chapters}})
+        p.write_text(json.dumps(rec, indent=0))
         print(f"{p.relative_to(ROOT)}: {len(film.log)} notes and effects")
 
 

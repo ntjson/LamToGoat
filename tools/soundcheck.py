@@ -1,11 +1,14 @@
 """Look at the film's sound, since it is judged by measurement: an analysis image and the numbers behind it.
 
 The image has one row per ~45 s: the level (momentary and short-term loudness, EBU R128, against the -14 LUFS
-target), a spectrogram with the chapter lines and a mark for every cue, and the score as a piano roll (bass, piano,
-vibraphone, brass) with the chord of each bar. The report measures:
+target), a spectrogram with the chapter lines and a mark for every cue, and the notes the sound plays as a piano roll
+(bass, piano, vibraphone, brass), labelled with each bar's chord (synthesized score) or the Mixkit bed's source bar
+and its joins (bed). The report measures:
 - loudness: the whole file, each chapter, the loudest short-term moments
 - the grid: every note the music plays sits on a beat or a swung 8th, except the hits that follow the scenes' cues
-- the harmony: every comping, stab and chord note belongs to the bar's chord (tones and the usual tensions)
+  (over the Mixkit bed: the bed's tracked beats against the film's grid)
+- the harmony: every comping, stab and chord note belongs to the bar's chord (tones and the usual tensions); over
+  the bed, every note a cue plays is one the bed is sounding at that beat
 - the cues: an onset in the mix within a few ms of every hit-type cue (the effects sit on the scenes' frames)
 
 Usage: uv run --with numpy --with scipy --with matplotlib python tools/soundcheck.py [--wav out/sound/film.wav]
@@ -120,11 +123,46 @@ def main():
         y = x[i0:i1]
         print(f"  {c['id']}: {sound.lufs(y):6.2f} LUFS, momentary max {M[(tM + t0 >= c['start']) & (tM + t0 < c['end'])].max():6.1f}")
 
-    # ---- the grid: music onsets on beats or swung 8ths (hits that follow cues are exempt)
     ev = score["events"]
     notes = [e for e in ev if "inst" in e]
+    bed = score.get("bed")
+    if bed:
+        # ---- the bed (tools/bed.py): its beats on the film's grid, and the notes the cues play over it
+        import librosa
+        from scipy.io import wavfile as _wf
+        b = _wf.read(ROOT / "out/sound/bed.wav")[1].astype(np.float64)
+        errs = []
+        for c in tl["chapters"]:
+            if c["id"] in ("ch05", "ch06", "ch07", "ch08", "ch09", "ch10", "ch11"):
+                seg = b[int(c["start"] * sr): int(c["end"] * sr)].mean(axis=1).astype(np.float32)
+                yy = librosa.resample(seg, orig_sr=sr, target_sr=22050)
+                oe = librosa.onset.onset_strength(y=yy, sr=22050, hop_length=256)
+                _, bt = librosa.beat.beat_track(onset_envelope=oe, sr=22050, hop_length=256, start_bpm=108, units="time")
+                bt = bt + c["start"]
+                errs += list(np.abs(bt - np.round(bt / beat) * beat))
+        errs = np.array(errs) * 1000
+        print(f"bed: {len(bed['plan'])} runs, {len(bed['joins'])} joins; its tracked beats in ch05-ch11 sit "
+              f"{np.median(errs):.0f} ms (median) from the film's beat grid ({len(errs)} beats)")
+        clash = []
+        for e in notes:
+            if e.get("what") in ("stab", "soft stab", "chime", "climb", "bell", "rising tone", "warm chord", "low sustained note") and e["ch"] != "ch01" and e["midi"]:
+                k = int(math.floor(e["t"] / beat + 1e-3))
+                bb = bed["beats"][min(k, len(bed["beats"]) - 1)]
+                bb2 = bed["beats"][min(k + 1, len(bed["beats"]) - 1)]
+                cc = 0.6 * np.array(bb["chroma"]) + 0.4 * np.array(bb2["chroma"])
+                lo = 0.6 * np.array(bb["bass"]) + 0.4 * np.array(bb2["bass"])
+                ok = {i for i in range(12) if cc[i] >= 0.45 * cc.max()} | {int(np.argmax(lo))}
+                bad = [m for m in e["midi"] if m % 12 not in ok]
+                if bad:
+                    clash.append((e["t"], e["what"], [sound.name_of(m) for m in bad]))
+        n_voiced = sum(1 for e in notes if e.get("what") in ("stab", "soft stab", "chime", "climb", "bell", "rising tone", "warm chord", "low sustained note") and e["ch"] != "ch01")
+        print(f"harmony: {n_voiced} notes and chords played over the bed; {len(clash)} with a note the bed is not sounding")
+        for c in clash[:12]:
+            print(f"  {c[0]:8.2f} s {c[1]:12s}: {', '.join(c[2])}")
+    # ---- the grid: music onsets on beats or swung 8ths (hits that follow cues are exempt)
     free = [e for e in notes if e.get("what") not in ("stab", "soft stab", "alarm", "final chord", "warm chord", "chime",
-                                                      "falls a fifth", "cluster", "low sustained note", "rising tone")]
+                                                      "falls a fifth", "cluster", "low sustained note", "rising tone",
+                                                      "climb", "bell", "dips out", "thins")]
     dev = []
     for e in free:
         u = e["t"] / beat
@@ -132,11 +170,12 @@ def main():
         d = min(abs(frac - p) for p in (0.0, sound.SWING, 1.0, sound.SWING - 1.0))
         dev.append((d * beat, e))
     worst = max(dev, key=lambda z: z[0]) if dev else (0, None)
-    print(f"grid: {len(free)} notes; largest distance from a beat or swung 8th {1000 * worst[0]:.2f} ms")
+    if not bed:
+        print(f"grid: {len(free)} notes; largest distance from a beat or swung 8th {1000 * worst[0]:.2f} ms")
 
     # ---- the harmony
     clashes = []
-    for e in notes:
+    for e in ([] if bed else notes):
         if e["inst"] not in ("piano", "vibes") or e.get("what") in ("cluster",):
             continue
         # comping looks ahead to the chord it anticipates; a stab in a bar's last 8th anticipates the next bar
@@ -148,8 +187,9 @@ def main():
         bad = [m for m in e["midi"] if m % 12 not in ok]
         if bad and e["ch"] != "ch01":  # ch01 is the approved sketch (its stab is D-F-A-Bb-D on purpose)
             clashes.append((e["t"], e["inst"], e.get("what", "comp"), sym, [sound.name_of(m) for m in bad]))
-    print(f"harmony: {sum(1 for e in notes if e['inst'] in ('piano', 'vibes'))} piano/vibes chords; "
-          f"{len(clashes)} with notes outside the bar's chord and tensions")
+    if not bed:
+        print(f"harmony: {sum(1 for e in notes if e['inst'] in ('piano', 'vibes'))} piano/vibes chords; "
+              f"{len(clashes)} with notes outside the bar's chord and tensions")
     for c in clashes[:12]:
         print(f"  {c[0]:8.2f} s {c[1]:5s} {c[2]:12s} over {c[3]:6s}: {', '.join(c[4])}")
 
@@ -228,12 +268,26 @@ def main():
                     ax.axvline(c["start"], color="#00a0ff", lw=1.8)
             if r0 <= c["start"] < r1:
                 ax1.text(c["start"] + 0.1, -6, c["id"], fontsize=13, weight="bold", va="top")
-            if c["id"] in score["chords"]:
+            if c["id"] in score.get("chords", {}):
                 for b, bar in enumerate(score["chords"][c["id"]].split("|")):
                     bt = c["start"] + 4 * b * beat
                     if r0 <= bt < r1:
                         ax3.axvline(bt, color="#bbbbbb", lw=0.6)
                         ax3.text(bt + 0.05, 95, bar.strip(), fontsize=8, va="top")
+        if bed:  # the bed's arrangement: source bars under each film bar, and its joins
+            for run in bed["plan"]:
+                f0, f1 = run["film_bars"]
+                s0 = run["source_bars"][0]
+                for fb in range(f0, f1 + 1):
+                    bt = (fb - 1) * 4 * beat
+                    if r0 <= bt < r1:
+                        ax3.axvline(bt, color="#dddddd", lw=0.5)
+                        ax3.text(bt + 0.05, 95, str(s0 + fb - f0), fontsize=7, va="top", color="#555")
+            for j in bed["joins"]:
+                if r0 <= j["film_time"] < r1:
+                    for ax in (ax2, ax3):
+                        ax.axvline(j["film_time"], color="#ff7c00", lw=1.6, ls="--")
+                    ax3.text(j["film_time"] + 0.1, 85, f"join {j['from_source_bar']}→{j['to_source_bar']}", fontsize=8, color="#ff7c00")
         ax1.set_xlim(r0, r0 + a.row)
         for ax in (ax1, ax2):
             plt.setp(ax.get_xticklabels(), visible=False)
