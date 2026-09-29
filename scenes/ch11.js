@@ -245,7 +245,7 @@ export default {
       }
     });
 
-    return { T, orange, cream, wipeO, wipeC, logo, LOGO_IN, tag, bars, BAR_IN, towers, wins };
+    return { T, ARRIVE, orange, cream, wipeO, wipeC, logo, LOGO_IN, tag, bars, BAR_IN, towers, wins };
   },
 
   render(s, t) {
@@ -274,5 +274,30 @@ export default {
     for (const w of s.wins) {
       if (vis(w.e, t >= w.t)) w.e.style.transform = `scale(${(0.3 + 0.7 * step(t - w.t, LIGHT)).toFixed(4)})`;
     }
+  },
+
+  // Event times (chapter-local) for the sound: a move that lands carries `land` (its spring's first arrival, as build()
+  // computes it); the rest hit on `t`. The final chord sounds as the logo lands and rings to the end of the film.
+  cues(s) {
+    const { T, ARRIVE } = s;
+    const pan = (x) => Math.round(((2 * x) / W - 1) * 100) / 100; // a stage x as a stereo position (-1 left … 1 right)
+    const logoLand = T.logo + ARRIVE;
+    const towers = s.towers.map((tw) => tw.t);
+    const lit = s.wins.map((w) => w.t);
+    return [
+      { t: 0, name: 'wipe', land: T.covered }, // 11.1 the orange sheet leads from 0 (wipeO); the cream covers the frame
+      { t: T.logo, name: 'slide', land: logoLand, pan: pan(LOGO_X + LOGO_W / 2) }, // 11.2 the logo, at left
+      { t: logoLand, name: 'chord' }, // the film arrives on its end card
+      ...T.tag.map((t) => ({ t, name: 'slam' })), // the promise, one line per beat
+      // The credit bars, one per beat: each bar's paper leads its line by TEXT_LAG. Pan: the paper's span in frame, from
+      // its left edge (TX - PADX in build) to the right edge.
+      ...T.bars.map((t0, i) => ({
+        t: t0 - TEXT_LAG, name: 'slide', land: t0 - TEXT_LAG + ARRIVE, i, pan: pan((LOGO_X + LOGO_W + GAP + W) / 2),
+      })),
+      // 11.3 the façade strip, from the first tower's start to the last one's landing; then its windows light in a
+      // wave, from the first window on to the last one landed (its LIGHT pop's first arrival).
+      { t: Math.min(...towers), name: 'rise', land: Math.max(...towers) + ARRIVE },
+      { t: Math.min(...lit), name: 'sweep', land: Math.max(...lit) + firstHit(LIGHT) },
+    ];
   },
 };
