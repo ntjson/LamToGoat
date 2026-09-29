@@ -414,12 +414,31 @@ export default {
     T.cover25 = when(T.wipe25, (t) => spring(t, T.wipe25, y25, 0, 'slide') <= 60);
     T.cover26 = when(T.cream26, (t) => spring(t, T.cream26, x26, 0, 'slide') >= -60);
 
+    // For the sound (cues() below). land: when each move lands, its spring's first arrival (and when each digit of
+    // 1.363 locks); flipEdge: how long after its flip time a cell is edge-on and shows orange; pan: where an event
+    // stands across the frame (-1 left … 1 right), from its x centre.
+    const riseIn = reach(RISE);
+    const snapIn = reach('snap');
+    const land = {
+      wipe21: slideIn, slabs: slabs.map((sl) => sl.t0 + riseIn), strip: T.strip + slideIn, lift: T.part + snapIn,
+      locks: od.digits.map((_, k) => T.lock04 + k * T.stagger), wipe25: T.wipe25 + slideIn, sheet: T.sheet + slideIn,
+      clip: T.clip + snapIn,
+    };
+    const toPan = (x) => Math.round((200 * x) / W - 100) / 100;
+    const pan = {
+      slabs: slabs.map((sl) => toPan(sl.x + sl.w / 2)), count: toPan(G22.x + od.w / 2), f17: toPan(X0 - 12 + f17.w / 2),
+      cells: cells.map((_, i) => toPan(gx0 + (i % COLS) * pitchX + cellW / 2)), f36: toPan(X0 - 12 + f36.w / 2),
+      piece: toPan((SX + xc) / 2), f52: toPan(X52 - 12 + f52.w / 2), boxes: boxes.map((b) => toPan(b.bx + bw / 2)),
+      clip: toPan(SHEET.cx + SHEET.w / 2 - 190 + 40),
+    };
+
     return {
       T, dur: ctx.dur, g21: field21.el, x21, s22, g22, gx22: -(G22.x + G22.w + 80), od, travel04, slot04, slabs, ax, ay, pushS,
       s23, grid, cells, f17: f17.el, l17: l17.map((l) => l.el), lx17: -(X0 + col17 + 60), m17: m17.el, typed17,
       s24, f36: f36.el, g36, gx36: W - g36x + 40, whole24, right24, left24, pt: pt.el, cutLayer, cut24, x24,
       s25, s25t, y25, boxes, f52: f52.el, l52: l52.el,
       s26, field26, x26, sheet, sx26, rules, freq: freq.el, clipG, stamp: stamp.el,
+      land, flipEdge: reach('flip', 0.5), pan,
     };
   },
 
@@ -530,5 +549,34 @@ export default {
         if (vis(s.stamp, t >= T.stamp)) s.stamp.style.transform = `scale(${spring(t, T.stamp, 1.3, 1, 'slam').toFixed(4)})`;
       }
     }
+  },
+
+  // Event times (chapter-local) for the sound: a move that lands carries `land` (its hit, on the grid); the rest hit
+  // on `t`. Labels, typing, the paste ripple and the ledger rules get none; the exit flip is ch03's cue.
+  cues(s) {
+    const { T, land: L, pan: P } = s;
+    const flips = s.cells.map((c, k) => [c.flip, P.cells[k]]).filter(([t]) => t >= 0).sort((a, b) => a[0] - b[0]);
+    return [
+      { t: 0, name: 'wipe', land: L.wipe21 }, // 2.1 the ORANGE field covers ch01's question
+      // 2.2 the skyline rises, slab by slab, left to right
+      ...s.slabs.map((sl, i) => ({ t: sl.t0, name: 'slab', land: L.slabs[i], i, pan: P.slabs[i] })),
+      { t: T.count, name: 'count', land: L.locks.at(-1), pan: P.count }, // 1.363 rolls until its last digit locks
+      ...L.locks.map((t, i) => ({ t, name: 'tick', i, pan: P.count })), // one digit locks per beat
+      { t: T.push, name: 'wipe', land: T.black }, // the dive, until the tower's black face fills the frame
+      { t: T.slam17, name: 'slam', pan: P.f17 }, // 2.3 "17%"
+      ...flips.map(([t, pan], i) => ({ t: t + s.flipEdge, name: 'cell', i, pan })), // 129 cells show orange
+      { t: T.cut24, name: 'cut' }, // 2.4 HARD CUT to cream...
+      { t: T.cut24, name: 'slide', land: L.strip }, // ...onto the strip mid-slide (its spring starts unseen at T.strip)
+      { t: T.slam36, name: 'slam', pan: P.f36 }, // "36%"
+      { t: T.scissor, name: 'scissor' }, // the scissor line runs across the strip...
+      { t: T.part, name: 'lift', land: L.lift, pan: P.piece }, // ...and the piece turns navy and lifts
+      { t: T.wipe25, name: 'wipe', land: L.wipe25 }, // 2.5 ORANGE rises
+      { t: T.slam52, name: 'slam', pan: P.f52 }, // "52%"
+      // 13 of the 25 boxes are cut out, left to right, each falling as its outline closes
+      ...s.boxes.filter((b) => b.cut >= 0).map((b, i) => ({ t: b.cut, name: 'snip', n: 1, i, pan: P.boxes[b.i] })),
+      { t: T.cream26, name: 'slide', land: L.sheet }, // 2.6 the CREAM field and the sheet, landing with the sheet
+      { t: L.clip, name: 'click', pan: P.clip }, // the empty clip clicks on
+      { t: T.stamp, name: 'stamp' }, // the red tag
+    ];
   },
 };
