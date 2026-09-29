@@ -246,9 +246,15 @@ export default {
     T.somCount = T.somDone - somSpan;
     const samTravel = samFig.odo.digits.map((d, k) => d + (k ? 10 : 0));
     T.samP = samTravel.map((v, k) => tuned(COUNT.z, v, T.samLand[k] - T.samCount));
+    // Landing times of the moves above (for the sound's cues); a window sweep lands when its last row lights (the
+    // 15th floor for 300 flats, the top floor for 700).
+    const land = {
+      tag1: T.tag1 + slideIn, arrow: T.arrow + firstHit('snap'), tag2: T.tag2 + slideIn, slab: T.slab + slideIn,
+      lit300: rows[ROWS - 15].__t, lit700: rows[0].__t, tam: T.tam + firstHit(WIPE), sam: T.sam + slideIn, som: T.som + slideIn,
+    };
 
     return {
-      T, card, price, cardX, cardY, cardR, b2b, tag1, tag2, arrowEl, rowX, head, slab, slabY, rows, pins,
+      T, land, card, price, cardX, cardY, cardR, b2b, tag1, tag2, arrowEl, rowX, head, slab, slabY, rows, pins,
       tam, sam, som, tamFig, samFig, somFig, samTravel, R,
     };
   },
@@ -302,5 +308,34 @@ export default {
       s.som.style.transform = `translate(${u * (W - s.R.som[0] + 60)}px, ${u * (H - s.R.som[1] + 60)}px)`;
       s.somFig.odo.roll(t, T.somCount, { preset: COUNT_FAST });
     }
+  },
+
+  // Event times (chapter-local) for the sound: a move that lands carries `land` (its hit, on the grid); the rest hit
+  // on `t`. `pan` places what sits clearly on one side: "Ban quản trị trả phí" (x 170-650) and "KHÁCH HÀNG" on the
+  // left; the façade slab (x 1110-1750) with its windows and pins, and SOM (x 1180-), on the right.
+  cues(s) {
+    const { T, land: L } = s;
+    const LEFT = -0.55;
+    const SLAB = 0.5;
+    const SOM = 0.6;
+    return [
+      { t: 0, name: 'flip' }, // 3.1 the NAVY card turns out of ch02's sheet (both flips start on the boundary)
+      { t: T.tag1, name: 'slide', land: L.tag1, pan: LEFT }, // 3.2 tag 1, "Mô hình B2B2C" arriving with it
+      { t: T.count, name: 'count', land: T.lock }, // "20.000đ/căn/tháng" counts from the card's landing
+      { t: L.arrow, name: 'snap' }, // the arrow pushes out from under tag 1
+      { t: T.tag2, name: 'slide', land: L.tag2, pan: 0.3 }, // tag 2, in from the right
+      { t: T.slab, name: 'slab', land: L.slab, pan: SLAB }, // 3.3 the façade rises from the bottom edge...
+      { t: T.head, name: 'slam', pan: LEFT }, // ...as "KHÁCH HÀNG" slams
+      ...s.pins.map((p, i) => ({ t: p.t, name: 'pin', i, pan: SLAB })),
+      { t: T.lit300, name: 'sweep', land: L.lit300, i: 0, pan: SLAB }, // the windows fill to 300 flats...
+      { t: T.lit700, name: 'sweep', land: L.lit700, i: 1, pan: SLAB }, // ...then to 700
+      { t: T.tam, name: 'slide', land: L.tam, i: 0 }, // 3.4 TAM wipes in, SAM rises, SOM slides in from the corner
+      { t: T.tamCount, name: 'count', land: T.tamDone, i: 0 },
+      { t: T.sam, name: 'slide', land: L.sam, i: 1 },
+      { t: T.samCount, name: 'count', land: T.samDone, i: 1 }, // its digits lock one per 8th note...
+      { t: T.samDone, name: 'stab', soft: true }, // ...and "32,4" slams: SAM lands
+      { t: T.som, name: 'slide', land: L.som, i: 2, pan: SOM },
+      { t: T.somCount, name: 'count', land: T.somDone, i: 2, pan: SOM },
+    ];
   },
 };
