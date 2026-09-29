@@ -116,7 +116,7 @@ export default {
       lit300: syl('L10', 3), // windows fill to 300...
       lit700: syl('L10', 6), // ...then to 700
       pin2: syl('L10', 8) - 0.04, // "dưới 10 năm"
-      pin3: syl('L10', 11) - 0.04, // "có Ban quản trị", read before L10 ends
+      pin3: syl('L10', 10) - 0.04, // "có Ban quản trị", early enough to be read before TAM covers it (readcheck)
       tam: L11.start - 0.02 - firstHit(WIPE), // TAM wipes over the façade (at L10.end its edge is still right of the slab)
       sam: syl('L11', 2) - 0.02 - slideIn, // SAM rises with its caption
       som: syl('L11', 8) - 0.02 - slideIn, // SOM slides in from the corner
