@@ -1,7 +1,9 @@
 // Render the film (or part of it) to H.264.
 //   node render.mjs [--from s] [--to s] [--chapters ch01,ch02] [--tail s] [--fps 30] [--scale 0.5]
-//                   [--out out/draft.mp4] [--workers n] [--crf n] [--preset p] [--final]
+//                   [--out out/draft.mp4] [--workers n] [--crf n] [--preset p] [--final] [--audio out/sound/film.wav]
 // Drafts default to 960x540 at 30 fps. --final means 1920x1080, 60 fps, CRF 16, preset slow.
+// --audio muxes the film's mix (tools/sound.py), trimmed to the rendered range, as AAC 320 kbps at 48 kHz; without
+// it the file is silent, as before.
 // --chapters renders only those chapters' time range and loads only them (plus the chapter before each, for
 // transitions; see pageQuery), so a chapter that is mid-edit elsewhere can't break the render. --tail extends
 // the range past the last chapter's end (to see a chapter's exit). --load ch02,ch03 loads only those chapters
@@ -73,7 +75,9 @@ export async function render(opts) {
   fs.mkdirSync(segDir, { recursive: true });
   const w = Math.round(1920 * o.scale);
   const h = Math.round(1080 * o.scale);
-  console.log(`render ${o.from.toFixed(3)}-${o.to.toFixed(3)} s, ${w}x${h} @${o.fps} fps, ${segs.length} segments, ${workers} workers`);
+  if (o.audio && !fs.existsSync(path.resolve(ROOT, o.audio))) throw new Error(`no such audio file: ${o.audio}`);
+  console.log(`render ${o.from.toFixed(3)}-${o.to.toFixed(3)} s, ${w}x${h} @${o.fps} fps, ${segs.length} segments, ${workers} workers`
+    + (o.audio ? `, with ${o.audio}` : ''));
 
   const server = await serve();
   const load = o.load ?? o.chapters;
@@ -118,7 +122,17 @@ export async function render(opts) {
   }
   const list = path.join(segDir, 'list.txt');
   fs.writeFileSync(list, segs.map((_, i) => `file '${String(i).padStart(4, '0')}.mp4'`).join('\n') + '\n');
-  await ffmpeg(['-y', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', '-movflags', '+faststart', out]).done;
+  const video = o.audio ? path.join(segDir, 'video.mp4') : out;
+  await ffmpeg(['-y', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', '-movflags', '+faststart', video]).done;
+  if (o.audio) {
+    // The mix is film time from 0; keep the slice under the rendered frames, from the first frame's time. The output
+    // is cut to exactly those frames with -t (-shortest dropped the last two frames of a 600-frame draft).
+    const a0 = Math.ceil(o.from * o.fps - 1e-6) / o.fps;
+    const a1 = Math.ceil(o.to * o.fps - 1e-6) / o.fps;
+    await ffmpeg(['-y', '-i', video, '-i', path.resolve(ROOT, o.audio), '-filter_complex',
+      `[1:a]atrim=start=${a0}:end=${a1},asetpts=PTS-STARTPTS[a]`, '-map', '0:v', '-map', '[a]', '-c:v', 'copy',
+      '-c:a', 'aac', '-b:a', '320k', '-ar', '48000', '-t', String(a1 - a0), '-movflags', '+faststart', out]).done;
+  }
   fs.rmSync(segDir, { recursive: true, force: true });
   const secs = (Date.now() - t0) / 1000;
   console.log(`${path.relative(ROOT, out)}: ${frames} frames in ${secs.toFixed(1)} s (${(frames / secs).toFixed(1)} fps)`);
@@ -134,7 +148,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const num = (k) => (get(k) !== undefined ? Number(get(k)) : undefined);
   const opts = {
     from: num('from'), to: num('to'), scale: num('scale'), crf: num('crf'), workers: num('workers'), tail: num('tail'),
-    preset: get('preset'), out: get('out'), final: a.includes('--final'),
+    preset: get('preset'), out: get('out'), final: a.includes('--final'), audio: get('audio'),
     chapters: get('chapters')?.split(','), load: get('load')?.split(','),
   };
   if (num('fps') !== undefined) opts[a.includes('--final') ? 'fpsOverride' : 'fps'] = num('fps');
