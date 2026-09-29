@@ -1,0 +1,14325 @@
+{
+ "a4": 441.3,
+ "method": "tools/bedharmony.py: bass by harmonic-weighted FFT per 8th; upper notes by NNLS on a CQT with harmonic note templates, noise-filtered; chords read by hand from those (CHART) and verified against the bass and an independent STFT chroma",
+ "source": "audio/music/upbeat-jazz_francisco-alvear_mixkit.mp3",
+ "bpm": 108,
+ "first_downbeat": 0.083,
+ "tuning_check": {
+  "bass_notes_median_cents_vs_441_3": 1.0,
+  "upper_partials_median_cents_vs_441_3": 0.8,
+  "upper_partials_n": 33,
+  "bass_notes_p10_p90_cents": [
+   -17.3,
+   17.2
+  ]
+ },
+ "sections": [
+  {
+   "name": "intro",
+   "bars": [
+    1,
+    9
+   ]
+  },
+  {
+   "name": "A1",
+   "bars": [
+    10,
+    17
+   ]
+  },
+  {
+   "name": "B1",
+   "bars": [
+    18,
+    24
+   ]
+  },
+  {
+   "name": "A2",
+   "bars": [
+    25,
+    32
+   ]
+  },
+  {
+   "name": "B2",
+   "bars": [
+    33,
+    39
+   ]
+  },
+  {
+   "name": "A3",
+   "bars": [
+    40,
+    47
+   ]
+  },
+  {
+   "name": "coda",
+   "bars": [
+    48,
+    49
+   ]
+  },
+  {
+   "name": "final chord",
+   "bars": [
+    50,
+    50
+   ]
+  }
+ ],
+ "plan": [
+  {
+   "film_bars": [
+    1,
+    9
+   ],
+   "source_bars": [
+    1,
+    9
+   ]
+  },
+  {
+   "film_bars": [
+    10,
+    17
+   ],
+   "source_bars": [
+    2,
+    9
+   ]
+  },
+  {
+   "film_bars": [
+    18,
+    25
+   ],
+   "source_bars": [
+    2,
+    9
+   ]
+  },
+  {
+   "film_bars": [
+    26,
+    67
+   ],
+   "source_bars": [
+    6,
+    47
+   ]
+  },
+  {
+   "film_bars": [
+    68,
+    78
+   ],
+   "source_bars": [
+    33,
+    43
+   ]
+  },
+  {
+   "film_bars": [
+    79,
+    81
+   ],
+   "source_bars": [
+    48,
+    50
+   ]
+  }
+ ],
+ "film_sb": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  51,
+  52,
+  53,
+  54,
+  55,
+  56,
+  57,
+  58,
+  59,
+  60,
+  61,
+  62,
+  63,
+  64,
+  65,
+  66,
+  67,
+  68,
+  69,
+  70,
+  71,
+  72,
+  73,
+  74,
+  75,
+  76,
+  77,
+  78,
+  79,
+  80,
+  81,
+  82,
+  83,
+  84,
+  85,
+  86,
+  87,
+  88,
+  89,
+  90,
+  91,
+  92,
+  93,
+  94,
+  95,
+  96,
+  97,
+  98,
+  99,
+  100,
+  101,
+  102,
+  103,
+  104,
+  105,
+  106,
+  107,
+  108,
+  109,
+  110,
+  111,
+  112,
+  113,
+  114,
+  115,
+  116,
+  117,
+  118,
+  119,
+  120,
+  121,
+  122,
+  123,
+  124,
+  125,
+  126,
+  127,
+  128,
+  129,
+  130,
+  131,
+  132,
+  133,
+  134,
+  135,
+  136,
+  137,
+  138,
+  139,
+  140,
+  141,
+  142,
+  143,
+  144,
+  145,
+  146,
+  147,
+  148,
+  149,
+  150,
+  151,
+  152,
+  153,
+  154,
+  155,
+  156,
+  157,
+  158,
+  159,
+  160,
+  161,
+  162,
+  163,
+  164,
+  165,
+  166,
+  167,
+  168,
+  169,
+  170,
+  171,
+  172,
+  173,
+  174,
+  175,
+  176,
+  177,
+  178,
+  179,
+  180,
+  181,
+  182,
+  183,
+  184,
+  185,
+  186,
+  187,
+  128,
+  129,
+  130,
+  131,
+  132,
+  133,
+  134,
+  135,
+  136,
+  137,
+  138,
+  139,
+  140,
+  141,
+  142,
+  143,
+  144,
+  145,
+  146,
+  147,
+  148,
+  149,
+  150,
+  151,
+  152,
+  153,
+  154,
+  155,
+  156,
+  157,
+  158,
+  159,
+  160,
+  161,
+  162,
+  163,
+  164,
+  165,
+  166,
+  167,
+  168,
+  169,
+  170,
+  171,
+  188,
+  189,
+  190,
+  191,
+  192,
+  193,
+  194,
+  195,
+  196,
+  197,
+  198,
+  199
+ ],
+ "drone": {
+  "hz": [
+   150.333,
+   186.996
+  ],
+  "notes": [
+   "D3",
+   "F#3"
+  ],
+  "cents_vs_441_3": [
+   35,
+   15
+  ],
+  "note": "constant through the whole track, ducked at bar lines; audible mostly where the texture is sparse (the intro). A D-F# major third: it is not part of the chord chart, and it is why the intro reads as D."
+ },
+ "bars": [
+  {
+   "bar": 1,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "D"
+    }
+   ],
+   "tier": "L",
+   "note": "the fade-in: the pulse and the drone only"
+  },
+  {
+   "bar": 2,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "D"
+    }
+   ],
+   "tier": "M",
+   "note": "D pedal; a pickup flourish on 4 (Eb bass, G/B/C#/E on top)"
+  },
+  {
+   "bar": 3,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "D"
+    }
+   ],
+   "tier": "M",
+   "note": "as bar 2"
+  },
+  {
+   "bar": 4,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "D"
+    }
+   ],
+   "tier": "M",
+   "note": "as bar 2"
+  },
+  {
+   "bar": 5,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 3,
+     "chord": "D"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C"
+    }
+   ],
+   "tier": "M",
+   "note": "D pedal; C on 4 (V of F) leads into 6"
+  },
+  {
+   "bar": 6,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "F"
+    }
+   ],
+   "tier": "M",
+   "note": "F (A, C, and B natural on top) over the D/F# drone"
+  },
+  {
+   "bar": 7,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "Fm9"
+    }
+   ],
+   "tier": "M",
+   "note": "F minor: Ab bass on 3, C/Eb/G on top (Abmaj7 over F); the bass chromatic around F on 4"
+  },
+  {
+   "bar": 8,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "F"
+    }
+   ],
+   "tier": "M",
+   "note": "as bar 6"
+  },
+  {
+   "bar": 9,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "F"
+    },
+    {
+     "beat": 3,
+     "beats": 2,
+     "chord": "Eb"
+    }
+   ],
+   "tier": "L",
+   "note": "F over D pulses, then Eb (G/Bb/C on top): the pull-back into A"
+  },
+  {
+   "bar": 10,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "Ab/C/Eb on top; B3 (Cb) is Db7's 7th, Bb3 (with G, D, F) is C7sus's"
+  },
+  {
+   "bar": 11,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "Fm7(11): Bb on top"
+  },
+  {
+   "bar": 12,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 13,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "F7sus"
+    }
+   ],
+   "tier": "M",
+   "note": "F, C, G, Eb and B natural over F; the bass walks F G Bb into 14; no third"
+  },
+  {
+   "bar": 14,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 15,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 16,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 17,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 3,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7"
+    }
+   ],
+   "tier": "H",
+   "note": "Fm7 whole; C7 (#9) on 4 into B1"
+  },
+  {
+   "bar": 18,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Bbm7"
+    },
+    {
+     "beat": 3,
+     "beats": 2,
+     "chord": "Eb7"
+    }
+   ],
+   "tier": "H",
+   "note": "Ab/Db/F on top; Eb7: G and Db"
+  },
+  {
+   "bar": 19,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 1,
+     "chord": "Abmaj7"
+    },
+    {
+     "beat": 2,
+     "beats": 1,
+     "chord": "Bb7sus"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Abmaj7/C"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "Abmaj7"
+    }
+   ],
+   "tier": "M",
+   "note": "C-G shell; Bb over C and Ab (no third: sus); Ab-C with G and Bb on 3; the bass walks Ab Bb C Ab"
+  },
+  {
+   "bar": 20,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 1,
+     "chord": "Gm7"
+    },
+    {
+     "beat": 2,
+     "beats": 1,
+     "chord": "Gm7b5"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "C7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7/G"
+    }
+   ],
+   "tier": "M",
+   "note": "F/Bb/G, then Db (the b5); C7 on 3, over G then F# on 4"
+  },
+  {
+   "bar": 21,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 3,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "F6"
+    }
+   ],
+   "tier": "M",
+   "note": "Ab/C/Eb; on 4 F, A, C, D, G (F6/9: F major, once) over the bass E then C"
+  },
+  {
+   "bar": 22,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Bbm7"
+    },
+    {
+     "beat": 3,
+     "beats": 2,
+     "chord": "Eb6"
+    }
+   ],
+   "tier": "M",
+   "note": "as 18 but Eb6 (G, Ab, C: no Db); Bbm7 with G (13th)"
+  },
+  {
+   "bar": 23,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 1,
+     "chord": "Abmaj7"
+    },
+    {
+     "beat": 2,
+     "beats": 1,
+     "chord": "Ab/Eb"
+    },
+    {
+     "beat": 3,
+     "beats": 2,
+     "chord": "Abmaj7"
+    }
+   ],
+   "tier": "H",
+   "note": "C/G/Ab/F on top; the bass Ab Eb Ab"
+  },
+  {
+   "bar": 24,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "G7sus"
+    },
+    {
+     "beat": 3,
+     "beats": 2,
+     "chord": "F#7"
+    }
+   ],
+   "tier": "M",
+   "note": "G, C, F over G; F# with E, C#, Ab (G#): F#7(9) into F"
+  },
+  {
+   "bar": 25,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7"
+    }
+   ],
+   "tier": "M",
+   "note": "sparse comping: C4 only on 1-2; C9 on 4"
+  },
+  {
+   "bar": 26,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 27,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 28,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 3,
+     "chord": "F7sus"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7"
+    }
+   ],
+   "tier": "L",
+   "note": "as 13; the bass F F F C E C with B natural on 4"
+  },
+  {
+   "bar": 29,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 30,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 31,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 32,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 3,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7"
+    }
+   ],
+   "tier": "M",
+   "note": "as 17, into B2"
+  },
+  {
+   "bar": 33,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Bbm7"
+    },
+    {
+     "beat": 3,
+     "beats": 2,
+     "chord": "Eb7"
+    }
+   ],
+   "tier": "H",
+   "note": "as 18"
+  },
+  {
+   "bar": 34,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 1,
+     "chord": "Abmaj7"
+    },
+    {
+     "beat": 2,
+     "beats": 1,
+     "chord": "Abmaj7/C"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Abmaj7/Eb"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "Bb7sus"
+    }
+   ],
+   "tier": "M",
+   "note": "C/Eb/G/F on top all bar (Abmaj7 6/9) over the bass run Ab Bb C Db Eb Db C Bb; on 4 the bass Bb under Ab, C, Eb, G: Bb9sus"
+  },
+  {
+   "bar": 35,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Gm7b5"
+    },
+    {
+     "beat": 3,
+     "beats": 2,
+     "chord": "C7"
+    }
+   ],
+   "tier": "H",
+   "note": "Bb/Db/F over G; C7(b9) on 3, C7alt (Eb, Ab) on 4"
+  },
+  {
+   "bar": 36,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "Fm7"
+    }
+   ],
+   "tier": "H",
+   "note": "Ab/C/Eb/F; the bass F C on the 8ths"
+  },
+  {
+   "bar": 37,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Bbm7"
+    },
+    {
+     "beat": 3,
+     "beats": 2,
+     "chord": "Eb7"
+    }
+   ],
+   "tier": "H",
+   "note": "as 18; Eb with a Gb (#9) on 3"
+  },
+  {
+   "bar": 38,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 4,
+     "chord": "Abmaj7"
+    }
+   ],
+   "tier": "M",
+   "note": "F/G/C/Eb on top (Ab6/9); the bass Ab C Eb C Ab Ab G Bb"
+  },
+  {
+   "bar": 39,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Gm7b5"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "C7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7/F#"
+    }
+   ],
+   "tier": "H",
+   "note": "Bb/Db/F over G; C7 (G Bb C E) on 3; the same over F# on 4"
+  },
+  {
+   "bar": 40,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 41,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 42,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 43,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 3,
+     "chord": "F5"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "F6"
+    }
+   ],
+   "tier": "M",
+   "note": "F and C on top (E in passing), the third only in passing: F major, open; A and G on 4"
+  },
+  {
+   "bar": 44,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 45,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 46,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "Db7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "H",
+   "note": "as 10"
+  },
+  {
+   "bar": 47,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 3,
+     "chord": "Fm7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "C7sus"
+    }
+   ],
+   "tier": "M",
+   "note": "as 17: F4 Ab4 C5 F5, then C, F, G on 4"
+  },
+  {
+   "bar": 48,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "G7"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "C7"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "F6"
+    }
+   ],
+   "tier": "M",
+   "note": "G7(b9) over a bass F Ab B (its 7th, b9, 3rd); C7alt (E, Eb, Ab); F6/9 (F G D E)"
+  },
+  {
+   "bar": 49,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 2,
+     "chord": "Cmaj7#5"
+    },
+    {
+     "beat": 3,
+     "beats": 1,
+     "chord": "F6"
+    },
+    {
+     "beat": 4,
+     "beats": 1,
+     "chord": "Fm"
+    }
+   ],
+   "tier": "L",
+   "note": "C, Ab, B, D then E: C maj7#5 (bass C G, then Ab D); F and A; Ab and C"
+  },
+  {
+   "bar": 50,
+   "chords": [
+    {
+     "beat": 1,
+     "beats": 1,
+     "chord": "Fm"
+    },
+    {
+     "beat": 2,
+     "beats": 3,
+     "chord": "Fm6"
+    }
+   ],
+   "tier": "L",
+   "note": "the last chord: bass D2 and Ab2 ring, F Ab C D above (Dm7b5 = Fm6), cymbal wash"
+  }
+ ],
+ "beats": [
+  {
+   "sb": 0,
+   "bar": 1,
+   "beat": 1,
+   "bass": null,
+   "bass_beat": null,
+   "bass_and": null,
+   "bass_pc": null,
+   "notes": [],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "B5",
+   "auto_score": -0.08,
+   "explained": 0.0,
+   "tier": "L",
+   "bass_next": null,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "conf": 0.4
+  },
+  {
+   "sb": 1,
+   "bar": 1,
+   "beat": 2,
+   "bass": null,
+   "bass_beat": null,
+   "bass_and": null,
+   "bass_pc": null,
+   "notes": [],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "B5",
+   "auto_score": -0.08,
+   "explained": 0.0,
+   "tier": "L",
+   "bass_next": null,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "conf": 0.4
+  },
+  {
+   "sb": 2,
+   "bar": 1,
+   "beat": 3,
+   "bass": null,
+   "bass_beat": null,
+   "bass_and": null,
+   "bass_pc": null,
+   "notes": [],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "B5",
+   "auto_score": -0.08,
+   "explained": 0.0,
+   "tier": "L",
+   "bass_next": 32,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "conf": 0.4
+  },
+  {
+   "sb": 3,
+   "bar": 1,
+   "beat": 4,
+   "bass": 32,
+   "bass_beat": null,
+   "bass_and": null,
+   "bass_pc": 8,
+   "notes": [
+    [
+     54,
+     1.0
+    ],
+    [
+     82,
+     0.38
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "Abm9",
+   "auto_score": 1.55,
+   "explained": 0.72,
+   "tier": "L",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.566,
+   "rank": "2/9",
+   "conf": 0.4
+  },
+  {
+   "sb": 4,
+   "bar": 2,
+   "beat": 1,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.469,
+   "rank": "5/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 5,
+   "bar": 2,
+   "beat": 2,
+   "bass": 38,
+   "bass_beat": 43,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.546,
+   "rank": "3/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 6,
+   "bar": 2,
+   "beat": 3,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 39,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.506,
+   "rank": "5/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 7,
+   "bar": 2,
+   "beat": 4,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     54,
+     0.63
+    ],
+    [
+     59,
+     0.57
+    ],
+    [
+     61,
+     0.25
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [
+    7,
+    11
+   ],
+   "avoid": [
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9,
+    7,
+    11
+   ],
+   "auto": "Eb7",
+   "auto_score": 1.52,
+   "explained": 0.9,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.372,
+   "rank": "10/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 8,
+   "bar": 3,
+   "beat": 1,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.491,
+   "rank": "8/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 9,
+   "bar": 3,
+   "beat": 2,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.513,
+   "rank": "5/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 10,
+   "bar": 3,
+   "beat": 3,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.441,
+   "rank": "9/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 11,
+   "bar": 3,
+   "beat": 4,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": 39,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ],
+    [
+     59,
+     0.92
+    ],
+    [
+     71,
+     0.48
+    ],
+    [
+     78,
+     0.47
+    ],
+    [
+     61,
+     0.39
+    ],
+    [
+     85,
+     0.28
+    ],
+    [
+     76,
+     0.28
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [
+    11
+   ],
+   "avoid": [
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9,
+    11
+   ],
+   "auto": "D6",
+   "auto_score": 1.68,
+   "explained": 0.75,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.438,
+   "rank": "8/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 12,
+   "bar": 4,
+   "beat": 1,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ],
+    [
+     53,
+     0.42
+    ],
+    [
+     86,
+     0.31
+    ],
+    [
+     88,
+     0.26
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D7",
+   "auto_score": 1.37,
+   "explained": 0.66,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.538,
+   "rank": "3/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 13,
+   "bar": 4,
+   "beat": 2,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.453,
+   "rank": "7/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 14,
+   "bar": 4,
+   "beat": 3,
+   "bass": 38,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.475,
+   "rank": "4/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 15,
+   "bar": 4,
+   "beat": 4,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": 39,
+   "bass_pc": 2,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     71,
+     0.76
+    ],
+    [
+     61,
+     0.71
+    ],
+    [
+     76,
+     0.62
+    ],
+    [
+     82,
+     0.49
+    ],
+    [
+     54,
+     0.47
+    ],
+    [
+     85,
+     0.43
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [
+    7,
+    11,
+    1,
+    4,
+    10
+   ],
+   "avoid": [],
+   "safe": [
+    6,
+    2,
+    9,
+    7,
+    11,
+    1,
+    4,
+    10
+   ],
+   "auto": "Dmaj7#5",
+   "auto_score": 1.22,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.465,
+   "rank": "7/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 16,
+   "bar": 5,
+   "beat": 1,
+   "bass": 38,
+   "bass_beat": 43,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    6,
+    2,
+    9
+   ],
+   "cos": 0.472,
+   "rank": "9/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 17,
+   "bar": 5,
+   "beat": 2,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    3,
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 38,
+   "hold": [
+    9
+   ],
+   "cos": 0.482,
+   "rank": "5/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 18,
+   "bar": 5,
+   "beat": 3,
+   "bass": 38,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     54,
+     1.0
+    ]
+   ],
+   "chord": "D",
+   "root": 2,
+   "quality": "maj",
+   "tones": [
+    2,
+    6,
+    9
+   ],
+   "ext": [],
+   "avoid": [
+    7,
+    10
+   ],
+   "safe": [
+    6,
+    2,
+    9
+   ],
+   "auto": "D",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    9
+   ],
+   "cos": 0.502,
+   "rank": "4/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 19,
+   "bar": 5,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     67,
+     0.48
+    ],
+    [
+     55,
+     0.43
+    ]
+   ],
+   "chord": "C",
+   "root": 0,
+   "quality": "maj",
+   "tones": [
+    0,
+    4,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    5,
+    8
+   ],
+   "safe": [
+    4,
+    0,
+    7
+   ],
+   "auto": "Csus",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    0
+   ],
+   "cos": 0.716,
+   "rank": "1/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 20,
+   "bar": 6,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     72,
+     1.0
+    ],
+    [
+     69,
+     0.43
+    ],
+    [
+     53,
+     0.38
+    ],
+    [
+     77,
+     0.37
+    ],
+    [
+     85,
+     0.35
+    ],
+    [
+     81,
+     0.33
+    ],
+    [
+     67,
+     0.3
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0
+   ],
+   "auto": "F",
+   "auto_score": 1.61,
+   "explained": 0.79,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    9,
+    5,
+    0
+   ],
+   "cos": 0.703,
+   "rank": "3/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 21,
+   "bar": 6,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     71,
+     0.37
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0
+   ],
+   "auto": "Abm6",
+   "auto_score": 1.54,
+   "explained": 0.73,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.654,
+   "rank": "3/9",
+   "conf": 0.7
+  },
+  {
+   "sb": 22,
+   "bar": 6,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     71,
+     0.29
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0
+   ],
+   "auto": "Abm6",
+   "auto_score": 1.54,
+   "explained": 0.78,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.626,
+   "rank": "5/9",
+   "conf": 0.6
+  },
+  {
+   "sb": 23,
+   "bar": 6,
+   "beat": 4,
+   "bass": 29,
+   "bass_beat": 47,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     67,
+     0.84
+    ],
+    [
+     59,
+     0.43
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [
+    7
+   ],
+   "avoid": [
+    6,
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0,
+    7
+   ],
+   "auto": "G7",
+   "auto_score": 1.54,
+   "explained": 0.81,
+   "tier": "M",
+   "bass_next": 40,
+   "hold": [
+    5,
+    0,
+    7
+   ],
+   "cos": 0.598,
+   "rank": "2/9",
+   "conf": 0.77
+  },
+  {
+   "sb": 24,
+   "bar": 7,
+   "beat": 1,
+   "bass": 40,
+   "bass_beat": 40,
+   "bass_and": 38,
+   "bass_pc": 4,
+   "notes": [
+    [
+     72,
+     1.0
+    ],
+    [
+     60,
+     0.81
+    ],
+    [
+     75,
+     0.7
+    ],
+    [
+     80,
+     0.3
+    ]
+   ],
+   "chord": "Fm9",
+   "root": 5,
+   "quality": "m9",
+   "tones": [
+    5,
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Emaj7#5",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "cos": 0.645,
+   "rank": "3/5",
+   "conf": 0.7
+  },
+  {
+   "sb": 25,
+   "bar": 7,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 38,
+   "bass_pc": 5,
+   "notes": [
+    [
+     55,
+     1.0
+    ],
+    [
+     54,
+     0.84
+    ],
+    [
+     72,
+     0.34
+    ],
+    [
+     67,
+     0.32
+    ],
+    [
+     60,
+     0.29
+    ],
+    [
+     74,
+     0.29
+    ]
+   ],
+   "chord": "Fm9",
+   "root": 5,
+   "quality": "m9",
+   "tones": [
+    5,
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    6
+   ],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    6
+   ],
+   "auto": "Fm9",
+   "auto_score": 0.97,
+   "explained": 0.91,
+   "tier": "M",
+   "bass_next": 44,
+   "hold": [
+    8,
+    5,
+    0
+   ],
+   "cos": 0.765,
+   "rank": "1/5",
+   "conf": 0.85
+  },
+  {
+   "sb": 26,
+   "bar": 7,
+   "beat": 3,
+   "bass": 44,
+   "bass_beat": 44,
+   "bass_and": 38,
+   "bass_pc": 8,
+   "notes": [
+    [
+     55,
+     1.0
+    ],
+    [
+     72,
+     0.57
+    ],
+    [
+     60,
+     0.31
+    ],
+    [
+     74,
+     0.27
+    ]
+   ],
+   "chord": "Fm9",
+   "root": 5,
+   "quality": "m9",
+   "tones": [
+    5,
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Abmaj7#5",
+   "auto_score": 1.76,
+   "explained": 0.87,
+   "tier": "M",
+   "bass_next": 41,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.749,
+   "rank": "1/5",
+   "conf": 0.85
+  },
+  {
+   "sb": 27,
+   "bar": 7,
+   "beat": 4,
+   "bass": 41,
+   "bass_beat": 40,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     76,
+     0.5
+    ],
+    [
+     71,
+     0.46
+    ],
+    [
+     85,
+     0.39
+    ],
+    [
+     68,
+     0.33
+    ],
+    [
+     79,
+     0.32
+    ],
+    [
+     64,
+     0.3
+    ]
+   ],
+   "chord": "Fm9",
+   "root": 5,
+   "quality": "m9",
+   "tones": [
+    5,
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    4,
+    11
+   ],
+   "avoid": [
+    6,
+    9,
+    1
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    4,
+    11
+   ],
+   "auto": "Fmaj7#5",
+   "auto_score": 1.05,
+   "explained": 0.88,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.614,
+   "rank": "2/5",
+   "conf": 0.77
+  },
+  {
+   "sb": 28,
+   "bar": 8,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     71,
+     0.98
+    ],
+    [
+     69,
+     0.75
+    ],
+    [
+     80,
+     0.58
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [
+    11,
+    8
+   ],
+   "avoid": [
+    6,
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0,
+    11,
+    8
+   ],
+   "auto": "C#7",
+   "auto_score": 1.39,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    9,
+    5,
+    0
+   ],
+   "cos": 0.693,
+   "rank": "1/9",
+   "conf": 0.85
+  },
+  {
+   "sb": 29,
+   "bar": 8,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     71,
+     0.36
+    ],
+    [
+     69,
+     0.26
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0
+   ],
+   "auto": "Dm6",
+   "auto_score": 1.54,
+   "explained": 0.78,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    9,
+    5,
+    0
+   ],
+   "cos": 0.684,
+   "rank": "1/9",
+   "conf": 0.85
+  },
+  {
+   "sb": 30,
+   "bar": 8,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 48,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0
+   ],
+   "auto": "F5",
+   "auto_score": 1.42,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 41,
+   "hold": [
+    9,
+    5,
+    0
+   ],
+   "cos": 0.693,
+   "rank": "2/9",
+   "conf": 0.77
+  },
+  {
+   "sb": 31,
+   "bar": 8,
+   "beat": 4,
+   "bass": 41,
+   "bass_beat": 28,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     82,
+     1.0
+    ],
+    [
+     67,
+     0.9
+    ],
+    [
+     84,
+     0.72
+    ],
+    [
+     71,
+     0.58
+    ],
+    [
+     61,
+     0.47
+    ],
+    [
+     59,
+     0.43
+    ],
+    [
+     69,
+     0.38
+    ],
+    [
+     74,
+     0.38
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [
+    10,
+    7,
+    11,
+    1
+   ],
+   "avoid": [
+    6
+   ],
+   "safe": [
+    9,
+    5,
+    0,
+    10,
+    7,
+    11,
+    1
+   ],
+   "auto": "F7",
+   "auto_score": 1.09,
+   "explained": 0.92,
+   "tier": "M",
+   "bass_next": 41,
+   "hold": [
+    5
+   ],
+   "cos": 0.612,
+   "rank": "2/9",
+   "conf": 0.77
+  },
+  {
+   "sb": 32,
+   "bar": 9,
+   "beat": 1,
+   "bass": 41,
+   "bass_beat": 41,
+   "bass_and": 38,
+   "bass_pc": 5,
+   "notes": [
+    [
+     71,
+     1.0
+    ],
+    [
+     54,
+     0.91
+    ],
+    [
+     77,
+     0.46
+    ],
+    [
+     53,
+     0.43
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [
+    11,
+    6
+   ],
+   "avoid": [
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0,
+    11,
+    6
+   ],
+   "auto": "C#7",
+   "auto_score": 1.33,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": 29,
+   "hold": [
+    6
+   ],
+   "cos": 0.639,
+   "rank": "2/9",
+   "conf": 0.62
+  },
+  {
+   "sb": 33,
+   "bar": 9,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 38,
+   "bass_pc": 5,
+   "notes": [
+    [
+     54,
+     1.0
+    ],
+    [
+     72,
+     0.62
+    ]
+   ],
+   "chord": "F",
+   "root": 5,
+   "quality": "maj",
+   "tones": [
+    5,
+    9,
+    0
+   ],
+   "ext": [
+    6
+   ],
+   "avoid": [
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    5,
+    0,
+    6
+   ],
+   "auto": "Am6",
+   "auto_score": 1.04,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": 39,
+   "hold": [
+    5,
+    0,
+    6
+   ],
+   "cos": 0.656,
+   "rank": "3/9",
+   "conf": 0.55
+  },
+  {
+   "sb": 34,
+   "bar": 9,
+   "beat": 3,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": 38,
+   "bass_pc": 3,
+   "notes": [
+    [
+     54,
+     1.0
+    ],
+    [
+     53,
+     0.87
+    ],
+    [
+     56,
+     0.34
+    ]
+   ],
+   "chord": "Eb",
+   "root": 3,
+   "quality": "maj",
+   "tones": [
+    3,
+    7,
+    10
+   ],
+   "ext": [
+    6,
+    5
+   ],
+   "avoid": [
+    4,
+    8,
+    11
+   ],
+   "safe": [
+    7,
+    3,
+    10,
+    6,
+    5
+   ],
+   "auto": "Ebm9",
+   "auto_score": 1.7,
+   "explained": 0.85,
+   "tier": "L",
+   "bass_next": 39,
+   "hold": [
+    3
+   ],
+   "cos": 0.595,
+   "rank": "4/9",
+   "conf": 0.45
+  },
+  {
+   "sb": 35,
+   "bar": 9,
+   "beat": 4,
+   "bass": 39,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     54,
+     1.0
+    ],
+    [
+     67,
+     0.89
+    ],
+    [
+     59,
+     0.59
+    ],
+    [
+     72,
+     0.55
+    ],
+    [
+     85,
+     0.46
+    ],
+    [
+     70,
+     0.46
+    ],
+    [
+     65,
+     0.43
+    ],
+    [
+     78,
+     0.33
+    ]
+   ],
+   "chord": "Eb",
+   "root": 3,
+   "quality": "maj",
+   "tones": [
+    3,
+    7,
+    10
+   ],
+   "ext": [
+    6,
+    11,
+    0
+   ],
+   "avoid": [
+    4,
+    8
+   ],
+   "safe": [
+    7,
+    3,
+    10,
+    6,
+    11,
+    0
+   ],
+   "auto": "Eb7",
+   "auto_score": 1.44,
+   "explained": 0.81,
+   "tier": "L",
+   "bass_next": 29,
+   "hold": [
+    3,
+    0
+   ],
+   "cos": 0.578,
+   "rank": "4/9",
+   "conf": 0.45
+  },
+  {
+   "sb": 36,
+   "bar": 10,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     72,
+     0.55
+    ],
+    [
+     56,
+     0.54
+    ],
+    [
+     77,
+     0.47
+    ],
+    [
+     65,
+     0.39
+    ],
+    [
+     85,
+     0.35
+    ],
+    [
+     80,
+     0.3
+    ],
+    [
+     60,
+     0.28
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.71,
+   "explained": 0.91,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.831,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 37,
+   "bar": 10,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     60,
+     0.68
+    ],
+    [
+     75,
+     0.62
+    ],
+    [
+     77,
+     0.39
+    ],
+    [
+     72,
+     0.3
+    ],
+    [
+     53,
+     0.29
+    ],
+    [
+     85,
+     0.26
+    ],
+    [
+     81,
+     0.25
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "F7",
+   "auto_score": 1.62,
+   "explained": 0.86,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.871,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 38,
+   "bar": 10,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": 36,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     82,
+     0.48
+    ],
+    [
+     77,
+     0.35
+    ],
+    [
+     61,
+     0.31
+    ],
+    [
+     75,
+     0.3
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#7",
+   "auto_score": 1.63,
+   "explained": 0.88,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.793,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 39,
+   "bar": 10,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     82,
+     0.49
+    ],
+    [
+     74,
+     0.29
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "Cm9",
+   "auto_score": 1.55,
+   "explained": 0.84,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.791,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 40,
+   "bar": 11,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     70,
+     1.0
+    ],
+    [
+     65,
+     0.93
+    ],
+    [
+     77,
+     0.87
+    ],
+    [
+     82,
+     0.84
+    ],
+    [
+     80,
+     0.75
+    ],
+    [
+     53,
+     0.72
+    ],
+    [
+     58,
+     0.71
+    ],
+    [
+     75,
+     0.68
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "F7sus",
+   "auto_score": 1.62,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.803,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 41,
+   "bar": 11,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     56,
+     1.0
+    ],
+    [
+     75,
+     0.51
+    ],
+    [
+     77,
+     0.5
+    ],
+    [
+     70,
+     0.35
+    ],
+    [
+     76,
+     0.34
+    ],
+    [
+     80,
+     0.33
+    ],
+    [
+     72,
+     0.3
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.64,
+   "explained": 0.84,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.818,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 42,
+   "bar": 11,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     71,
+     0.34
+    ],
+    [
+     82,
+     0.28
+    ],
+    [
+     68,
+     0.27
+    ],
+    [
+     77,
+     0.26
+    ],
+    [
+     74,
+     0.26
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#7",
+   "auto_score": 1.69,
+   "explained": 0.78,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.752,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 43,
+   "bar": 11,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     82,
+     0.85
+    ],
+    [
+     74,
+     0.84
+    ],
+    [
+     77,
+     0.68
+    ],
+    [
+     71,
+     0.37
+    ],
+    [
+     67,
+     0.35
+    ],
+    [
+     60,
+     0.32
+    ],
+    [
+     70,
+     0.31
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [
+    2
+   ],
+   "avoid": [
+    1,
+    6,
+    8
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5,
+    2
+   ],
+   "auto": "C7sus",
+   "auto_score": 1.58,
+   "explained": 0.92,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.729,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 44,
+   "bar": 12,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     56,
+     1.0
+    ],
+    [
+     65,
+     0.68
+    ],
+    [
+     72,
+     0.64
+    ],
+    [
+     77,
+     0.55
+    ],
+    [
+     82,
+     0.52
+    ],
+    [
+     60,
+     0.51
+    ],
+    [
+     68,
+     0.34
+    ],
+    [
+     80,
+     0.31
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "Fm",
+   "auto_score": 1.81,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.791,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 45,
+   "bar": 12,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     56,
+     1.0
+    ],
+    [
+     59,
+     0.54
+    ],
+    [
+     68,
+     0.5
+    ],
+    [
+     80,
+     0.39
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [
+    11
+   ],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    11
+   ],
+   "auto": "Fm7b5",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.851,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 46,
+   "bar": 12,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": 36,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     58,
+     0.48
+    ],
+    [
+     82,
+     0.26
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#m7",
+   "auto_score": 1.31,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5,
+    10
+   ],
+   "cos": 0.752,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 47,
+   "bar": 12,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     67,
+     0.46
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "Cm7",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    10,
+    0,
+    5
+   ],
+   "cos": 0.793,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 48,
+   "bar": 13,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     65,
+     0.95
+    ],
+    [
+     72,
+     0.91
+    ],
+    [
+     77,
+     0.71
+    ],
+    [
+     58,
+     0.65
+    ],
+    [
+     67,
+     0.54
+    ],
+    [
+     53,
+     0.44
+    ],
+    [
+     79,
+     0.37
+    ]
+   ],
+   "chord": "F7sus",
+   "root": 5,
+   "quality": "7sus",
+   "tones": [
+    5,
+    10,
+    0,
+    3
+   ],
+   "ext": [
+    11,
+    7
+   ],
+   "avoid": [
+    6,
+    1,
+    4
+   ],
+   "safe": [
+    3,
+    5,
+    0,
+    10,
+    11,
+    7
+   ],
+   "auto": "Fsus",
+   "auto_score": 1.43,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    3,
+    5,
+    0,
+    10
+   ],
+   "cos": 0.835,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 49,
+   "bar": 13,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     72,
+     1.0
+    ],
+    [
+     65,
+     0.76
+    ],
+    [
+     77,
+     0.48
+    ],
+    [
+     71,
+     0.37
+    ],
+    [
+     75,
+     0.31
+    ]
+   ],
+   "chord": "F7sus",
+   "root": 5,
+   "quality": "7sus",
+   "tones": [
+    5,
+    10,
+    0,
+    3
+   ],
+   "ext": [
+    11
+   ],
+   "avoid": [
+    6,
+    1,
+    4
+   ],
+   "safe": [
+    3,
+    5,
+    0,
+    10,
+    11
+   ],
+   "auto": "F7",
+   "auto_score": 1.36,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    3,
+    5,
+    0
+   ],
+   "cos": 0.798,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 50,
+   "bar": 13,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 31,
+   "bass_pc": 5,
+   "notes": [
+    [
+     72,
+     1.0
+    ],
+    [
+     60,
+     0.58
+    ],
+    [
+     65,
+     0.45
+    ],
+    [
+     77,
+     0.42
+    ],
+    [
+     75,
+     0.34
+    ]
+   ],
+   "chord": "F7sus",
+   "root": 5,
+   "quality": "7sus",
+   "tones": [
+    5,
+    10,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    11,
+    1,
+    4
+   ],
+   "safe": [
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 34,
+   "hold": [
+    3,
+    5,
+    0
+   ],
+   "cos": 0.792,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 51,
+   "bar": 13,
+   "beat": 4,
+   "bass": 34,
+   "bass_beat": 31,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     53,
+     0.56
+    ],
+    [
+     60,
+     0.52
+    ],
+    [
+     77,
+     0.39
+    ]
+   ],
+   "chord": "F7sus",
+   "root": 5,
+   "quality": "7sus",
+   "tones": [
+    5,
+    10,
+    0,
+    3
+   ],
+   "ext": [
+    7
+   ],
+   "avoid": [
+    6,
+    11,
+    1,
+    4
+   ],
+   "safe": [
+    3,
+    5,
+    0,
+    10,
+    7
+   ],
+   "auto": "Bbm6",
+   "auto_score": 1.45,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.737,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 52,
+   "bar": 14,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     72,
+     1.0
+    ],
+    [
+     68,
+     0.83
+    ],
+    [
+     75,
+     0.71
+    ],
+    [
+     65,
+     0.6
+    ],
+    [
+     80,
+     0.45
+    ],
+    [
+     77,
+     0.42
+    ],
+    [
+     86,
+     0.37
+    ],
+    [
+     56,
+     0.32
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.79,
+   "explained": 0.92,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.857,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 53,
+   "bar": 14,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     56,
+     1.0
+    ],
+    [
+     53,
+     0.64
+    ],
+    [
+     72,
+     0.38
+    ],
+    [
+     70,
+     0.34
+    ],
+    [
+     60,
+     0.27
+    ],
+    [
+     65,
+     0.26
+    ],
+    [
+     77,
+     0.26
+    ],
+    [
+     76,
+     0.25
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.67,
+   "explained": 0.83,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.805,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 54,
+   "bar": 14,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     58,
+     0.38
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#m7",
+   "auto_score": 1.41,
+   "explained": 0.72,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.742,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 55,
+   "bar": 14,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     77,
+     0.31
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "C7sus",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.827,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 56,
+   "bar": 15,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     68,
+     0.92
+    ],
+    [
+     56,
+     0.65
+    ],
+    [
+     77,
+     0.6
+    ],
+    [
+     65,
+     0.59
+    ],
+    [
+     72,
+     0.59
+    ],
+    [
+     53,
+     0.49
+    ],
+    [
+     60,
+     0.39
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "Fm",
+   "auto_score": 1.76,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.865,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 57,
+   "bar": 15,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     56,
+     1.0
+    ],
+    [
+     72,
+     0.46
+    ],
+    [
+     68,
+     0.45
+    ],
+    [
+     67,
+     0.44
+    ],
+    [
+     80,
+     0.33
+    ],
+    [
+     59,
+     0.26
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm9",
+   "auto_score": 1.63,
+   "explained": 0.76,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.867,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 58,
+   "bar": 15,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     68,
+     0.26
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#m7",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.745,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 59,
+   "bar": 15,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     82,
+     0.32
+    ],
+    [
+     67,
+     0.28
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "Cm7",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.777,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 60,
+   "bar": 16,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 28,
+   "bass_pc": 5,
+   "notes": [
+    [
+     56,
+     1.0
+    ],
+    [
+     72,
+     0.9
+    ],
+    [
+     68,
+     0.62
+    ],
+    [
+     60,
+     0.56
+    ],
+    [
+     75,
+     0.41
+    ],
+    [
+     53,
+     0.39
+    ],
+    [
+     82,
+     0.32
+    ],
+    [
+     78,
+     0.25
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.69,
+   "explained": 0.87,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.863,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 61,
+   "bar": 16,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     68,
+     0.95
+    ],
+    [
+     56,
+     0.8
+    ],
+    [
+     60,
+     0.42
+    ],
+    [
+     80,
+     0.27
+    ],
+    [
+     72,
+     0.26
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.871,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 62,
+   "bar": 16,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#m7b5",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.718,
+   "rank": "3/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 63,
+   "bar": 16,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     77,
+     0.47
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "C7sus",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    0,
+    5
+   ],
+   "cos": 0.817,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 64,
+   "bar": 17,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     60,
+     0.82
+    ],
+    [
+     72,
+     0.73
+    ],
+    [
+     77,
+     0.58
+    ],
+    [
+     53,
+     0.58
+    ],
+    [
+     68,
+     0.44
+    ],
+    [
+     58,
+     0.37
+    ],
+    [
+     82,
+     0.31
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.79,
+   "explained": 0.86,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    8,
+    3,
+    0
+   ],
+   "cos": 0.804,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 65,
+   "bar": 17,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     72,
+     0.93
+    ],
+    [
+     68,
+     0.36
+    ],
+    [
+     77,
+     0.36
+    ],
+    [
+     54,
+     0.3
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.69,
+   "explained": 0.9,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    8,
+    0
+   ],
+   "cos": 0.772,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 66,
+   "bar": 17,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 31,
+   "bass_pc": 5,
+   "notes": [
+    [
+     75,
+     1.0
+    ],
+    [
+     68,
+     0.74
+    ],
+    [
+     72,
+     0.58
+    ],
+    [
+     65,
+     0.57
+    ],
+    [
+     60,
+     0.3
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    8
+   ],
+   "cos": 0.875,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 67,
+   "bar": 17,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 32,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     75,
+     0.83
+    ],
+    [
+     60,
+     0.68
+    ],
+    [
+     72,
+     0.59
+    ],
+    [
+     80,
+     0.51
+    ],
+    [
+     64,
+     0.45
+    ],
+    [
+     77,
+     0.37
+    ],
+    [
+     85,
+     0.27
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    3,
+    8
+   ],
+   "avoid": [
+    1,
+    5,
+    11
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    3,
+    8
+   ],
+   "auto": "Cm",
+   "auto_score": 1.33,
+   "explained": 0.86,
+   "tier": "H",
+   "bass_next": 34,
+   "hold": [
+    10,
+    8
+   ],
+   "cos": 0.787,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 68,
+   "bar": 18,
+   "beat": 1,
+   "bass": 34,
+   "bass_beat": 34,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     68,
+     0.4
+    ]
+   ],
+   "chord": "Bbm7",
+   "root": 10,
+   "quality": "m7",
+   "tones": [
+    10,
+    1,
+    5,
+    8
+   ],
+   "ext": [
+    0
+   ],
+   "avoid": [
+    11,
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    1,
+    8,
+    10,
+    5,
+    0
+   ],
+   "auto": "Bbm9",
+   "auto_score": 1.55,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 34,
+   "hold": [
+    1,
+    10
+   ],
+   "cos": 0.708,
+   "rank": "5/36",
+   "conf": 0.75
+  },
+  {
+   "sb": 69,
+   "bar": 18,
+   "beat": 2,
+   "bass": 34,
+   "bass_beat": 34,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     61,
+     1.0
+    ],
+    [
+     68,
+     0.49
+    ],
+    [
+     63,
+     0.46
+    ],
+    [
+     77,
+     0.43
+    ],
+    [
+     65,
+     0.29
+    ]
+   ],
+   "chord": "Bbm7",
+   "root": 10,
+   "quality": "m7",
+   "tones": [
+    10,
+    1,
+    5,
+    8
+   ],
+   "ext": [
+    3
+   ],
+   "avoid": [
+    11,
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    1,
+    8,
+    10,
+    5,
+    3
+   ],
+   "auto": "Bbm7",
+   "auto_score": 1.73,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 39,
+   "hold": [
+    3
+   ],
+   "cos": 0.713,
+   "rank": "9/36",
+   "conf": 0.65
+  },
+  {
+   "sb": 70,
+   "bar": 18,
+   "beat": 3,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     68,
+     0.55
+    ],
+    [
+     55,
+     0.47
+    ],
+    [
+     86,
+     0.43
+    ],
+    [
+     79,
+     0.31
+    ]
+   ],
+   "chord": "Eb7",
+   "root": 3,
+   "quality": "7",
+   "tones": [
+    3,
+    7,
+    10,
+    1
+   ],
+   "ext": [
+    8
+   ],
+   "avoid": [
+    4,
+    11,
+    2
+   ],
+   "safe": [
+    7,
+    1,
+    3,
+    10,
+    8
+   ],
+   "auto": "Ebmaj7#5",
+   "auto_score": 1.46,
+   "explained": 0.84,
+   "tier": "H",
+   "bass_next": 39,
+   "hold": [
+    3
+   ],
+   "cos": 0.723,
+   "rank": "4/36",
+   "conf": 0.75
+  },
+  {
+   "sb": 71,
+   "bar": 18,
+   "beat": 4,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     60,
+     0.9
+    ],
+    [
+     61,
+     0.56
+    ],
+    [
+     55,
+     0.53
+    ],
+    [
+     86,
+     0.5
+    ],
+    [
+     63,
+     0.47
+    ],
+    [
+     82,
+     0.3
+    ],
+    [
+     74,
+     0.27
+    ]
+   ],
+   "chord": "Eb7",
+   "root": 3,
+   "quality": "7",
+   "tones": [
+    3,
+    7,
+    10,
+    1
+   ],
+   "ext": [
+    0
+   ],
+   "avoid": [
+    4,
+    8,
+    11,
+    2
+   ],
+   "safe": [
+    7,
+    1,
+    3,
+    10,
+    0
+   ],
+   "auto": "Eb6",
+   "auto_score": 1.49,
+   "explained": 0.83,
+   "tier": "H",
+   "bass_next": 32,
+   "hold": [
+    3,
+    0
+   ],
+   "cos": 0.786,
+   "rank": "4/36",
+   "conf": 0.75
+  },
+  {
+   "sb": 72,
+   "bar": 19,
+   "beat": 1,
+   "bass": 32,
+   "bass_beat": 32,
+   "bass_and": null,
+   "bass_pc": 8,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     67,
+     0.49
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3
+   ],
+   "auto": "Abmaj7#5",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 34,
+   "hold": [
+    0,
+    8,
+    3
+   ],
+   "cos": 0.801,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 73,
+   "bar": 19,
+   "beat": 2,
+   "bass": 34,
+   "bass_beat": 34,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     68,
+     0.52
+    ]
+   ],
+   "chord": "Bb7sus",
+   "root": 10,
+   "quality": "7sus",
+   "tones": [
+    10,
+    3,
+    5,
+    8
+   ],
+   "ext": [
+    0
+   ],
+   "avoid": [
+    11,
+    4,
+    6,
+    9
+   ],
+   "safe": [
+    8,
+    10,
+    5,
+    3,
+    0
+   ],
+   "auto": "Bbm9",
+   "auto_score": 1.55,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    8,
+    3,
+    0
+   ],
+   "cos": 0.806,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 74,
+   "bar": 19,
+   "beat": 3,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     68,
+     0.68
+    ],
+    [
+     79,
+     0.4
+    ],
+    [
+     72,
+     0.36
+    ],
+    [
+     82,
+     0.34
+    ],
+    [
+     74,
+     0.3
+    ]
+   ],
+   "chord": "Abmaj7/C",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3
+   ],
+   "auto": "Abmaj7#5",
+   "auto_score": 1.4,
+   "explained": 0.79,
+   "tier": "M",
+   "bass_next": 31,
+   "hold": [
+    7
+   ],
+   "cos": 0.798,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 75,
+   "bar": 19,
+   "beat": 4,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": 32,
+   "bass_pc": 7,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     67,
+     0.55
+    ],
+    [
+     61,
+     0.31
+    ],
+    [
+     65,
+     0.29
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3
+   ],
+   "auto": "G7sus",
+   "auto_score": 1.56,
+   "explained": 0.72,
+   "tier": "M",
+   "bass_next": 31,
+   "hold": [
+    7
+   ],
+   "cos": 0.684,
+   "rank": "14/36",
+   "conf": 0.42
+  },
+  {
+   "sb": 76,
+   "bar": 20,
+   "beat": 1,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": null,
+   "bass_pc": 7,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     53,
+     0.72
+    ],
+    [
+     83,
+     0.49
+    ],
+    [
+     58,
+     0.41
+    ],
+    [
+     61,
+     0.28
+    ]
+   ],
+   "chord": "Gm7",
+   "root": 7,
+   "quality": "m7",
+   "tones": [
+    7,
+    10,
+    2,
+    5
+   ],
+   "ext": [
+    11
+   ],
+   "avoid": [
+    8,
+    3,
+    6
+   ],
+   "safe": [
+    10,
+    5,
+    7,
+    2,
+    11
+   ],
+   "auto": "G7",
+   "auto_score": 1.68,
+   "explained": 0.9,
+   "tier": "M",
+   "bass_next": 31,
+   "hold": [
+    10,
+    7
+   ],
+   "cos": 0.774,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 77,
+   "bar": 20,
+   "beat": 2,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": null,
+   "bass_pc": 7,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     61,
+     0.85
+    ],
+    [
+     65,
+     0.57
+    ],
+    [
+     53,
+     0.39
+    ],
+    [
+     72,
+     0.25
+    ]
+   ],
+   "chord": "Gm7b5",
+   "root": 7,
+   "quality": "m7b5",
+   "tones": [
+    7,
+    10,
+    1,
+    5
+   ],
+   "ext": [
+    0
+   ],
+   "avoid": [
+    8,
+    11,
+    2,
+    6
+   ],
+   "safe": [
+    10,
+    5,
+    7,
+    1,
+    0
+   ],
+   "auto": "Gm7b5",
+   "auto_score": 1.32,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    0
+   ],
+   "cos": 0.747,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 78,
+   "bar": 20,
+   "beat": 3,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     64,
+     1.0
+    ],
+    [
+     67,
+     0.71
+    ],
+    [
+     60,
+     0.51
+    ],
+    [
+     74,
+     0.48
+    ],
+    [
+     77,
+     0.45
+    ],
+    [
+     72,
+     0.44
+    ],
+    [
+     70,
+     0.3
+    ],
+    [
+     52,
+     0.29
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    2
+   ],
+   "avoid": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    2
+   ],
+   "auto": "C7",
+   "auto_score": 1.7,
+   "explained": 0.89,
+   "tier": "M",
+   "bass_next": 31,
+   "hold": [
+    0
+   ],
+   "cos": 0.778,
+   "rank": "3/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 79,
+   "bar": 20,
+   "beat": 4,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": 30,
+   "bass_pc": 7,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     64,
+     0.82
+    ],
+    [
+     52,
+     0.28
+    ],
+    [
+     67,
+     0.27
+    ],
+    [
+     74,
+     0.26
+    ]
+   ],
+   "chord": "C7/G",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7
+   ],
+   "auto": "Gsus",
+   "auto_score": 1.61,
+   "explained": 0.9,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    0
+   ],
+   "cos": 0.719,
+   "rank": "9/36",
+   "conf": 0.5
+  },
+  {
+   "sb": 80,
+   "bar": 21,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     56,
+     1.0
+    ],
+    [
+     60,
+     0.37
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.779,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 81,
+   "bar": 21,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     53,
+     0.7
+    ],
+    [
+     56,
+     0.51
+    ],
+    [
+     75,
+     0.33
+    ],
+    [
+     80,
+     0.3
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.751,
+   "rank": "3/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 82,
+   "bar": 21,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     72,
+     0.95
+    ],
+    [
+     75,
+     0.51
+    ],
+    [
+     68,
+     0.38
+    ],
+    [
+     82,
+     0.36
+    ],
+    [
+     80,
+     0.3
+    ],
+    [
+     65,
+     0.29
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.78,
+   "explained": 0.9,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.765,
+   "rank": "3/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 83,
+   "bar": 21,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 28,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     57,
+     1.0
+    ],
+    [
+     53,
+     0.8
+    ],
+    [
+     67,
+     0.63
+    ],
+    [
+     74,
+     0.32
+    ],
+    [
+     72,
+     0.3
+    ]
+   ],
+   "chord": "F6",
+   "root": 5,
+   "quality": "6",
+   "tones": [
+    5,
+    9,
+    0,
+    2
+   ],
+   "ext": [
+    7
+   ],
+   "avoid": [
+    6,
+    10,
+    1,
+    3
+   ],
+   "safe": [
+    9,
+    2,
+    5,
+    0,
+    7
+   ],
+   "auto": "Csus",
+   "auto_score": 1.6,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 34,
+   "hold": [
+    5,
+    7
+   ],
+   "cos": 0.607,
+   "rank": "24/36",
+   "conf": 0.42
+  },
+  {
+   "sb": 84,
+   "bar": 22,
+   "beat": 1,
+   "bass": 34,
+   "bass_beat": 34,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     68,
+     1.0
+    ]
+   ],
+   "chord": "Bbm7",
+   "root": 10,
+   "quality": "m7",
+   "tones": [
+    10,
+    1,
+    5,
+    8
+   ],
+   "ext": [],
+   "avoid": [
+    11,
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    1,
+    8,
+    10,
+    5
+   ],
+   "auto": "Bbm7b5",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 34,
+   "hold": [
+    10
+   ],
+   "cos": 0.693,
+   "rank": "5/36",
+   "conf": 0.6
+  },
+  {
+   "sb": 85,
+   "bar": 22,
+   "beat": 2,
+   "bass": 34,
+   "bass_beat": 33,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     68,
+     0.87
+    ],
+    [
+     80,
+     0.53
+    ],
+    [
+     87,
+     0.26
+    ]
+   ],
+   "chord": "Bbm7",
+   "root": 10,
+   "quality": "m7",
+   "tones": [
+    10,
+    1,
+    5,
+    8
+   ],
+   "ext": [
+    7
+   ],
+   "avoid": [
+    11,
+    2,
+    6
+   ],
+   "safe": [
+    1,
+    8,
+    10,
+    5,
+    7
+   ],
+   "auto": "Bb7sus",
+   "auto_score": 1.6,
+   "explained": 0.9,
+   "tier": "M",
+   "bass_next": 39,
+   "hold": [
+    7
+   ],
+   "cos": 0.654,
+   "rank": "14/36",
+   "conf": 0.42
+  },
+  {
+   "sb": 86,
+   "bar": 22,
+   "beat": 3,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": 38,
+   "bass_pc": 3,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     63,
+     0.88
+    ],
+    [
+     80,
+     0.67
+    ],
+    [
+     87,
+     0.55
+    ],
+    [
+     82,
+     0.41
+    ],
+    [
+     54,
+     0.27
+    ],
+    [
+     77,
+     0.26
+    ]
+   ],
+   "chord": "Eb6",
+   "root": 3,
+   "quality": "6",
+   "tones": [
+    3,
+    7,
+    10,
+    0
+   ],
+   "ext": [
+    8
+   ],
+   "avoid": [
+    4,
+    11,
+    1
+   ],
+   "safe": [
+    7,
+    0,
+    3,
+    10,
+    8
+   ],
+   "auto": "Eb7",
+   "auto_score": 1.4,
+   "explained": 0.87,
+   "tier": "M",
+   "bass_next": 39,
+   "hold": [
+    0,
+    3
+   ],
+   "cos": 0.765,
+   "rank": "3/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 87,
+   "bar": 22,
+   "beat": 4,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     63,
+     0.73
+    ],
+    [
+     79,
+     0.39
+    ],
+    [
+     67,
+     0.32
+    ],
+    [
+     82,
+     0.31
+    ],
+    [
+     74,
+     0.27
+    ]
+   ],
+   "chord": "Eb6",
+   "root": 3,
+   "quality": "6",
+   "tones": [
+    3,
+    7,
+    10,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    4,
+    8,
+    11,
+    1
+   ],
+   "safe": [
+    7,
+    0,
+    3,
+    10
+   ],
+   "auto": "Eb6",
+   "auto_score": 1.78,
+   "explained": 0.91,
+   "tier": "M",
+   "bass_next": 32,
+   "hold": [
+    0,
+    3
+   ],
+   "cos": 0.829,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 88,
+   "bar": 23,
+   "beat": 1,
+   "bass": 32,
+   "bass_beat": 32,
+   "bass_and": null,
+   "bass_pc": 8,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     67,
+     0.53
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3
+   ],
+   "auto": "Abmaj7#5",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 39,
+   "hold": [
+    0,
+    8,
+    3
+   ],
+   "cos": 0.79,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 89,
+   "bar": 23,
+   "beat": 2,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     74,
+     0.25
+    ]
+   ],
+   "chord": "Ab/Eb",
+   "root": 8,
+   "quality": "maj",
+   "tones": [
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    8,
+    3
+   ],
+   "auto": "Ebm6",
+   "auto_score": 1.46,
+   "explained": 0.8,
+   "tier": "H",
+   "bass_next": 32,
+   "hold": [
+    0,
+    8
+   ],
+   "cos": 0.588,
+   "rank": "5/9",
+   "conf": 0.75
+  },
+  {
+   "sb": 90,
+   "bar": 23,
+   "beat": 3,
+   "bass": 32,
+   "bass_beat": 32,
+   "bass_and": null,
+   "bass_pc": 8,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     68,
+     0.55
+    ],
+    [
+     70,
+     0.37
+    ],
+    [
+     74,
+     0.29
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3
+   ],
+   "auto": "Ab",
+   "auto_score": 1.44,
+   "explained": 0.7,
+   "tier": "H",
+   "bass_next": 32,
+   "hold": [
+    0,
+    7
+   ],
+   "cos": 0.768,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 91,
+   "bar": 23,
+   "beat": 4,
+   "bass": 32,
+   "bass_beat": 32,
+   "bass_and": null,
+   "bass_pc": 8,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     56,
+     0.84
+    ],
+    [
+     60,
+     0.78
+    ],
+    [
+     67,
+     0.58
+    ],
+    [
+     72,
+     0.33
+    ],
+    [
+     63,
+     0.32
+    ],
+    [
+     78,
+     0.29
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    5
+   ],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3,
+    5
+   ],
+   "auto": "Ab6",
+   "auto_score": 1.62,
+   "explained": 0.93,
+   "tier": "H",
+   "bass_next": 31,
+   "hold": [
+    0,
+    7,
+    8,
+    5
+   ],
+   "cos": 0.726,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 92,
+   "bar": 24,
+   "beat": 1,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": null,
+   "bass_pc": 7,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     72,
+     0.87
+    ],
+    [
+     73,
+     0.51
+    ],
+    [
+     86,
+     0.48
+    ],
+    [
+     80,
+     0.47
+    ]
+   ],
+   "chord": "G7sus",
+   "root": 7,
+   "quality": "7sus",
+   "tones": [
+    7,
+    0,
+    2,
+    5
+   ],
+   "ext": [
+    1,
+    8
+   ],
+   "avoid": [
+    3,
+    6
+   ],
+   "safe": [
+    5,
+    7,
+    2,
+    0,
+    1,
+    8
+   ],
+   "auto": "G7sus",
+   "auto_score": 1.28,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 31,
+   "hold": [
+    1
+   ],
+   "cos": 0.733,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 93,
+   "bar": 24,
+   "beat": 2,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": null,
+   "bass_pc": 7,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     53,
+     0.82
+    ],
+    [
+     61,
+     0.54
+    ],
+    [
+     58,
+     0.26
+    ]
+   ],
+   "chord": "G7sus",
+   "root": 7,
+   "quality": "7sus",
+   "tones": [
+    7,
+    0,
+    2,
+    5
+   ],
+   "ext": [
+    1
+   ],
+   "avoid": [
+    8,
+    3,
+    6
+   ],
+   "safe": [
+    5,
+    7,
+    2,
+    0,
+    1
+   ],
+   "auto": "Gm7b5",
+   "auto_score": 1.59,
+   "explained": 0.9,
+   "tier": "M",
+   "bass_next": 30,
+   "hold": [
+    0,
+    1
+   ],
+   "cos": 0.819,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 94,
+   "bar": 24,
+   "beat": 3,
+   "bass": 30,
+   "bass_beat": 30,
+   "bass_and": null,
+   "bass_pc": 6,
+   "notes": [
+    [
+     64,
+     1.0
+    ],
+    [
+     56,
+     0.81
+    ],
+    [
+     52,
+     0.46
+    ],
+    [
+     73,
+     0.36
+    ],
+    [
+     80,
+     0.25
+    ]
+   ],
+   "chord": "F#7",
+   "root": 6,
+   "quality": "7",
+   "tones": [
+    6,
+    10,
+    1,
+    4
+   ],
+   "ext": [
+    8
+   ],
+   "avoid": [
+    7,
+    11,
+    2,
+    5
+   ],
+   "safe": [
+    10,
+    4,
+    6,
+    1,
+    8
+   ],
+   "auto": "F#m9",
+   "auto_score": 1.55,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 30,
+   "hold": [
+    8
+   ],
+   "cos": 0.737,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 95,
+   "bar": 24,
+   "beat": 4,
+   "bass": 30,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 6,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     79,
+     0.33
+    ],
+    [
+     54,
+     0.29
+    ],
+    [
+     71,
+     0.25
+    ]
+   ],
+   "chord": "F#7",
+   "root": 6,
+   "quality": "7",
+   "tones": [
+    6,
+    10,
+    1,
+    4
+   ],
+   "ext": [
+    0
+   ],
+   "avoid": [
+    7,
+    11,
+    2
+   ],
+   "safe": [
+    10,
+    4,
+    6,
+    1,
+    0
+   ],
+   "auto": "D7",
+   "auto_score": 1.34,
+   "explained": 0.69,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    0
+   ],
+   "cos": 0.651,
+   "rank": "3/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 96,
+   "bar": 25,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     60,
+     1.0
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fsus",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    8,
+    5,
+    0
+   ],
+   "cos": 0.674,
+   "rank": "7/36",
+   "conf": 0.5
+  },
+  {
+   "sb": 97,
+   "bar": 25,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     60,
+     1.0
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fsus",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 37,
+   "hold": [
+    8,
+    5,
+    0
+   ],
+   "cos": 0.728,
+   "rank": "4/36",
+   "conf": 0.6
+  },
+  {
+   "sb": 98,
+   "bar": 25,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     60,
+     0.42
+    ],
+    [
+     53,
+     0.26
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#7",
+   "auto_score": 1.36,
+   "explained": 0.75,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    5,
+    8
+   ],
+   "cos": 0.691,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 99,
+   "bar": 25,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     74,
+     1.0
+    ],
+    [
+     67,
+     0.91
+    ],
+    [
+     76,
+     0.54
+    ],
+    [
+     79,
+     0.5
+    ],
+    [
+     60,
+     0.5
+    ],
+    [
+     78,
+     0.5
+    ],
+    [
+     70,
+     0.47
+    ],
+    [
+     83,
+     0.44
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    2,
+    6
+   ],
+   "avoid": [
+    1,
+    5,
+    8
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    2,
+    6
+   ],
+   "auto": "C7",
+   "auto_score": 1.47,
+   "explained": 0.91,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    10,
+    0
+   ],
+   "cos": 0.715,
+   "rank": "3/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 100,
+   "bar": 26,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 28,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     75,
+     0.6
+    ],
+    [
+     65,
+     0.3
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 41,
+   "hold": [
+    5
+   ],
+   "cos": 0.784,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 101,
+   "bar": 26,
+   "beat": 2,
+   "bass": 41,
+   "bass_beat": 41,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     70,
+     0.68
+    ],
+    [
+     56,
+     0.61
+    ],
+    [
+     76,
+     0.47
+    ],
+    [
+     68,
+     0.45
+    ],
+    [
+     82,
+     0.35
+    ],
+    [
+     77,
+     0.27
+    ],
+    [
+     53,
+     0.27
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [
+    7,
+    10,
+    4
+   ],
+   "avoid": [
+    6,
+    9,
+    1
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    7,
+    10,
+    4
+   ],
+   "auto": "Fm9",
+   "auto_score": 1.42,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5,
+    10
+   ],
+   "cos": 0.758,
+   "rank": "4/36",
+   "conf": 0.75
+  },
+  {
+   "sb": 102,
+   "bar": 26,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     58,
+     0.48
+    ],
+    [
+     77,
+     0.31
+    ],
+    [
+     53,
+     0.25
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#7",
+   "auto_score": 1.69,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5,
+    10
+   ],
+   "cos": 0.738,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 103,
+   "bar": 26,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     77,
+     0.39
+    ],
+    [
+     52,
+     0.35
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "C7sus",
+   "auto_score": 1.71,
+   "explained": 0.8,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    10,
+    5
+   ],
+   "cos": 0.794,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 104,
+   "bar": 27,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     58,
+     1.0
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "Fsus",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5,
+    10
+   ],
+   "cos": 0.754,
+   "rank": "5/36",
+   "conf": 0.75
+  },
+  {
+   "sb": 105,
+   "bar": 27,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     72,
+     0.75
+    ],
+    [
+     75,
+     0.62
+    ],
+    [
+     63,
+     0.42
+    ],
+    [
+     60,
+     0.37
+    ],
+    [
+     77,
+     0.3
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "F7sus",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5,
+    10
+   ],
+   "cos": 0.783,
+   "rank": "3/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 106,
+   "bar": 27,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     59,
+     0.78
+    ],
+    [
+     71,
+     0.52
+    ],
+    [
+     77,
+     0.44
+    ],
+    [
+     53,
+     0.43
+    ],
+    [
+     74,
+     0.29
+    ],
+    [
+     75,
+     0.27
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#7",
+   "auto_score": 1.57,
+   "explained": 0.85,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5,
+    10
+   ],
+   "cos": 0.789,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 107,
+   "bar": 27,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     67,
+     0.36
+    ],
+    [
+     77,
+     0.34
+    ],
+    [
+     65,
+     0.3
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "C7sus",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    10,
+    0,
+    5
+   ],
+   "cos": 0.805,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 108,
+   "bar": 28,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     70,
+     0.52
+    ]
+   ],
+   "chord": "F7sus",
+   "root": 5,
+   "quality": "7sus",
+   "tones": [
+    5,
+    10,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    11,
+    1,
+    4
+   ],
+   "safe": [
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "Fsus",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": 29,
+   "hold": [
+    0,
+    10
+   ],
+   "cos": 0.841,
+   "rank": "1/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 109,
+   "bar": 28,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ]
+   ],
+   "chord": "F7sus",
+   "root": 5,
+   "quality": "7sus",
+   "tones": [
+    5,
+    10,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    11,
+    1,
+    4
+   ],
+   "safe": [
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "F5",
+   "auto_score": 1.42,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": 29,
+   "hold": [
+    0
+   ],
+   "cos": 0.81,
+   "rank": "1/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 110,
+   "bar": 28,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 36,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     72,
+     0.37
+    ],
+    [
+     60,
+     0.35
+    ]
+   ],
+   "chord": "F7sus",
+   "root": 5,
+   "quality": "7sus",
+   "tones": [
+    5,
+    10,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    11,
+    1,
+    4
+   ],
+   "safe": [
+    3,
+    5,
+    0,
+    10
+   ],
+   "auto": "Fsus",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": 40,
+   "hold": [
+    0
+   ],
+   "cos": 0.76,
+   "rank": "4/36",
+   "conf": 0.45
+  },
+  {
+   "sb": 111,
+   "bar": 28,
+   "beat": 4,
+   "bass": 40,
+   "bass_beat": 40,
+   "bass_and": 36,
+   "bass_pc": 4,
+   "notes": [
+    [
+     71,
+     1.0
+    ],
+    [
+     59,
+     0.36
+    ],
+    [
+     69,
+     0.31
+    ],
+    [
+     82,
+     0.3
+    ],
+    [
+     67,
+     0.28
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    11
+   ],
+   "avoid": [
+    1,
+    5,
+    8
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    11
+   ],
+   "auto": "Em",
+   "auto_score": 1.54,
+   "explained": 0.86,
+   "tier": "L",
+   "bass_next": 29,
+   "hold": [
+    0
+   ],
+   "cos": 0.679,
+   "rank": "7/36",
+   "conf": 0.35
+  },
+  {
+   "sb": 112,
+   "bar": 29,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     65,
+     0.7
+    ],
+    [
+     68,
+     0.67
+    ],
+    [
+     56,
+     0.51
+    ],
+    [
+     72,
+     0.47
+    ],
+    [
+     82,
+     0.32
+    ],
+    [
+     77,
+     0.27
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.83,
+   "explained": 0.92,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.852,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 113,
+   "bar": 29,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     68,
+     0.55
+    ],
+    [
+     56,
+     0.52
+    ],
+    [
+     65,
+     0.47
+    ],
+    [
+     72,
+     0.28
+    ],
+    [
+     76,
+     0.25
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.72,
+   "explained": 0.92,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.808,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 114,
+   "bar": 29,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": 36,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     58,
+     0.64
+    ],
+    [
+     77,
+     0.28
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#7",
+   "auto_score": 1.62,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.669,
+   "rank": "5/36",
+   "conf": 0.75
+  },
+  {
+   "sb": 115,
+   "bar": 29,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     74,
+     0.35
+    ],
+    [
+     78,
+     0.34
+    ],
+    [
+     82,
+     0.27
+    ],
+    [
+     52,
+     0.27
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "C7",
+   "auto_score": 1.64,
+   "explained": 0.57,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.796,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 116,
+   "bar": 30,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     56,
+     1.0
+    ],
+    [
+     65,
+     0.98
+    ],
+    [
+     58,
+     0.4
+    ],
+    [
+     68,
+     0.4
+    ],
+    [
+     76,
+     0.33
+    ],
+    [
+     78,
+     0.32
+    ],
+    [
+     80,
+     0.28
+    ],
+    [
+     82,
+     0.25
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm6",
+   "auto_score": 1.27,
+   "explained": 0.67,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.824,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 117,
+   "bar": 30,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     56,
+     0.47
+    ],
+    [
+     68,
+     0.46
+    ],
+    [
+     65,
+     0.41
+    ],
+    [
+     72,
+     0.27
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.863,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 118,
+   "bar": 30,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     58,
+     0.73
+    ],
+    [
+     77,
+     0.53
+    ],
+    [
+     53,
+     0.35
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#7",
+   "auto_score": 1.66,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.731,
+   "rank": "3/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 119,
+   "bar": 30,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "Cm7b5",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.858,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 120,
+   "bar": 31,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     60,
+     0.82
+    ],
+    [
+     56,
+     0.78
+    ],
+    [
+     75,
+     0.44
+    ],
+    [
+     72,
+     0.44
+    ],
+    [
+     68,
+     0.4
+    ],
+    [
+     77,
+     0.28
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.807,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 121,
+   "bar": 31,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     65,
+     0.76
+    ],
+    [
+     60,
+     0.6
+    ],
+    [
+     53,
+     0.49
+    ],
+    [
+     72,
+     0.42
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.858,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 122,
+   "bar": 31,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     58,
+     0.95
+    ],
+    [
+     77,
+     0.33
+    ],
+    [
+     53,
+     0.27
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#7",
+   "auto_score": 1.6,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.752,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 123,
+   "bar": 31,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     58,
+     1.0
+    ],
+    [
+     77,
+     0.32
+    ],
+    [
+     53,
+     0.27
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "C7sus",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    0,
+    5
+   ],
+   "cos": 0.829,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 124,
+   "bar": 32,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     53,
+     0.85
+    ],
+    [
+     72,
+     0.65
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fsus",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 41,
+   "hold": [
+    8,
+    5,
+    0
+   ],
+   "cos": 0.781,
+   "rank": "5/36",
+   "conf": 0.6
+  },
+  {
+   "sb": 125,
+   "bar": 32,
+   "beat": 2,
+   "bass": 41,
+   "bass_beat": 41,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     67,
+     0.63
+    ],
+    [
+     65,
+     0.62
+    ],
+    [
+     76,
+     0.43
+    ],
+    [
+     72,
+     0.42
+    ],
+    [
+     60,
+     0.32
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [
+    7
+   ],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0,
+    7
+   ],
+   "auto": "Fm9",
+   "auto_score": 1.56,
+   "explained": 0.88,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    8,
+    5
+   ],
+   "cos": 0.793,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 126,
+   "bar": 32,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 36,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     77,
+     0.66
+    ],
+    [
+     80,
+     0.63
+    ],
+    [
+     72,
+     0.32
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 40,
+   "hold": [
+    8,
+    5
+   ],
+   "cos": 0.784,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 127,
+   "bar": 32,
+   "beat": 4,
+   "bass": 40,
+   "bass_beat": 40,
+   "bass_and": 36,
+   "bass_pc": 4,
+   "notes": [
+    [
+     84,
+     1.0
+    ],
+    [
+     77,
+     0.89
+    ],
+    [
+     80,
+     0.73
+    ],
+    [
+     69,
+     0.55
+    ],
+    [
+     87,
+     0.43
+    ],
+    [
+     67,
+     0.39
+    ],
+    [
+     65,
+     0.3
+    ],
+    [
+     72,
+     0.3
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    5,
+    8,
+    9
+   ],
+   "avoid": [
+    1,
+    11
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    5,
+    8,
+    9
+   ],
+   "auto": "Abmaj7#5",
+   "auto_score": 0.97,
+   "explained": 0.91,
+   "tier": "M",
+   "bass_next": 34,
+   "hold": [
+    10,
+    5
+   ],
+   "cos": 0.73,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 128,
+   "bar": 33,
+   "beat": 1,
+   "bass": 34,
+   "bass_beat": 34,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     73,
+     0.97
+    ],
+    [
+     70,
+     0.45
+    ],
+    [
+     77,
+     0.34
+    ]
+   ],
+   "chord": "Bbm7",
+   "root": 10,
+   "quality": "m7",
+   "tones": [
+    10,
+    1,
+    5,
+    8
+   ],
+   "ext": [],
+   "avoid": [
+    11,
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    1,
+    8,
+    10,
+    5
+   ],
+   "auto": "Bbm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 34,
+   "hold": [
+    1,
+    10,
+    5
+   ],
+   "cos": 0.862,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 129,
+   "bar": 33,
+   "beat": 2,
+   "bass": 34,
+   "bass_beat": 34,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     73,
+     0.83
+    ],
+    [
+     70,
+     0.6
+    ],
+    [
+     75,
+     0.58
+    ],
+    [
+     77,
+     0.44
+    ],
+    [
+     79,
+     0.3
+    ]
+   ],
+   "chord": "Bbm7",
+   "root": 10,
+   "quality": "m7",
+   "tones": [
+    10,
+    1,
+    5,
+    8
+   ],
+   "ext": [
+    3
+   ],
+   "avoid": [
+    11,
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    1,
+    8,
+    10,
+    5,
+    3
+   ],
+   "auto": "Bbm7",
+   "auto_score": 1.69,
+   "explained": 0.92,
+   "tier": "H",
+   "bass_next": 39,
+   "hold": [
+    5,
+    3
+   ],
+   "cos": 0.813,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 130,
+   "bar": 33,
+   "beat": 3,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     73,
+     1.0
+    ],
+    [
+     79,
+     0.78
+    ],
+    [
+     77,
+     0.7
+    ],
+    [
+     54,
+     0.58
+    ],
+    [
+     67,
+     0.47
+    ],
+    [
+     82,
+     0.44
+    ],
+    [
+     75,
+     0.42
+    ],
+    [
+     58,
+     0.31
+    ]
+   ],
+   "chord": "Eb7",
+   "root": 3,
+   "quality": "7",
+   "tones": [
+    3,
+    7,
+    10,
+    1
+   ],
+   "ext": [
+    5,
+    6
+   ],
+   "avoid": [
+    4,
+    8,
+    11,
+    2
+   ],
+   "safe": [
+    7,
+    1,
+    3,
+    10,
+    5,
+    6
+   ],
+   "auto": "Eb7",
+   "auto_score": 1.66,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 39,
+   "hold": [
+    7,
+    3
+   ],
+   "cos": 0.839,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 131,
+   "bar": 33,
+   "beat": 4,
+   "bass": 39,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     73,
+     1.0
+    ],
+    [
+     58,
+     0.91
+    ],
+    [
+     67,
+     0.88
+    ],
+    [
+     75,
+     0.55
+    ],
+    [
+     77,
+     0.52
+    ]
+   ],
+   "chord": "Eb7",
+   "root": 3,
+   "quality": "7",
+   "tones": [
+    3,
+    7,
+    10,
+    1
+   ],
+   "ext": [
+    5
+   ],
+   "avoid": [
+    4,
+    8,
+    11
+   ],
+   "safe": [
+    7,
+    1,
+    3,
+    10,
+    5
+   ],
+   "auto": "Eb7",
+   "auto_score": 1.75,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 32,
+   "hold": [
+    7,
+    3
+   ],
+   "cos": 0.787,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 132,
+   "bar": 34,
+   "beat": 1,
+   "bass": 32,
+   "bass_beat": 32,
+   "bass_and": 34,
+   "bass_pc": 8,
+   "notes": [
+    [
+     77,
+     1.0
+    ],
+    [
+     79,
+     0.4
+    ],
+    [
+     72,
+     0.37
+    ],
+    [
+     75,
+     0.36
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    5
+   ],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3,
+    5
+   ],
+   "auto": "Ab6",
+   "auto_score": 1.72,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    0,
+    7,
+    8,
+    3
+   ],
+   "cos": 0.803,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 133,
+   "bar": 34,
+   "beat": 2,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": 37,
+   "bass_pc": 0,
+   "notes": [
+    [
+     75,
+     1.0
+    ],
+    [
+     79,
+     0.92
+    ],
+    [
+     72,
+     0.86
+    ],
+    [
+     74,
+     0.73
+    ],
+    [
+     63,
+     0.72
+    ],
+    [
+     67,
+     0.65
+    ],
+    [
+     56,
+     0.52
+    ],
+    [
+     83,
+     0.42
+    ]
+   ],
+   "chord": "Abmaj7/C",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    2
+   ],
+   "avoid": [
+    9,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3,
+    2
+   ],
+   "auto": "Cm9",
+   "auto_score": 1.49,
+   "explained": 0.93,
+   "tier": "M",
+   "bass_next": 39,
+   "hold": [
+    7
+   ],
+   "cos": 0.831,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 134,
+   "bar": 34,
+   "beat": 3,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": 37,
+   "bass_pc": 3,
+   "notes": [
+    [
+     72,
+     1.0
+    ],
+    [
+     67,
+     0.83
+    ],
+    [
+     75,
+     0.53
+    ],
+    [
+     80,
+     0.42
+    ],
+    [
+     68,
+     0.33
+    ]
+   ],
+   "chord": "Abmaj7/Eb",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [],
+   "avoid": [
+    9,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3
+   ],
+   "auto": "Abmaj7",
+   "auto_score": 1.54,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 34,
+   "hold": [
+    7
+   ],
+   "cos": 0.804,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 135,
+   "bar": 34,
+   "beat": 4,
+   "bass": 34,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     75,
+     1.0
+    ],
+    [
+     72,
+     0.85
+    ],
+    [
+     56,
+     0.79
+    ],
+    [
+     67,
+     0.73
+    ],
+    [
+     80,
+     0.72
+    ],
+    [
+     78,
+     0.44
+    ]
+   ],
+   "chord": "Bb7sus",
+   "root": 10,
+   "quality": "7sus",
+   "tones": [
+    10,
+    3,
+    5,
+    8
+   ],
+   "ext": [
+    0,
+    7
+   ],
+   "avoid": [
+    4,
+    6,
+    9
+   ],
+   "safe": [
+    8,
+    10,
+    5,
+    3,
+    0,
+    7
+   ],
+   "auto": "Bb7sus",
+   "auto_score": 1.43,
+   "explained": 0.9,
+   "tier": "M",
+   "bass_next": 31,
+   "hold": [
+    10,
+    7
+   ],
+   "cos": 0.746,
+   "rank": "4/36",
+   "conf": 0.6
+  },
+  {
+   "sb": 136,
+   "bar": 35,
+   "beat": 1,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": 30,
+   "bass_pc": 7,
+   "notes": [
+    [
+     73,
+     1.0
+    ],
+    [
+     77,
+     0.72
+    ],
+    [
+     65,
+     0.27
+    ],
+    [
+     70,
+     0.26
+    ],
+    [
+     75,
+     0.25
+    ]
+   ],
+   "chord": "Gm7b5",
+   "root": 7,
+   "quality": "m7b5",
+   "tones": [
+    7,
+    10,
+    1,
+    5
+   ],
+   "ext": [],
+   "avoid": [
+    8,
+    11,
+    2
+   ],
+   "safe": [
+    10,
+    5,
+    7,
+    1
+   ],
+   "auto": "Gm7b5",
+   "auto_score": 1.77,
+   "explained": 0.9,
+   "tier": "H",
+   "bass_next": 31,
+   "hold": [
+    10,
+    7,
+    1
+   ],
+   "cos": 0.834,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 137,
+   "bar": 35,
+   "beat": 2,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": 30,
+   "bass_pc": 7,
+   "notes": [
+    [
+     73,
+     1.0
+    ],
+    [
+     76,
+     0.72
+    ],
+    [
+     77,
+     0.64
+    ],
+    [
+     70,
+     0.55
+    ]
+   ],
+   "chord": "Gm7b5",
+   "root": 7,
+   "quality": "m7b5",
+   "tones": [
+    7,
+    10,
+    1,
+    5
+   ],
+   "ext": [
+    4
+   ],
+   "avoid": [
+    8,
+    11,
+    2
+   ],
+   "safe": [
+    10,
+    5,
+    7,
+    1,
+    4
+   ],
+   "auto": "Gdim7",
+   "auto_score": 1.42,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    10,
+    7,
+    1,
+    4
+   ],
+   "cos": 0.874,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 138,
+   "bar": 35,
+   "beat": 3,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     73,
+     1.0
+    ],
+    [
+     70,
+     0.74
+    ],
+    [
+     76,
+     0.62
+    ],
+    [
+     67,
+     0.45
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    1
+   ],
+   "avoid": [
+    5,
+    8,
+    11
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    1
+   ],
+   "auto": "C7",
+   "auto_score": 1.61,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    0
+   ],
+   "cos": 0.726,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 139,
+   "bar": 35,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     68,
+     0.95
+    ],
+    [
+     73,
+     0.92
+    ],
+    [
+     76,
+     0.73
+    ],
+    [
+     75,
+     0.53
+    ],
+    [
+     64,
+     0.36
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    8,
+    1,
+    3
+   ],
+   "avoid": [
+    5
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    8,
+    1,
+    3
+   ],
+   "auto": "C7",
+   "auto_score": 1.24,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    0,
+    8,
+    3
+   ],
+   "cos": 0.727,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 140,
+   "bar": 36,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     72,
+     0.8
+    ],
+    [
+     79,
+     0.26
+    ],
+    [
+     75,
+     0.26
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm9",
+   "auto_score": 1.8,
+   "explained": 0.89,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "cos": 0.888,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 141,
+   "bar": 36,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 28,
+   "bass_pc": 5,
+   "notes": [
+    [
+     77,
+     1.0
+    ],
+    [
+     72,
+     0.88
+    ],
+    [
+     68,
+     0.44
+    ],
+    [
+     75,
+     0.43
+    ],
+    [
+     60,
+     0.26
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    8,
+    5
+   ],
+   "cos": 0.787,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 142,
+   "bar": 36,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 36,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     72,
+     0.8
+    ],
+    [
+     77,
+     0.71
+    ],
+    [
+     60,
+     0.54
+    ],
+    [
+     75,
+     0.53
+    ],
+    [
+     79,
+     0.45
+    ],
+    [
+     82,
+     0.36
+    ],
+    [
+     65,
+     0.31
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm9",
+   "auto_score": 1.75,
+   "explained": 0.83,
+   "tier": "H",
+   "bass_next": 41,
+   "hold": [
+    8,
+    5
+   ],
+   "cos": 0.778,
+   "rank": "3/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 143,
+   "bar": 36,
+   "beat": 4,
+   "bass": 41,
+   "bass_beat": 41,
+   "bass_and": 36,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     77,
+     0.76
+    ],
+    [
+     75,
+     0.7
+    ],
+    [
+     72,
+     0.58
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 34,
+   "hold": [
+    8,
+    5
+   ],
+   "cos": 0.783,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 144,
+   "bar": 37,
+   "beat": 1,
+   "bass": 34,
+   "bass_beat": 33,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     77,
+     0.79
+    ],
+    [
+     73,
+     0.51
+    ],
+    [
+     80,
+     0.33
+    ],
+    [
+     65,
+     0.25
+    ]
+   ],
+   "chord": "Bbm7",
+   "root": 10,
+   "quality": "m7",
+   "tones": [
+    10,
+    1,
+    5,
+    8
+   ],
+   "ext": [],
+   "avoid": [
+    11,
+    2,
+    6
+   ],
+   "safe": [
+    1,
+    8,
+    10,
+    5
+   ],
+   "auto": "Bbm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 34,
+   "hold": [
+    1,
+    10
+   ],
+   "cos": 0.841,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 145,
+   "bar": 37,
+   "beat": 2,
+   "bass": 34,
+   "bass_beat": 34,
+   "bass_and": null,
+   "bass_pc": 10,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     77,
+     0.55
+    ],
+    [
+     82,
+     0.39
+    ]
+   ],
+   "chord": "Bbm7",
+   "root": 10,
+   "quality": "m7",
+   "tones": [
+    10,
+    1,
+    5,
+    8
+   ],
+   "ext": [],
+   "avoid": [
+    11,
+    2,
+    6,
+    9
+   ],
+   "safe": [
+    1,
+    8,
+    10,
+    5
+   ],
+   "auto": "Bbm7",
+   "auto_score": 1.59,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 39,
+   "hold": [
+    1,
+    10
+   ],
+   "cos": 0.848,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 146,
+   "bar": 37,
+   "beat": 3,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     75,
+     1.0
+    ],
+    [
+     54,
+     0.99
+    ],
+    [
+     79,
+     0.79
+    ],
+    [
+     67,
+     0.41
+    ],
+    [
+     73,
+     0.32
+    ]
+   ],
+   "chord": "Eb7",
+   "root": 3,
+   "quality": "7",
+   "tones": [
+    3,
+    7,
+    10,
+    1
+   ],
+   "ext": [
+    6
+   ],
+   "avoid": [
+    4,
+    8,
+    11,
+    2
+   ],
+   "safe": [
+    7,
+    1,
+    3,
+    10,
+    6
+   ],
+   "auto": "Eb7",
+   "auto_score": 1.66,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 39,
+   "hold": [
+    7,
+    3
+   ],
+   "cos": 0.809,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 147,
+   "bar": 37,
+   "beat": 4,
+   "bass": 39,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 3,
+   "notes": [
+    [
+     73,
+     1.0
+    ],
+    [
+     67,
+     0.73
+    ],
+    [
+     75,
+     0.7
+    ],
+    [
+     79,
+     0.46
+    ],
+    [
+     70,
+     0.26
+    ]
+   ],
+   "chord": "Eb7",
+   "root": 3,
+   "quality": "7",
+   "tones": [
+    3,
+    7,
+    10,
+    1
+   ],
+   "ext": [],
+   "avoid": [
+    4,
+    8,
+    11
+   ],
+   "safe": [
+    7,
+    1,
+    3,
+    10
+   ],
+   "auto": "Eb7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 32,
+   "hold": [
+    7,
+    3
+   ],
+   "cos": 0.853,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 148,
+   "bar": 38,
+   "beat": 1,
+   "bass": 32,
+   "bass_beat": 32,
+   "bass_and": 36,
+   "bass_pc": 8,
+   "notes": [
+    [
+     79,
+     1.0
+    ],
+    [
+     77,
+     0.51
+    ],
+    [
+     72,
+     0.5
+    ],
+    [
+     76,
+     0.31
+    ],
+    [
+     82,
+     0.3
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    5
+   ],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3,
+    5
+   ],
+   "auto": "Abmaj7#5",
+   "auto_score": 1.64,
+   "explained": 0.77,
+   "tier": "M",
+   "bass_next": 39,
+   "hold": [
+    0,
+    7,
+    8,
+    3
+   ],
+   "cos": 0.77,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 149,
+   "bar": 38,
+   "beat": 2,
+   "bass": 39,
+   "bass_beat": 39,
+   "bass_and": 36,
+   "bass_pc": 3,
+   "notes": [
+    [
+     77,
+     1.0
+    ],
+    [
+     72,
+     0.73
+    ],
+    [
+     56,
+     0.63
+    ],
+    [
+     67,
+     0.46
+    ],
+    [
+     79,
+     0.41
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    5
+   ],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3,
+    5
+   ],
+   "auto": "Fm9",
+   "auto_score": 1.5,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 32,
+   "hold": [
+    7
+   ],
+   "cos": 0.753,
+   "rank": "4/36",
+   "conf": 0.6
+  },
+  {
+   "sb": 150,
+   "bar": 38,
+   "beat": 3,
+   "bass": 32,
+   "bass_beat": 32,
+   "bass_and": null,
+   "bass_pc": 8,
+   "notes": [
+    [
+     67,
+     1.0
+    ],
+    [
+     77,
+     1.0
+    ],
+    [
+     78,
+     0.65
+    ],
+    [
+     72,
+     0.42
+    ],
+    [
+     75,
+     0.3
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    5,
+    6
+   ],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3,
+    5,
+    6
+   ],
+   "auto": "Abmaj7",
+   "auto_score": 1.28,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 31,
+   "hold": [
+    7
+   ],
+   "cos": 0.827,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 151,
+   "bar": 38,
+   "beat": 4,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": 34,
+   "bass_pc": 7,
+   "notes": [
+    [
+     72,
+     1.0
+    ],
+    [
+     67,
+     0.74
+    ],
+    [
+     78,
+     0.7
+    ]
+   ],
+   "chord": "Abmaj7",
+   "root": 8,
+   "quality": "maj7",
+   "tones": [
+    8,
+    0,
+    3,
+    7
+   ],
+   "ext": [
+    6
+   ],
+   "avoid": [
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    0,
+    7,
+    8,
+    3,
+    6
+   ],
+   "auto": "Am7",
+   "auto_score": 1.35,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 31,
+   "hold": [
+    7
+   ],
+   "cos": 0.702,
+   "rank": "7/36",
+   "conf": 0.5
+  },
+  {
+   "sb": 152,
+   "bar": 39,
+   "beat": 1,
+   "bass": 31,
+   "bass_beat": 30,
+   "bass_and": null,
+   "bass_pc": 7,
+   "notes": [
+    [
+     73,
+     1.0
+    ],
+    [
+     77,
+     0.82
+    ],
+    [
+     82,
+     0.39
+    ],
+    [
+     70,
+     0.25
+    ]
+   ],
+   "chord": "Gm7b5",
+   "root": 7,
+   "quality": "m7b5",
+   "tones": [
+    7,
+    10,
+    1,
+    5
+   ],
+   "ext": [],
+   "avoid": [
+    8,
+    11,
+    2
+   ],
+   "safe": [
+    10,
+    5,
+    7,
+    1
+   ],
+   "auto": "Gm7b5",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 31,
+   "hold": [
+    10,
+    7
+   ],
+   "cos": 0.881,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 153,
+   "bar": 39,
+   "beat": 2,
+   "bass": 31,
+   "bass_beat": 31,
+   "bass_and": null,
+   "bass_pc": 7,
+   "notes": [
+    [
+     73,
+     1.0
+    ],
+    [
+     70,
+     0.91
+    ],
+    [
+     67,
+     0.76
+    ],
+    [
+     65,
+     0.67
+    ],
+    [
+     61,
+     0.61
+    ],
+    [
+     77,
+     0.58
+    ]
+   ],
+   "chord": "Gm7b5",
+   "root": 7,
+   "quality": "m7b5",
+   "tones": [
+    7,
+    10,
+    1,
+    5
+   ],
+   "ext": [],
+   "avoid": [
+    8,
+    11,
+    2,
+    6
+   ],
+   "safe": [
+    10,
+    5,
+    7,
+    1
+   ],
+   "auto": "Gm7b5",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    10,
+    7
+   ],
+   "cos": 0.831,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 154,
+   "bar": 39,
+   "beat": 3,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": 30,
+   "bass_pc": 0,
+   "notes": [
+    [
+     70,
+     1.0
+    ],
+    [
+     72,
+     0.96
+    ],
+    [
+     76,
+     0.93
+    ],
+    [
+     67,
+     0.44
+    ],
+    [
+     74,
+     0.43
+    ],
+    [
+     79,
+     0.36
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7
+   ],
+   "auto": "C7",
+   "auto_score": 1.77,
+   "explained": 0.9,
+   "tier": "H",
+   "bass_next": 30,
+   "hold": [
+    0
+   ],
+   "cos": 0.82,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 155,
+   "bar": 39,
+   "beat": 4,
+   "bass": 30,
+   "bass_beat": 30,
+   "bass_and": null,
+   "bass_pc": 6,
+   "notes": [
+    [
+     72,
+     1.0
+    ],
+    [
+     70,
+     0.92
+    ],
+    [
+     67,
+     0.77
+    ],
+    [
+     76,
+     0.71
+    ],
+    [
+     60,
+     0.27
+    ]
+   ],
+   "chord": "C7/F#",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7
+   ],
+   "auto": "F#7",
+   "auto_score": 1.48,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    0
+   ],
+   "cos": 0.715,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 156,
+   "bar": 40,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     65,
+     0.37
+    ],
+    [
+     72,
+     0.33
+    ],
+    [
+     60,
+     0.27
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.931,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 157,
+   "bar": 40,
+   "beat": 2,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     72,
+     0.86
+    ],
+    [
+     65,
+     0.51
+    ],
+    [
+     75,
+     0.41
+    ],
+    [
+     77,
+     0.33
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Ab6",
+   "auto_score": 1.54,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.825,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 158,
+   "bar": 40,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     71,
+     1.0
+    ],
+    [
+     82,
+     0.42
+    ],
+    [
+     73,
+     0.38
+    ],
+    [
+     68,
+     0.38
+    ],
+    [
+     65,
+     0.36
+    ],
+    [
+     79,
+     0.3
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#7",
+   "auto_score": 1.68,
+   "explained": 0.75,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.833,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 159,
+   "bar": 40,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     70,
+     1.0
+    ],
+    [
+     79,
+     0.5
+    ],
+    [
+     65,
+     0.48
+    ],
+    [
+     67,
+     0.48
+    ],
+    [
+     82,
+     0.45
+    ],
+    [
+     77,
+     0.4
+    ],
+    [
+     86,
+     0.27
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "C7sus",
+   "auto_score": 1.79,
+   "explained": 0.92,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.79,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 160,
+   "bar": 41,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     72,
+     0.58
+    ],
+    [
+     65,
+     0.5
+    ],
+    [
+     75,
+     0.38
+    ],
+    [
+     77,
+     0.33
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.928,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 161,
+   "bar": 41,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     72,
+     0.46
+    ],
+    [
+     53,
+     0.35
+    ],
+    [
+     65,
+     0.28
+    ],
+    [
+     60,
+     0.26
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.887,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 162,
+   "bar": 41,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     70,
+     1.0
+    ],
+    [
+     73,
+     0.94
+    ],
+    [
+     68,
+     0.67
+    ],
+    [
+     83,
+     0.38
+    ],
+    [
+     71,
+     0.36
+    ],
+    [
+     77,
+     0.33
+    ],
+    [
+     82,
+     0.32
+    ],
+    [
+     67,
+     0.29
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#7",
+   "auto_score": 1.6,
+   "explained": 0.93,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.794,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 163,
+   "bar": 41,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     70,
+     1.0
+    ],
+    [
+     82,
+     0.86
+    ],
+    [
+     52,
+     0.75
+    ],
+    [
+     73,
+     0.7
+    ],
+    [
+     58,
+     0.65
+    ],
+    [
+     77,
+     0.49
+    ],
+    [
+     79,
+     0.49
+    ],
+    [
+     67,
+     0.47
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    1,
+    5
+   ],
+   "avoid": [
+    8,
+    11
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    1,
+    5
+   ],
+   "auto": "C7",
+   "auto_score": 1.7,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.763,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 164,
+   "bar": 42,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     75,
+     0.56
+    ],
+    [
+     72,
+     0.45
+    ],
+    [
+     65,
+     0.42
+    ],
+    [
+     70,
+     0.31
+    ],
+    [
+     77,
+     0.29
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.77,
+   "explained": 0.9,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.903,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 165,
+   "bar": 42,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     80,
+     0.8
+    ],
+    [
+     65,
+     0.73
+    ],
+    [
+     75,
+     0.55
+    ],
+    [
+     77,
+     0.4
+    ],
+    [
+     60,
+     0.39
+    ],
+    [
+     72,
+     0.28
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.907,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 166,
+   "bar": 42,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     70,
+     1.0
+    ],
+    [
+     71,
+     0.87
+    ],
+    [
+     68,
+     0.53
+    ],
+    [
+     73,
+     0.46
+    ],
+    [
+     82,
+     0.33
+    ],
+    [
+     77,
+     0.28
+    ],
+    [
+     59,
+     0.28
+    ],
+    [
+     80,
+     0.28
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8,
+    10
+   ],
+   "auto": "C#7",
+   "auto_score": 1.63,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.809,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 167,
+   "bar": 42,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     70,
+     1.0
+    ],
+    [
+     65,
+     0.67
+    ],
+    [
+     52,
+     0.66
+    ],
+    [
+     72,
+     0.6
+    ],
+    [
+     68,
+     0.45
+    ],
+    [
+     73,
+     0.41
+    ],
+    [
+     86,
+     0.36
+    ],
+    [
+     60,
+     0.34
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [
+    4
+   ],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5,
+    4
+   ],
+   "auto": "C7",
+   "auto_score": 1.57,
+   "explained": 0.73,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    0,
+    5
+   ],
+   "cos": 0.851,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 168,
+   "bar": 43,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     77,
+     0.43
+    ],
+    [
+     60,
+     0.34
+    ],
+    [
+     88,
+     0.28
+    ]
+   ],
+   "chord": "F5",
+   "root": 5,
+   "quality": "5",
+   "tones": [
+    5,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    1
+   ],
+   "safe": [
+    5,
+    0
+   ],
+   "auto": "Fmaj7",
+   "auto_score": 1.59,
+   "explained": 0.86,
+   "tier": "M",
+   "bass_next": 41,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.905,
+   "rank": "1/2",
+   "conf": 0.85
+  },
+  {
+   "sb": 169,
+   "bar": 43,
+   "beat": 2,
+   "bass": 41,
+   "bass_beat": 41,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     77,
+     0.75
+    ],
+    [
+     88,
+     0.46
+    ],
+    [
+     69,
+     0.31
+    ]
+   ],
+   "chord": "F5",
+   "root": 5,
+   "quality": "5",
+   "tones": [
+    5,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    1
+   ],
+   "safe": [
+    5,
+    0
+   ],
+   "auto": "Fmaj7#5",
+   "auto_score": 1.84,
+   "explained": 0.69,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.899,
+   "rank": "1/2",
+   "conf": 0.85
+  },
+  {
+   "sb": 170,
+   "bar": 43,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 36,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     69,
+     0.29
+    ],
+    [
+     83,
+     0.26
+    ],
+    [
+     77,
+     0.25
+    ]
+   ],
+   "chord": "F5",
+   "root": 5,
+   "quality": "5",
+   "tones": [
+    5,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    1
+   ],
+   "safe": [
+    5,
+    0
+   ],
+   "auto": "Dm6",
+   "auto_score": 1.54,
+   "explained": 0.69,
+   "tier": "M",
+   "bass_next": 41,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.862,
+   "rank": "1/2",
+   "conf": 0.85
+  },
+  {
+   "sb": 171,
+   "bar": 43,
+   "beat": 4,
+   "bass": 41,
+   "bass_beat": 41,
+   "bass_and": 36,
+   "bass_pc": 5,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     67,
+     0.8
+    ],
+    [
+     69,
+     0.73
+    ],
+    [
+     65,
+     0.6
+    ],
+    [
+     77,
+     0.6
+    ],
+    [
+     83,
+     0.47
+    ],
+    [
+     68,
+     0.39
+    ],
+    [
+     85,
+     0.27
+    ]
+   ],
+   "chord": "F6",
+   "root": 5,
+   "quality": "6",
+   "tones": [
+    5,
+    9,
+    0,
+    2
+   ],
+   "ext": [
+    7,
+    11
+   ],
+   "avoid": [
+    6,
+    10,
+    1,
+    3
+   ],
+   "safe": [
+    9,
+    2,
+    5,
+    0,
+    7,
+    11
+   ],
+   "auto": "F",
+   "auto_score": 1.45,
+   "explained": 0.86,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.669,
+   "rank": "13/36",
+   "conf": 0.42
+  },
+  {
+   "sb": 172,
+   "bar": 44,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     65,
+     0.69
+    ],
+    [
+     60,
+     0.42
+    ],
+    [
+     80,
+     0.29
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    8,
+    5
+   ],
+   "cos": 0.913,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 173,
+   "bar": 44,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     68,
+     0.71
+    ],
+    [
+     72,
+     0.47
+    ],
+    [
+     77,
+     0.45
+    ],
+    [
+     53,
+     0.34
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    8,
+    5
+   ],
+   "cos": 0.853,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 174,
+   "bar": 44,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     65,
+     0.72
+    ],
+    [
+     71,
+     0.48
+    ],
+    [
+     68,
+     0.48
+    ],
+    [
+     82,
+     0.41
+    ],
+    [
+     73,
+     0.38
+    ],
+    [
+     75,
+     0.32
+    ],
+    [
+     83,
+     0.3
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#7",
+   "auto_score": 1.72,
+   "explained": 0.82,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5,
+    8
+   ],
+   "cos": 0.845,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 175,
+   "bar": 44,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     68,
+     0.72
+    ],
+    [
+     77,
+     0.46
+    ],
+    [
+     82,
+     0.31
+    ],
+    [
+     73,
+     0.26
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [
+    8
+   ],
+   "avoid": [
+    1,
+    6
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5,
+    8
+   ],
+   "auto": "Bbm9",
+   "auto_score": 1.25,
+   "explained": 0.91,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5,
+    8
+   ],
+   "cos": 0.764,
+   "rank": "2/36",
+   "conf": 0.93
+  },
+  {
+   "sb": 176,
+   "bar": 45,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     68,
+     0.85
+    ],
+    [
+     80,
+     0.39
+    ],
+    [
+     77,
+     0.32
+    ],
+    [
+     75,
+     0.31
+    ],
+    [
+     53,
+     0.26
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7b5",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.901,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 177,
+   "bar": 45,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     72,
+     0.83
+    ],
+    [
+     77,
+     0.79
+    ],
+    [
+     65,
+     0.7
+    ],
+    [
+     75,
+     0.31
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.838,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 178,
+   "bar": 45,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     71,
+     0.53
+    ],
+    [
+     73,
+     0.51
+    ],
+    [
+     68,
+     0.49
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.851,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 179,
+   "bar": 45,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 35,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     70,
+     1.0
+    ],
+    [
+     65,
+     0.77
+    ],
+    [
+     67,
+     0.58
+    ],
+    [
+     68,
+     0.41
+    ],
+    [
+     80,
+     0.32
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "C7sus",
+   "auto_score": 1.39,
+   "explained": 0.76,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.803,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 180,
+   "bar": 46,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     68,
+     0.86
+    ],
+    [
+     60,
+     0.63
+    ],
+    [
+     75,
+     0.37
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.917,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 181,
+   "bar": 46,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     68,
+     0.73
+    ],
+    [
+     77,
+     0.43
+    ],
+    [
+     75,
+     0.38
+    ],
+    [
+     60,
+     0.38
+    ],
+    [
+     72,
+     0.3
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 37,
+   "hold": [
+    5
+   ],
+   "cos": 0.844,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 182,
+   "bar": 46,
+   "beat": 3,
+   "bass": 37,
+   "bass_beat": 37,
+   "bass_and": null,
+   "bass_pc": 1,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     73,
+     0.7
+    ],
+    [
+     71,
+     0.52
+    ],
+    [
+     68,
+     0.49
+    ],
+    [
+     53,
+     0.45
+    ]
+   ],
+   "chord": "Db7",
+   "root": 1,
+   "quality": "7",
+   "tones": [
+    1,
+    5,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    2,
+    6,
+    9,
+    0
+   ],
+   "safe": [
+    5,
+    11,
+    1,
+    8
+   ],
+   "auto": "C#7",
+   "auto_score": 1.84,
+   "explained": 1.0,
+   "tier": "H",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.818,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 183,
+   "bar": 46,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     67,
+     0.43
+    ],
+    [
+     52,
+     0.26
+    ],
+    [
+     71,
+     0.25
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "Csus",
+   "auto_score": 1.38,
+   "explained": 0.74,
+   "tier": "H",
+   "bass_next": 29,
+   "hold": [
+    0,
+    5
+   ],
+   "cos": 0.803,
+   "rank": "1/36",
+   "conf": 1.0
+  },
+  {
+   "sb": 184,
+   "bar": 47,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     60,
+     0.46
+    ],
+    [
+     77,
+     0.42
+    ],
+    [
+     68,
+     0.33
+    ],
+    [
+     72,
+     0.27
+    ],
+    [
+     53,
+     0.27
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.763,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 185,
+   "bar": 47,
+   "beat": 2,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     77,
+     1.0
+    ],
+    [
+     68,
+     0.81
+    ],
+    [
+     60,
+     0.69
+    ],
+    [
+     72,
+     0.52
+    ],
+    [
+     65,
+     0.36
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    5
+   ],
+   "cos": 0.814,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 186,
+   "bar": 47,
+   "beat": 3,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 36,
+   "bass_pc": 5,
+   "notes": [
+    [
+     77,
+     1.0
+    ],
+    [
+     68,
+     0.92
+    ],
+    [
+     65,
+     0.59
+    ],
+    [
+     72,
+     0.53
+    ],
+    [
+     60,
+     0.41
+    ],
+    [
+     53,
+     0.26
+    ]
+   ],
+   "chord": "Fm7",
+   "root": 5,
+   "quality": "m7",
+   "tones": [
+    5,
+    8,
+    0,
+    3
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1,
+    4
+   ],
+   "safe": [
+    8,
+    3,
+    5,
+    0
+   ],
+   "auto": "Fm",
+   "auto_score": 1.88,
+   "explained": 1.0,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    5
+   ],
+   "cos": 0.767,
+   "rank": "2/36",
+   "conf": 0.77
+  },
+  {
+   "sb": 187,
+   "bar": 47,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 40,
+   "bass_and": null,
+   "bass_pc": 0,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     67,
+     0.6
+    ],
+    [
+     77,
+     0.44
+    ],
+    [
+     60,
+     0.43
+    ],
+    [
+     75,
+     0.26
+    ],
+    [
+     81,
+     0.25
+    ]
+   ],
+   "chord": "C7sus",
+   "root": 0,
+   "quality": "7sus",
+   "tones": [
+    0,
+    5,
+    7,
+    10
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "safe": [
+    10,
+    0,
+    7,
+    5
+   ],
+   "auto": "Csus",
+   "auto_score": 1.66,
+   "explained": 0.83,
+   "tier": "M",
+   "bass_next": 29,
+   "hold": [
+    7
+   ],
+   "cos": 0.749,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 188,
+   "bar": 48,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": null,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     74,
+     0.63
+    ],
+    [
+     59,
+     0.61
+    ],
+    [
+     80,
+     0.54
+    ],
+    [
+     65,
+     0.52
+    ],
+    [
+     79,
+     0.45
+    ],
+    [
+     52,
+     0.39
+    ],
+    [
+     83,
+     0.37
+    ]
+   ],
+   "chord": "G7",
+   "root": 7,
+   "quality": "7",
+   "tones": [
+    7,
+    11,
+    2,
+    5
+   ],
+   "ext": [
+    8
+   ],
+   "avoid": [
+    0,
+    3,
+    6
+   ],
+   "safe": [
+    11,
+    5,
+    7,
+    2,
+    8
+   ],
+   "auto": "Fdim7",
+   "auto_score": 1.72,
+   "explained": 0.91,
+   "tier": "M",
+   "bass_next": 47,
+   "hold": [
+    7
+   ],
+   "cos": 0.744,
+   "rank": "1/36",
+   "conf": 0.85
+  },
+  {
+   "sb": 189,
+   "bar": 48,
+   "beat": 2,
+   "bass": 47,
+   "bass_beat": 32,
+   "bass_and": null,
+   "bass_pc": 11,
+   "notes": [
+    [
+     59,
+     1.0
+    ],
+    [
+     55,
+     0.93
+    ],
+    [
+     68,
+     0.62
+    ],
+    [
+     74,
+     0.52
+    ],
+    [
+     75,
+     0.5
+    ],
+    [
+     71,
+     0.41
+    ],
+    [
+     77,
+     0.34
+    ],
+    [
+     85,
+     0.32
+    ]
+   ],
+   "chord": "G7",
+   "root": 7,
+   "quality": "7",
+   "tones": [
+    7,
+    11,
+    2,
+    5
+   ],
+   "ext": [
+    8,
+    3
+   ],
+   "avoid": [
+    0,
+    6
+   ],
+   "safe": [
+    11,
+    5,
+    7,
+    2,
+    8,
+    3
+   ],
+   "auto": "G7",
+   "auto_score": 1.34,
+   "explained": 0.93,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    7,
+    8
+   ],
+   "cos": 0.677,
+   "rank": "14/36",
+   "conf": 0.42
+  },
+  {
+   "sb": 190,
+   "bar": 48,
+   "beat": 3,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": 35,
+   "bass_pc": 0,
+   "notes": [
+    [
+     76,
+     1.0
+    ],
+    [
+     72,
+     0.81
+    ],
+    [
+     64,
+     0.69
+    ],
+    [
+     75,
+     0.57
+    ],
+    [
+     67,
+     0.52
+    ],
+    [
+     80,
+     0.52
+    ],
+    [
+     88,
+     0.42
+    ],
+    [
+     81,
+     0.42
+    ]
+   ],
+   "chord": "C7",
+   "root": 0,
+   "quality": "7",
+   "tones": [
+    0,
+    4,
+    7,
+    10
+   ],
+   "ext": [
+    3,
+    8
+   ],
+   "avoid": [
+    1,
+    5
+   ],
+   "safe": [
+    4,
+    10,
+    0,
+    7,
+    3,
+    8
+   ],
+   "auto": "C6",
+   "auto_score": 1.42,
+   "explained": 0.92,
+   "tier": "M",
+   "bass_next": 41,
+   "hold": [
+    0
+   ],
+   "cos": 0.707,
+   "rank": "4/36",
+   "conf": 0.6
+  },
+  {
+   "sb": 191,
+   "bar": 48,
+   "beat": 4,
+   "bass": 41,
+   "bass_beat": 41,
+   "bass_and": 36,
+   "bass_pc": 5,
+   "notes": [
+    [
+     53,
+     1.0
+    ],
+    [
+     67,
+     0.61
+    ],
+    [
+     74,
+     0.39
+    ],
+    [
+     76,
+     0.33
+    ],
+    [
+     64,
+     0.26
+    ],
+    [
+     58,
+     0.26
+    ]
+   ],
+   "chord": "F6",
+   "root": 5,
+   "quality": "6",
+   "tones": [
+    5,
+    9,
+    0,
+    2
+   ],
+   "ext": [
+    7
+   ],
+   "avoid": [
+    6,
+    10,
+    1,
+    3
+   ],
+   "safe": [
+    9,
+    2,
+    5,
+    0,
+    7
+   ],
+   "auto": "Bb6",
+   "auto_score": 1.4,
+   "explained": 0.7,
+   "tier": "M",
+   "bass_next": 36,
+   "hold": [
+    0
+   ],
+   "cos": 0.633,
+   "rank": "15/36",
+   "conf": 0.42
+  },
+  {
+   "sb": 192,
+   "bar": 49,
+   "beat": 1,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": 43,
+   "bass_pc": 0,
+   "notes": [
+    [
+     60,
+     1.0
+    ],
+    [
+     71,
+     0.79
+    ],
+    [
+     74,
+     0.45
+    ],
+    [
+     68,
+     0.36
+    ],
+    [
+     55,
+     0.31
+    ]
+   ],
+   "chord": "Cmaj7#5",
+   "root": 0,
+   "quality": "maj7#5",
+   "tones": [
+    0,
+    4,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    5,
+    9
+   ],
+   "safe": [
+    4,
+    11,
+    0
+   ],
+   "auto": "Cmaj7#5",
+   "auto_score": 1.29,
+   "explained": 0.74,
+   "tier": "L",
+   "bass_next": 44,
+   "hold": [
+    0
+   ],
+   "cos": 0.685,
+   "rank": "3/36",
+   "conf": 0.55
+  },
+  {
+   "sb": 193,
+   "bar": 49,
+   "beat": 2,
+   "bass": 44,
+   "bass_beat": 44,
+   "bass_and": 38,
+   "bass_pc": 8,
+   "notes": [
+    [
+     76,
+     1.0
+    ],
+    [
+     56,
+     0.62
+    ],
+    [
+     72,
+     0.57
+    ],
+    [
+     59,
+     0.52
+    ],
+    [
+     64,
+     0.47
+    ],
+    [
+     79,
+     0.26
+    ]
+   ],
+   "chord": "Cmaj7#5",
+   "root": 0,
+   "quality": "maj7#5",
+   "tones": [
+    0,
+    4,
+    8,
+    11
+   ],
+   "ext": [],
+   "avoid": [
+    1,
+    5,
+    9
+   ],
+   "safe": [
+    4,
+    11,
+    0
+   ],
+   "auto": "Abmaj7#5",
+   "auto_score": 1.55,
+   "explained": 0.93,
+   "tier": "L",
+   "bass_next": 41,
+   "hold": [
+    0
+   ],
+   "cos": 0.801,
+   "rank": "1/36",
+   "conf": 0.7
+  },
+  {
+   "sb": 194,
+   "bar": 49,
+   "beat": 3,
+   "bass": 41,
+   "bass_beat": 41,
+   "bass_and": 39,
+   "bass_pc": 5,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     79,
+     0.82
+    ],
+    [
+     77,
+     0.64
+    ],
+    [
+     69,
+     0.37
+    ],
+    [
+     60,
+     0.29
+    ]
+   ],
+   "chord": "F6",
+   "root": 5,
+   "quality": "6",
+   "tones": [
+    5,
+    9,
+    0,
+    2
+   ],
+   "ext": [
+    7
+   ],
+   "avoid": [
+    6,
+    10,
+    1
+   ],
+   "safe": [
+    9,
+    2,
+    5,
+    0,
+    7
+   ],
+   "auto": "F",
+   "auto_score": 1.71,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": 36,
+   "hold": [
+    5,
+    0
+   ],
+   "cos": 0.683,
+   "rank": "8/36",
+   "conf": 0.35
+  },
+  {
+   "sb": 195,
+   "bar": 49,
+   "beat": 4,
+   "bass": 36,
+   "bass_beat": 36,
+   "bass_and": 29,
+   "bass_pc": 0,
+   "notes": [
+    [
+     68,
+     1.0
+    ],
+    [
+     72,
+     0.49
+    ],
+    [
+     84,
+     0.45
+    ],
+    [
+     70,
+     0.27
+    ],
+    [
+     78,
+     0.26
+    ]
+   ],
+   "chord": "Fm",
+   "root": 5,
+   "quality": "m",
+   "tones": [
+    5,
+    8,
+    0
+   ],
+   "ext": [],
+   "avoid": [
+    6,
+    9,
+    1
+   ],
+   "safe": [
+    8,
+    5,
+    0
+   ],
+   "auto": "Ab7",
+   "auto_score": 1.47,
+   "explained": 0.78,
+   "tier": "L",
+   "bass_next": 29,
+   "hold": [
+    8,
+    5,
+    0
+   ],
+   "cos": 0.591,
+   "rank": "7/9",
+   "conf": 0.35
+  },
+  {
+   "sb": 196,
+   "bar": 50,
+   "beat": 1,
+   "bass": 29,
+   "bass_beat": 29,
+   "bass_and": 38,
+   "bass_pc": 5,
+   "notes": [
+    [
+     72,
+     1.0
+    ],
+    [
+     82,
+     0.52
+    ],
+    [
+     65,
+     0.51
+    ],
+    [
+     68,
+     0.49
+    ],
+    [
+     84,
+     0.44
+    ],
+    [
+     77,
+     0.42
+    ],
+    [
+     88,
+     0.4
+    ],
+    [
+     60,
+     0.38
+    ]
+   ],
+   "chord": "Fm",
+   "root": 5,
+   "quality": "m",
+   "tones": [
+    5,
+    8,
+    0
+   ],
+   "ext": [
+    10
+   ],
+   "avoid": [
+    6,
+    9,
+    1
+   ],
+   "safe": [
+    8,
+    5,
+    0,
+    10
+   ],
+   "auto": "Fm",
+   "auto_score": 1.62,
+   "explained": 0.9,
+   "tier": "L",
+   "bass_next": 44,
+   "hold": [
+    8,
+    5,
+    0
+   ],
+   "cos": 0.641,
+   "rank": "3/9",
+   "conf": 0.55
+  },
+  {
+   "sb": 197,
+   "bar": 50,
+   "beat": 2,
+   "bass": 44,
+   "bass_beat": 44,
+   "bass_and": null,
+   "bass_pc": 8,
+   "notes": [
+    [
+     65,
+     1.0
+    ],
+    [
+     84,
+     0.87
+    ],
+    [
+     76,
+     0.83
+    ],
+    [
+     86,
+     0.73
+    ],
+    [
+     54,
+     0.67
+    ],
+    [
+     71,
+     0.54
+    ],
+    [
+     60,
+     0.52
+    ]
+   ],
+   "chord": "Fm6",
+   "root": 5,
+   "quality": "m6",
+   "tones": [
+    5,
+    8,
+    0,
+    2
+   ],
+   "ext": [
+    4,
+    6,
+    11
+   ],
+   "avoid": [
+    9,
+    1,
+    3
+   ],
+   "safe": [
+    8,
+    2,
+    5,
+    0,
+    4,
+    6,
+    11
+   ],
+   "auto": "Ab7",
+   "auto_score": 1.45,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": 44,
+   "hold": [
+    8,
+    2,
+    5,
+    0,
+    11
+   ],
+   "cos": 0.644,
+   "rank": "12/36",
+   "conf": 0.28
+  },
+  {
+   "sb": 198,
+   "bar": 50,
+   "beat": 3,
+   "bass": 44,
+   "bass_beat": 44,
+   "bass_and": 38,
+   "bass_pc": 8,
+   "notes": [
+    [
+     86,
+     1.0
+    ],
+    [
+     83,
+     0.97
+    ],
+    [
+     65,
+     0.8
+    ],
+    [
+     69,
+     0.72
+    ],
+    [
+     71,
+     0.57
+    ],
+    [
+     67,
+     0.56
+    ],
+    [
+     73,
+     0.48
+    ]
+   ],
+   "chord": "Fm6",
+   "root": 5,
+   "quality": "m6",
+   "tones": [
+    5,
+    8,
+    0,
+    2
+   ],
+   "ext": [
+    11,
+    9,
+    7,
+    1
+   ],
+   "avoid": [
+    6,
+    3
+   ],
+   "safe": [
+    8,
+    2,
+    5,
+    0,
+    11,
+    9,
+    7,
+    1
+   ],
+   "auto": "Abdim7",
+   "auto_score": 1.44,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": 38,
+   "hold": [
+    8,
+    2,
+    5,
+    0,
+    11,
+    9,
+    7,
+    1
+   ],
+   "cos": 0.65,
+   "rank": "11/36",
+   "conf": 0.28
+  },
+  {
+   "sb": 199,
+   "bar": 50,
+   "beat": 4,
+   "bass": 38,
+   "bass_beat": 38,
+   "bass_and": null,
+   "bass_pc": 2,
+   "notes": [
+    [
+     86,
+     1.0
+    ],
+    [
+     76,
+     0.99
+    ],
+    [
+     71,
+     0.76
+    ],
+    [
+     69,
+     0.74
+    ],
+    [
+     67,
+     0.73
+    ],
+    [
+     73,
+     0.65
+    ],
+    [
+     82,
+     0.65
+    ],
+    [
+     78,
+     0.63
+    ]
+   ],
+   "chord": "Fm6",
+   "root": 5,
+   "quality": "m6",
+   "tones": [
+    5,
+    8,
+    0,
+    2
+   ],
+   "ext": [
+    4,
+    11,
+    9,
+    7,
+    1,
+    10,
+    6
+   ],
+   "avoid": [
+    3
+   ],
+   "safe": [
+    8,
+    2,
+    5,
+    0,
+    4,
+    11,
+    9,
+    7,
+    1,
+    10,
+    6
+   ],
+   "auto": "D6",
+   "auto_score": 1.24,
+   "explained": 1.0,
+   "tier": "L",
+   "bass_next": null,
+   "hold": [
+    8,
+    2,
+    5,
+    0,
+    4,
+    11,
+    9,
+    7,
+    1,
+    10,
+    6
+   ],
+   "cos": 0.638,
+   "rank": "25/36",
+   "conf": 0.28
+  }
+ ],
+ "verify": {
+  "beats": 197,
+  "mean_cos_chart": 0.749,
+  "mean_cos_candidates": 0.6,
+  "top1": 91,
+  "top3": 151,
+  "median_rank": 2.0,
+  "bass_is_chord_tone": 0.985
+ }
+}
