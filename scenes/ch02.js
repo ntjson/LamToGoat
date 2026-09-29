@@ -132,10 +132,12 @@ export default {
       paste0: syl('L07', 1) - 0.04, // ...as the 25 "quỹ" boxes are pasted on, left to right
       cut0: syl('L07', 4) - 0.02, // the first of 13 boxes falls out; one per 16th after it
       sheet: L08.start + ctx.grid - 0.02 - slideIn, // the report sheet lands a 16th into L08 (L07's label holds longer)
+      // The sheet's text lands evenly through the first half of L08, so the stamp (the shot's message) is read in
+      // full before the sheet flips at the chapter's end (tools/readcheck.mjs).
       rules: syl('L08', 2) - 0.04, // the ledger rules draw on
-      freq: syl('L08', 4) - 0.04, // "vài lần mỗi năm"
-      clip: syl('L08', 7) + ctx.grid - 0.02 - reach('snap'), // the empty clip clicks on, landing on a 16th
-      stamp: syl('L08', 9) - 0.04, // "KHÔNG KÈM CHỨNG TỪ"
+      freq: syl('L08', 3) - 0.04, // "vài lần mỗi năm"
+      clip: syl('L08', 5) + ctx.grid - 0.02 - reach('snap'), // the empty clip clicks on, landing on a 16th
+      stamp: syl('L08', 7) - 0.04, // "KHÔNG KÈM CHỨNG TỪ"
     };
     T.count = T.lock04 - reach(LOCK, 0.995); // the number snaps in with every digit rolling
     T.lineIv = ctx.grid; // 2.3's second label line lands a 16th after the first
