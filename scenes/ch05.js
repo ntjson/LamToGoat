@@ -203,6 +203,12 @@ export default {
     const bandLand = ceilGrid(Math.max(T.id + 0.3 + ARRIVE, s18(7)));
     T.band = at(bandLand) - ARRIVE;
     T.ticks = [1, 2, 3, 4, 5].map((k) => at(bandLand + (k * ctx.beat) / 2)); // steps 2-6
+    // Landing times of the moves above (for the sound's cues): each spring's first arrival at its target.
+    const land = {
+      logo: T.logo + ARRIVE, lines: T.lines.map((x) => x + ARRIVE), band52: T.band52 + ARRIVE, fac: T.fac + ARRIVE,
+      rise: T.rise + RISE_LAND, p55a: T.p55a + ARRIVE, p55b: T.p55b + ARRIVE, p56a: T.p56a + ARRIVE,
+      band: T.band + ARRIVE,
+    };
 
     // Ground.
     el(ctx.root, '', { width: `${W}px`, height: `${H}px`, background: C.cream });
@@ -400,7 +406,7 @@ export default {
     const reveal = track(gaps[0], [...gaps.slice(1), chainW + 12].map((g, k) => [T.ticks[k], g, TICK]));
 
     return {
-      T, logo, lines, verify, under, lit, win, navy, disp, label, bits, bitT,
+      T, land, logo, lines, verify, under, lit, win, navy, disp, label, bits, bitT,
       p53: { a: p53a, b: p53b, c: p53c, f: p54 }, POS, F0, RA, D, wins, P, S, LNS: Math.log(S), OUT, OUT_IN, outLens, rise, gridLens, apLens,
       tag55, p55a, p55b, brackets, tags55, TAG55, P55A, P55B,
       p56a, p56b, p56c, tag56, P56A, P56B, P56C, TAG56, band, shutter, reveal,
@@ -508,5 +514,49 @@ export default {
       s.band.style.transform = `translateX(${px(spring(t, T.band, -(W + 160), 0, 'slide'))})`;
       s.shutter.style.transform = `translateX(${px(s.reveal(t))})`;
     }
+  },
+
+  // Event times (chapter-local) for the sound, from the SFX column of 5.2-5.6 (5.1 is ch04's doors and the music's
+  // downbeat). A move that lands carries `land` (its spring's first arrival); the rest hit on `t`. `pan` is where the
+  // event sits across the frame, (x - 960) / 960 at its centre in the layout, when it is clearly to one side.
+  cues(s) {
+    const { T, land: L } = s;
+    const WIN = -0.4; // the resident's window, then the aperture (x 150-1009)
+    const BR = [-0.7, -0.3, 0.4]; // the brackets under "Thang máy", "Cao", "240 phút"
+    const STEP = [-0.4, -0.1, 0.1, 0.4, 0.7]; // the chain's steps 2-6, each revealed by its tick
+    return [
+      // 5.2 the logo, then the promise line by line; "kiểm chứng được" slams as the façade's top lands under it
+      { t: T.logo, name: 'slide', land: L.logo, pan: -0.5 },
+      ...T.lines.map((t, i) => ({ t, name: 'slide', land: L.lines[i], pan: 0.3 })),
+      { t: T.band52, name: 'slide', land: L.band52 },
+      { t: T.verify, name: 'slam', pan: 0.4 },
+      // 5.3 the whole façade rises (the window lights as it lands) and the push into that window opens the aperture
+      { t: T.fac, name: 'slide', land: L.fac },
+      { t: T.push, name: 'open', pan: WIN },
+      { t: T.rise, name: 'slide', land: L.rise, pan: WIN }, // the app rises in the window
+      ...T.disp.map((t) => ({ t, name: 'slam', pan: 0.4 })), // "CƯ DÂN GỬI", "PHẢN ÁNH"
+      { t: T.b, name: 'cut', pan: WIN }, // HARD CUT to the location picker; "24/7" drops in with it
+      { t: T.c, name: 'cut', pan: WIN }, // HARD CUT to the filled report; "Ảnh ·" drops in with it
+      { t: T.vitri, name: 'snap', pan: 0.4 }, // "vị trí ·" drops in on its own
+      { t: T.press, name: 'click', pan: WIN }, // the window closes onto "Gửi phản ánh"
+      // 5.4 ...and snaps open onto the confirmation
+      { t: T.conf, name: 'snap', pan: WIN },
+      { t: T.conf, name: 'bell', pan: WIN },
+      // 5.5 HARD CUT to cream as "AI GỢI Ý" slams; report #7 slides in, the suggestion slides up under it; each bracket
+      // snaps with its tag hanging from it
+      { t: T.cut, name: 'cut' },
+      { t: T.tag55, name: 'slam', pan: -0.7 },
+      { t: T.p55a, name: 'slide', land: L.p55a, pan: 0.3 },
+      { t: T.p55b, name: 'slide', land: L.p55b },
+      ...T.br.map((t, i) => ({ t, name: 'snap', i, pan: BR[i] })),
+      // 5.6 the confirm panel slides in as 5.5 leaves left; "NGƯỜI QUYẾT ĐỊNH" stamps; the button, then the manager,
+      // snap in; the band slides in carrying "mọi bước đều lưu vết" and the chain's first step; one tick per step after
+      { t: T.p56a, name: 'slide', land: L.p56a, pan: 0.4 },
+      { t: T.tag56, name: 'stamp', pan: -0.6 },
+      { t: T.btn, name: 'snap', pan: 0.4 },
+      { t: T.id, name: 'snap', pan: -0.6 },
+      { t: T.band, name: 'slide', land: L.band },
+      ...T.ticks.map((t, i) => ({ t, name: 'tick', i, pan: STEP[i] })),
+    ];
   },
 };
