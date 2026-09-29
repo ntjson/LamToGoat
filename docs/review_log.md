@@ -874,3 +874,16 @@ would land 0.14 s after the last bubble and 0.14 s before the chat's drift-off, 
     chimes +4.9 .. +5.0 against the +5.0 target. `synccheck`: ch04 12/12.
   - The chimes are now `A4 F5` on all three flips (the bed plays F at film beats 93, 100 and 109), where the middle one was `C5 F5` over Fm9 at 58.99 s. The new
     chime has no bed keys chord within 40 ms; the bed's bass plays a Db3 36 ms after it (`docs/bed_kit.md` (f) updated).
+
+### Confirm: the 1080p preview and the drafts, rendered from a clean worktree at `0698eaa`
+
+- `node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out/preview_1080p.mp4 --workers 10`: 5,400 frames in 6 min 46 s, from a clean worktree
+  (scenes, engine and timeline as committed; the worktree's `cues.mjs` gives the same 418 cues the mix was built from).
+- **ffprobe:** video H.264 High, 1920×1080, yuv420p, 30 fps, 5,400 frames (179.999 s); audio AAC LC, 48 kHz stereo, 321 kbps, 180.000 s.
+- **Loudness on the muxed file:** ebur128 -14.0 LUFS integrated, true peak -1.2 dBFS, LRA 6.8 LU; loudnorm input_i -14.05 LUFS, input_tp -1.24 dBTP.
+- **Sync:** the file's decoded audio lines up with `out/sound/film.wav` at 0 samples of lag (codec residual -37.7 dB).
+- **The order in the file itself** (frames pulled from the mp4 at film 51.94, 55.44, 55.94, 56.44, 58.44, 59.44, 60.94 and 61.44 s): the board still orange at 51.94 with both tags, the manager's
+  two tags and no chat at 55.44, the manager edge-on at 55.94 and navy with its answer at 56.44, the residents forward with their first tag only at 58.44 and both at 59.44, edge-on at 60.94, navy at 61.44.
+- `out/roughcut_sound.mp4` (960×540, 30 fps, 5,400 frames, 2 min 40 s) and `out/review/ch04.mp4` (with ch04's exit: 627 frames) were re-rendered with the same mix. The rough cut lines up at 0 samples
+  (residual -37.7 dB, -14.0 LUFS); the ch04 clip starts at its first frame's film time (44.467 s, the first whole frame) and lines up at 0 samples (residual -35.0 dB).
+- The preview and draft from before the change, and that mix's `film.wav`, `cues.json`, `score.json` and check reports, are in `out/tmp/flip/before/`. Scores unchanged from round 2.

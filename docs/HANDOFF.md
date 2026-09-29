@@ -1,9 +1,20 @@
-# Handoff: the sound effects remade to fit the bed (2026-09-29)
+# Handoff: ch04's flip order, and the sound effects remade to fit the bed (2026-09-29)
 
 For the next session. Read `CLAUDE.md`, `docs/brief.md` and `docs/ANIMATION_GUIDE.md` first; their rules hold unless
 something below overrides them. Work is on branch **`film`**. There is no remote. **Never push.**
 
-**The task just done (the user, 2026-09-29): all the sound effects remade to fit the Mixkit bed**, ch01's hits from the approved sketch
+**The task just done (the user, 2026-09-29): ch04's flip order** (commit `0698eaa`). Each role now flips to navy right after its own pain has
+been read, before the next role's pain lands: pain 1, flip 1, pain 2, flip 2, pain 3, flip 3. Before, the manager's panel (Ban quản lý) waited
+for `s14(3)`, after the residents' pain, and the last two flipped back to back. The manager's flip moved into L13 (edge-on 11.49 s chapter-local,
+film 55.94 s, grid unit 83, one 16th before L13 ends: `L13.end - ctx.grid`), and the residents' second pain tag moved from `s14(2)` to `s14(3)` (the beat
+the flip left, 14.55 s) so their pain does not sit still for 2.6 s. The board's flip (7.74 s) and the residents' (16.49 s) did not move; the
+timeline, the chapter's length and the grid are untouched, and all 15 of ch04's texts pass `readcheck` (the tightest: "không ai theo dõi", 1.40 s
+readable for 1.24 s needed). Three of the 418 cues moved (the manager's flip and chime, the residents' second pin); the mix was rebuilt and its
+checks pass; the preview and the 960×540 draft were re-rendered. The scored rounds, the reading table and the sound checks are in `docs/review_log.md`,
+"ch04: each role flips right after its own pain", and `docs/review/ch04.md` (rounds 7-8); `docs/shotlist.md` has a note under ch04's table (its first plan
+had panel 2 flip after panel 3 stepped forward).
+
+**The task before it (the user, 2026-09-29): all the sound effects remade to fit the Mixkit bed**, ch01's hits from the approved sketch
 included. Every effect is on its cue time; the picture and the timeline are untouched. What changed, per chapter, with the checks and the
 scored rounds, is in `docs/review_log.md`, "Sound effects remake". Below: where things stand, what the effects now are and how to rebuild
 and check them, and what is left.
@@ -18,13 +29,15 @@ and check them, and what is left.
 | 4 Engine + ch01 | approved |
 | 5 Guide + ch02-ch11 | done: every chapter built, reviewed (8+ on all criteria) and committed separately. ch10 carries the team's faces (`47ba699`). |
 | 6 Rough cut review | done without a voice |
-| 7 Polish, sound, final render, deliverables | **Music: the Mixkit bed. Effects: remade to fit it (this session). Next: the user's listen and notes, then the final render and deliverables.** |
+| 7 Polish, sound, final render, deliverables | **Music: the Mixkit bed. Effects: remade to fit it. ch04's flip order fixed (`0698eaa`). Next: the user's listen and notes, then the final render and deliverables.** |
 
 Review files for the user:
-- `out/preview_1080p.mp4`: 1920×1080, 30 fps, CRF 23, 180.0 s, with the remade mix (AAC 320 kbps, 48 kHz) and ch10's faces. Rendered from a clean
-  worktree at `8810133` (7 min); measured on the file: -14.05 LUFS, -1.24 dBTP, LRA 6.8 LU, audio aligned with `film.wav` at 0 samples of lag.
-- `out/roughcut_sound.mp4`: the 960×540 30 fps draft with the same mix. `out/review/chNN.mp4` (per-chapter clips) still carry the **previous** mix.
-  The previous preview and draft (and the first remake build's, before the skyline fix) are in `out/tmp/old_mix/` for A/B.
+- `out/preview_1080p.mp4`: 1920×1080, 30 fps, CRF 23, 180.0 s, with the current mix (AAC 320 kbps, 48 kHz), ch10's faces and ch04's new flip order. Rendered from a
+  clean worktree at `0698eaa` (6 min 46 s, 10 workers); measured on the file: -14.0 LUFS (ebur128), true peak -1.2 dBFS; loudnorm input -14.05 LUFS, -1.24 dBTP, LRA 6.8 LU;
+  audio aligned with `film.wav` at 0 samples of lag (codec residual -37.7 dB).
+- `out/roughcut_sound.mp4`: the 960×540 30 fps draft with the same mix (re-rendered at `0698eaa`). `out/review/ch04.mp4` carries the current mix (with ch04's exit, +0.9 s);
+  the other per-chapter clips `out/review/chNN.mp4` still carry the **previous** mix. The preview and draft from before the flip-order change are in `out/tmp/flip/before/` (with that
+  mix's `film.wav`, `cues.json`, `score.json` and check reports); older ones (and the first remake build's, before the skyline fix) are in `out/tmp/old_mix/` for A/B.
 - `out/sound/film.wav` (48 kHz stereo float), `out/sound/cues.json`, `out/sound/score.json` (every note and effect, with each paper/UI event's level and poke-out),
   `out/sound/stems/*.wav` (each stem at its level in the master, plus `bed_ref.wav`, the music the effects are judged against).
 - Check reports: `out/sound/sfxcheck.txt`, `tunecheck.txt`, `soundcheck.txt`, `synccheck.txt`; the analysis image `out/sound/analysis.png`.
@@ -50,6 +63,9 @@ Review files for the user:
 9. **The effects remake (2026-09-29):** (a) tune every pitched effect to the bed's A4 = 441.3 Hz and to the chord it actually plays at each cue's bar; (b) rhythmic effects
    straight 8ths, match its timbre, drop any effect that doubles a hit the track plays; (c) paper and UI sounds unpitched, EQ'd into the gaps of its mids, none more than about
    3 dB over the music. Every effect stays on its cue time, the picture timeline is untouched, the old score's rebuild check is retired. These are now in `CLAUDE.md`.
+10. **ch04's flip order (2026-09-29):** each role flips to navy right after its own pain has been read and before the next role's pain lands (pain 1, flip 1, pain 2,
+    flip 2, pain 3, flip 3), the manager's flip inside L13. Chapter length, timeline and grid unchanged; every text still passes `readcheck`. This replaces the shotlist's
+    first plan (panel 2 flipping after panel 3 stepped forward).
 
 ## What to ask the user (three judgement calls made without them)
 
@@ -233,6 +249,11 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
   `sound.py --chapters ch05` builds only that chapter (4 s), normalized on its own: for a quick listen, not for muxing.
 - **`tools/bedhits.py`** (`--scan`, `--cues`, `--selftest`): what the bed plays and when; `sound.py` imports its `hits()`. **`docs/bed_kit.md`** has its measurements and caveats.
 - Last measured on the mix: -14.00 LUFS, -1.21 dBTP (after the AAC 320k round trip: -1.24, -14.01 LUFS).
+- **After a scene edit that moves cues** (as ch04's flip order did): run `node tools/cues.mjs` and diff `out/sound/cues.json` against the old one (only the intended cues should move;
+  ch04's change moved 3 of 418), then `tools/sound.py` and the four checks. The new `film.wav` should then differ from the old one only around the moved cues (match their gain first;
+  the change was +0.004 dB elsewhere). The picture can be checked the same way: render the chapter from a clean worktree at the previous commit and compare frame by frame (an H.264
+  encode adds lookahead noise of a few levels to the frames just before a change; lossless `frames.mjs` stills don't). Render the preview from a clean worktree at the new commit.
+  `../LamToGoat-build` was used for this and removed afterwards (`git worktree add --detach ../LamToGoat-build HEAD`, symlink `node_modules`).
 
 
 ## The team's faces in ch10 (in the film since `47ba699`)
@@ -252,14 +273,15 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
   identical to the one the current mix was built from (checked 2026-09-29).
 - **Review:** `docs/review/ch10.md` (rounds 9-11) and `docs/review_log.md`, "ch10: the team's faces". The clips are
   `out/review/ch10.mp4` and `ch10_1080p.mp4`, both with the current mix.
-- Not yet in `out/preview_1080p.mp4` or `out/roughcut_sound.mp4`.
+- In `out/preview_1080p.mp4` and `out/roughcut_sound.mp4` (both rendered after the faces went in).
 
 
 ## Next
 
 1. **The user's listen and notes** on the effects (and the five joins in the bed: 0:20.0, 0:37.8, 0:55.6, 2:28.9, 2:53.3). Ask the three questions above first. Places to listen:
    ch01's cluster (5.56 s) and ch03's soft stab (42.5 s) sit on the intro's D pedal, whose synth lines are diffuse and whose drone is +36 and +14 cents off the grid, so they may beat;
-   the effects are quiet against the music by design; ch06, ch07 and ch10's SLAMs are the bed's own hit. Each fix goes through the same checks and a review-log round.
+   the effects are quiet against the music by design; ch06, ch07 and ch10's SLAMs are the bed's own hit; ch04's three chimes are now all `A4 F5` (the bed plays F at all three flips), and the
+   middle one, the manager's, rings at 55.94 s, 0.38 s after the bed's join 3 (55.56 s) with a bed bass note 36 ms after it. Each fix goes through the same checks and a review-log round.
 2. **Final render:** `node render.mjs --final --audio out/sound/film.wav --out out/final.mp4` (1920×1080, 60 fps, CRF 16, preset slow; 10,800 frames, about 25-30 min with 8-10 workers).
    - Measure the muxed file again: `ffmpeg -i out/final.mp4 -af ebur128=peak=true -f null -`, and `loudnorm=print_format=json`. The AAC encode is the same as the preview's, so it should read -14.0 LUFS and about -1.2 dBTP.
 3. `out/poster.png`: the candidate is ch11's final frame at 1920×1080. `out/contact.png`: a whole-film contact sheet.
@@ -311,6 +333,8 @@ Two scratch scripts are not in git (`out/` is ignored): `out/tmp/music/bed_analy
 4. Weak supporting labels on the phone sheet (ch04's role descriptors, ch09's phase labels, ch03's B2B2C tags, ch11's credits): all pass the 28 px floor, and the user has accepted them so far.
 5. `frames.mjs` stills can differ by a few anti-aliased edge pixels between browser sessions or seek orders; compare before/after renders made with the same time list, one right after the other.
 6. Render cost: 1080p frames take about 0.5-0.8 s each per worker (ch02's skyline is the heaviest).
-7. **ch10's faces:**
+7. **ch04's tightest reading margin:** the manager's second pain tag ("không ai theo dõi") is readable 1.40 s for the 1.24 s its text needs. Its flip can't move a 16th later without the
+   chime landing 15 ms before the bed's keys chord at 56.09 s (`docs/bed_kit.md` (f)), nor its tag earlier without crowding the last bubble and the chat's drift-off (`docs/review/ch04.md`, round 7).
+8. **ch10's faces:**
    - Photos 1, 2 and 4 are small in the deck (240 px, 240 px and 324 px wide). They are enlarged 1.48-1.75×, so they look soft at 100 %. Sharper originals from the team would fix that; re-take `tools/team.py`'s per-photo measurements.
    - The layout is at its limits. Before the lock, at the push, the right column is 18-28 px from the frame's edge, and Hưng's crown is about 20 px from the L34 line. `build()` throws if either ever stops fitting.
