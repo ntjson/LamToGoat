@@ -25,24 +25,29 @@ The film is **music and sound effects only**; the on-screen text carries the who
   `docs/timeline.md`) from the on-screen text in `docs/onscreen.json`. The engine and every tool read it.
   - Beats sit on 8th notes and chapters on bar lines at 108 BPM. `ctx.syl` snaps to 16ths, and `ctx.snap()` snaps
     any other time.
-  - The length is **188.9 s (3:08.9), 85 bars**, at reading-pace factor 0.82.
-    - On average there are 11.9 characters of text per second of hold. The busiest beats (the team, the end card,
-      the hook) run 15-19 characters/s.
-    - At exactly 3:00 (81 bars) those beats would need 20-23 characters/s, too fast for a relaxed read. Fully
-      relaxed (pace 1.0) would take 3:32.
-  - `uv run python tools/timeline.py --bars N` changes the length: 81 bars = 3:00, 85 = 3:09, 90 = 3:20.
+  - **The film is exactly 3:00 (180.0 s, 81 bars).**
+    - The reading pace is fixed at the relaxed value approved at 3:09 (factor 0.82). At that pace the film's natural
+      length is 85 bars.
+    - To fit 81 bars, `tools/timeline.py` trims whole bars from holds only: shots held longer than their text needs,
+      gentlest squeeze first.
+    - Shots whose length is set by their text (all the busiest ones: the hook, the team, the end card...) keep every
+      frame, as do the transition breaths, the breaths between shots and the end hold.
+    - This took one bar each from ch05, ch02, ch09 and ch03 (list in `docs/timeline.md`, "Trimmed to fit").
+  - `uv run python tools/timeline.py` builds the 3:00 timeline; `--bars N` sets another length (85 = no trim).
+  - `tools/readcheck.mjs chNN` measures how long each text is actually readable on screen against the reading model;
+    every text passes. `index.html?timeline=/path.json` renders against another timeline, for comparisons.
 - **Every story beat's message is on screen.** Thirteen beats got text added (list and reasons in
   `docs/onscreen.json`, under `added`).
 - **The voice pipeline is kept for a possible later voice** (`tools/vo.py`, `docs/vo_lines.json`,
   `docs/vo_script.md`, `docs/vo_timings.json`). `tools/timeline.py --voice` puts the timeline back on it.
 - **All eleven chapters are updated** for the reading timeline and the added text, each passing its review loop
-  (8+ on every criterion, with "Sync" in place of "Voice"); `out/roughcut.mp4` is 188.9 s.
-- **Sound:** a ch01 sketch is done and waits for the user's OK.
+  (8+ on every criterion, with "Sync" in place of "Voice"); `out/roughcut.mp4` is 180.0 s.
+- **Sound:** the ch01 sketch is **approved** (2026-09-29). The whole-film sound is next.
   - `tools/cues.mjs` collects the scenes' `cues()`; so far ch01, ch06 and ch07 export them.
   - `tools/sound.py` synthesizes the music and effects and masters to -14 LUFS / -1.2 dBTP.
-  - The sketch is `out/ch01_sound.mp4` (1080p60 with sound). After the OK: charts for ch02-ch11 (major and
-    vibraphone for ch05-ch07, driving for ch08-ch09, resolving for ch10-ch11), a shared cue vocabulary for every
-    chapter, then the whole film.
+  - The sketch is `out/ch01_sound.mp4` (1080p60 with sound). Next: charts for ch02-ch11 (major and vibraphone for
+    ch05-ch07, driving for ch08-ch09, resolving for ch10-ch11), a shared cue vocabulary for every chapter, then the
+    whole film on the 3:00 timeline.
 
 ## Decisions the user made in chat (still in force)
 

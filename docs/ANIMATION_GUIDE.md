@@ -88,6 +88,8 @@ the whole story.
     follows it.
   - Everything sits on the music's grid at 108 BPM: beats start and end on 8th notes, and every chapter is a whole
     number of 4/4 bars, so chapter changes land on downbeats.
+  - The film is exactly 3:00 (81 bars). The reading pace is fixed; to fit, the tool trims whole bars from holds only
+    (shots held longer than their text needs). Text-bound shots never change length.
   - `docs/timeline.md` is the readable table. The voice pipeline (`tools/vo.py`, `docs/vo_*.json`) is kept for a
     possible later voice, but nothing reads it now.
 - **Anchors.** Every beat derives from `ctx.line(id)`, `ctx.syl(id, k)`, `ctx.dur` or `ctx.snap(t)`. Small offsets
@@ -297,6 +299,9 @@ node tools/frames.mjs chNN out/tmp/chNN <t> [<t> ...]
    `out/review/chNN_phone.png` (360 px tiles). With `--strip a:b` (chapter-local seconds) it adds every-other-frame
    strips of fast beats. It then prints the text-size check. Tiles are labelled `film time · +chapter time`.
 3. **Full-resolution stills** (`frames.mjs`) of the key frames, to check diacritics and edges at 100 %.
+   **Reading check:** `node tools/readcheck.mjs chNN` measures how long each text is actually readable (visible,
+   full size, in frame, not covered by paper) against its reading time. Every text must pass. A text that lands
+   late in its beat is the usual cause.
 4. **Look** at the contact sheet, the phone sheet and a strip of every fast beat (cuts, slams, flips, transitions).
    Open the images; don't guess.
 5. **Score** 1-10:

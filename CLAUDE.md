@@ -15,6 +15,9 @@
   on-screen text in docs/onscreen.json, so every shot holds long enough to read its text at a relaxed pace.
   Everything sits on the music's beat grid (108 BPM; chapters on bar lines); cuts and SLAMs snap to it.
   Scenes read the timeline through ctx and never hard-code seconds.
+- The film is exactly 3:00 (81 bars). To fit, only holds are trimmed, never reading time: the reading pace is
+  fixed, and shots whose length is set by their text keep every frame. tools/readcheck.mjs checks each text's
+  real on-screen time.
 
 ## Look (your call: the deck is the source of facts, not of style)
 - Choose your own visual direction: palette, type, texture, camera language. Don't copy the slides.

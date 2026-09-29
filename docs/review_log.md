@@ -13,20 +13,20 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Rounds | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | ch01 Hook | 8 | 9 | 9 | 8 | 8 | 8 | 8 | 4 | no voice: captions added, on the grid |
-| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 8 | no voice: re-timed on the grid |
-| ch03 Market | 9 | 9 | 8 | 8 | 8 | 8 | 8 | 7 | no voice: re-timed on the grid |
+| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 9 | 3:00: holds trimmed, stamp earlier |
+| ch03 Market | 9 | 9 | 8 | 8 | 8 | 8 | 8 | 8 | 3:00: holds trimmed, last tag earlier |
 | ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 | no voice: text added, on the grid |
-| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 | no voice: text added, on the grid |
+| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 7 | 3:00: holds trimmed |
 | ch06 USP 1: before approval | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 | no voice: text added, on the grid |
 | ch07 USP 2: after publication | 9 | 9 | 8 | 8 | 8 | 9 | 9 | 6 | no voice: text added, on the grid |
 | ch08 Competition | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 | no voice: text added, on the grid |
-| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 6 | no voice: text added, on the grid |
+| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 | 3:00: holds trimmed |
 | ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 8 | no voice: text added, on the grid |
 | ch11 Close | 9 | 9 | 8 | 8 | 9 | 9 | 8 | 7 | no voice: text added, on the grid |
 
 Since 2026-09-28 the film has no voice-over, so the **Voice** column (voice sync) became **Sync**: cuts and SLAMs
 on the 108 BPM grid, and every text holds long enough to read. Whole film: `out/roughcut.mp4` (960×540, 30 fps,
-5,667 frames, 188.9 s). Its checks are in the last section below.
+5,400 frames, exactly 180.0 s). Its checks are in the last section below.
 
 ## Gate 1: style frames (2026-09-28)
 
@@ -313,3 +313,39 @@ score 8+; rounds in `docs/review/chNN.md`). Director's checks on the whole rough
   - ch05: the suggestion card sits in a navy paper pocket so the tags cover no UI text.
   - ch07: the pushed badge rests 60 px lower.
   - ch09: shot 9.3 holds instead of pushing in.
+
+## Exactly 3:00: holds trimmed, reading time kept (2026-09-29)
+
+The user asked for exactly 3:00, cut from breaths and holds, never from reading time; the busiest shots stay at a
+relaxed pace. 3:00 at 108 BPM is exactly 81 bars, so four bars (8.9 s) had to go from the 85-bar cut.
+- **Reading pace:** fixed at the approved 3:09 value (factor 0.82).
+- **Timeline rule:** `tools/timeline.py` now trims whole bars from **holds** only: shots that stayed up longer than
+  their text needs because their animation had been given more time. The gentlest squeeze goes first.
+- **Never trimmed:**
+  - the 17 shots whose length is set by their text (all the busiest ones), which keep every frame
+  - the transition breaths, where the wipes, covers and flips play
+  - the breaths between shots
+  - the end hold
+
+| Chapter | Bar taken from | Lowest hold kept | Length |
+|---|---|---|---|
+| ch05 Demo 1 | L15 −0.56 s, L16 −0.56 s, L17 −0.28 s, L18 −0.83 s | 83 % | 20.0 → 17.8 s |
+| ch02 Problem | L04 −0.83 s, L06 −0.56 s, L08 −0.83 s | 78 % | 22.2 → 20.0 s |
+| ch09 Business | L30 −1.11 s, L31 −1.11 s | 78 % | 20.0 → 17.8 s |
+| ch03 Market | L10 −1.11 s, L11 −1.11 s | 76 % | 15.6 → 13.3 s |
+
+Checks:
+- **Untouched chapters:** ch01, ch04, ch06, ch07, ch08, ch10 and ch11 only start 1-4 bars earlier. The same 35
+  chapter-local frames render pixel-identical under both timelines. This needed full-precision times in
+  `timeline.json`; 4-decimal rounding had moved fast edges by a fraction of a pixel.
+- **New `tools/readcheck.mjs`:** measures, frame by frame, how long each text is actually readable (visible, full
+  size, in frame, not covered by paper) against the reading model.
+  - At 3:09 every text passed.
+  - At 3:00 two texts in trimmed shots fell short: ch02's stamp (1.00 s, needs 1.07) and ch03's "có Ban quản trị"
+    (1.17 s, needs 1.24). Both were still timed to syllables of the old voice line. They now land earlier and are
+    readable for 1.43 s each.
+  - Now every text in all 11 chapters passes.
+- **The busiest shots** (L33 the team, L35 the end card, L01 the hook, L05, L14, L28, L32) are unchanged, frame for
+  frame.
+- **Rough cut:** `out/roughcut.mp4` is 5,400 frames at 30 fps = 180.0 s. All cuts next to trimmed chapters are
+  clean (`tools/boundary.mjs`). No shot holds still over 2 s, and the longest gap between visual events is 2.2 s.
