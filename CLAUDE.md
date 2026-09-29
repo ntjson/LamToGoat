@@ -46,8 +46,12 @@
   - Skip lines whose spoken text hasn't changed. On a 402 or quota error, stop and list the missing lines.
 
 ## Sound
-- Music bed and sound effects synthesized in code (no Eleven Music, no stock tracks), following the shotlist's
-  Sound section. The music plays on the timeline's grid; effects sit on the scenes' own event times.
+- Music bed: "Upbeat Jazz" by Francisco Alvear (Mixkit; license and source in audio/music/SOURCES.md), stretched to
+  exactly 108 BPM and arranged to 3:00 on the film's bar lines by tools/bed.py: sections repeat only at phrase
+  boundaries, following the mood arc (sparse to ch05, brighter from ch05, driving ch08-ch09, resolving ch10-ch11).
+  No other stock tracks, no Eleven Music. The synthesized score stays available (tools/sound.py --music synth).
+- Sound effects are synthesized in code, following the shotlist's Sound section. They sit on the scenes' own event
+  times; any effect that sounds notes takes them from what the bed is playing at that beat.
 - Final mix -14 LUFS, true peak at most -1 dBTP. If a voice is added, duck the music under it (sidechain).
 
 ## Before showing me anything
