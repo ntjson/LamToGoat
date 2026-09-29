@@ -21,7 +21,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch07 USP 2: after publication | 9 | 9 | 8 | 8 | 8 | 9 | 9 | 6 + 2 sound | sound: stab on "2", alarm, the bow under the push |
 | ch08 Competition | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: driving, stab on "CÓ CẢ HAI." |
 | ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: stairs climb into the stab |
-| ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 8 + 2 sound | sound: two-feel, stab on "ĐỘI KAWAIBU" |
+| ch10 Team | 9 | 9 | 8 | 8 | 7 | 9 | 8 | 8 + 2 sound + 3 faces | faces: the team's photos as full-colour busts (Brand 7 accepted by the user); stab on "ĐỘI KAWAIBU" |
 | ch11 Close | 9 | 9 | 8 | 8 | 9 | 9 | 8 | 7 + 2 sound | sound: the final chord rings to 180.0 s |
 
 Since 2026-09-28 the film has no voice-over, so the **Voice** column (voice sync) became **Sync**: cuts and SLAMs
@@ -595,3 +595,66 @@ Fixes:
 | ch11 | 9 | 9 | 8 | 8 | 9 | 9 | 8 | the coda; the final chord on the last bar as the windows finish lighting, ringing to the cut |
 
 Every score is 8 or higher; the pictures, and so VN, Read and Motion, are unchanged.
+
+## ch10: the team's faces (2026-09-29)
+
+The five photos come from the deck's ĐỘI NGŨ page (PDF page 13), extracted pixel for pixel by `tools/team.py extract`
+into `assets/team/` (240×240, 240×240, 337×421, 324×576, 455×683; photos 1-2 are the deck's circle crops, photo 4
+carries the deck's own cut-out). New rule in `CLAUDE.md`: team photos only from `assets/team/`, never redrawn,
+distorted or AI-altered beyond cutout and colour treatment. `tools/team.py cut` makes the busts: the background
+removed by colour (photo 4: the deck's mask, the chair beside the sitter cut off by hand), a scissor line a few px
+outside the smoothed silhouette, a U-shaped bust below the chin, every head 238 px from hair to chin (photo 1's circle
+ends at the scarf and sets that size: its bust is 309 px tall). Geometry in `docs/team.json`, read through
+`ctx.portrait(k)`. `tools/facecheck.mjs` checks every frame: no text under a face, no face under another, each face's
+height in frame at rest.
+
+Layout changes the faces needed (timeline, reading times and every cue time unchanged): faces in two columns right
+of the text (orange/navy bands' faces at the far right, cream bands' faces nearer the names); the cream bands' paper
+runs on under their faces; the lock's waits are 60 px (right) and 80 px (left), was 110/60, so the right column stays
+in frame before the lock and its top face clears the L34 line; the arriving stack's gaps are 20 px (was 43) and it
+centres 24 px below the frame's centre; the closed stack lays each band 4 px over the one above (was 8 px apart);
+a band still missing between two that are in keeps its slot open (the NAVY band now slides into a waiting gap);
+the bands' text sits above the faces, their paper below.
+
+### Round 1 (two treatments, stills)
+
+A: full-colour cut-out; B: duotone, the photo's luminance mapped black → orange → cream, keyed to each face's lit
+skin. Same layout, same cut. Stills: `out/team/A-colour.png`, `out/team/B-duotone.png` (+13.33), `*-arriving.png`
+(+7.9), `out/team/A-vs-B-faces-100pct.png`, `out/team/A-vs-B-phone-360px.png`. Contact and phone sheets of the build
+(with B): `out/review/ch10_contact.png`, `ch10_phone.png`, strip `ch10_strip_5.60.png`.
+
+| Option | Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems left |
+|---|---|---|---|---|---|---|---|---|
+| A colour | 8 | 9 | 8 | 8 | 7 | 9 | 8 | photo colour outside the flat palette; photos 1, 2 and 4 are enlarged 1.48-1.75× and look soft at 100 % |
+| B duotone | 8 | 9 | 8 | 8 | 9 | 9 | 8 | Hưng (240 px photo, fringe over the eyes) is the least clear face |
+
+Fixed before scoring (the three worst of the first build): the two cream bands' faces overlapped for 1.1 s while the
+NAVY band was still missing (fix: the held slot); the cream bands' busts crossed Hưng's role line as they slid in
+(fix: text above the faces); B's first curve printed Hưng's face dark and blocky (fix: keyed to the 70th percentile of
+each face's luminance, a softer curve, a light bilateral before the map). Also fixed: three busts had their hair cut
+flat by the crop; a sliver of photo 4's chair beside the cheek.
+
+Checks: lint ok; `facecheck ch10` ok (no text or face covered in any frame, faces at least 309 px at rest);
+`readcheck ch10` 13/13; textcheck 13 texts, none under 28 px. A's Brand 7 is the option itself (full colour); it is
+the user's call. Waiting for the pick.
+
+**The pick (user, 2026-09-29): A, full colour; Brand 7 accepted.** Faces as large and sharp as the photos allow: one
+Lanczos resample from the photo at 2× the stage size, no AI upscaling, no sharpening, smoothing or retouching.
+
+### Round 2 (A, built)
+
+| Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems left |
+|---|---|---|---|---|---|---|---|
+| 9 | 9 | 8 | 8 | 7 | 9 | 8 | full colour outside the flat palette (accepted); photos 1, 2 and 4 soft at 100 %; before the lock, at the push, the right column 18-28 px from the frame's edge; Hưng's face 26 px above his band's centre |
+
+Contact, phone and five strips (`out/review/ch10_*`), 100 % stills, `facecheck` ok (faces at least 309 px at rest),
+`readcheck` 13/13, textcheck clean, stillness (no hold over 2 s, longest gap 0.9 s), `synccheck ch10` (the stab on
+its frame), both boundaries. The last two items are at their limits by design (more room on the right would push the
+cream bands' names nearer the left edge for 9 s). Rounds in `docs/review/ch10.md` (9-11).
+
+### Round 3 (final: rendered from scratch with the current mix)
+
+`out/review/ch10.mp4` (960×540, 30 fps) and `out/review/ch10_1080p.mp4` (1920×1080, 30 fps, CRF 18) with
+`out/sound/film.wav` (the Mixkit bed). ch10's 10 cues are identical to those in `out/sound/cues.json`, which the mix
+was built from, so no re-mix. The clip's audio is the mix from its first frame's film time (157.8 s), residual
+-38.5 dB, peak -1.2 dBFS. ch01's frames are pixel-identical with the new engine (AE 0 at five times). Scores as round 2.

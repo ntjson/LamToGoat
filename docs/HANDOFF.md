@@ -1,4 +1,4 @@
-# Handoff: after the whole-film sound pass and the Mixkit music bed (2026-09-29)
+# Handoff: after the whole-film sound pass, the Mixkit music bed and the team's faces (2026-09-29)
 
 For the next session. Read `CLAUDE.md`, `docs/brief.md` and `docs/ANIMATION_GUIDE.md` first; their rules hold unless
 something below overrides them. Work is on branch **`film`**. There is no remote. **Never push.**
@@ -25,6 +25,9 @@ Review files for the user:
 - `out/sound/bed.wav` and `bed.json` (the arranged Mixkit bed, its plan, joins and pitch classes per beat);
   `out/review/bed_joins.png` (a spectrogram around each join).
 - The rounds and all measurements are in `docs/review_log.md`, "Sound pass" and "Music bed".
+- ch10 with the team's faces: `out/review/ch10.mp4` (960×540) and `out/review/ch10_1080p.mp4` (1920×1080, CRF 18),
+  both with the current mix; sheets `out/review/ch10_contact.png`, `ch10_phone.png`; the two treatments the user chose
+  between, `out/team/`. Rounds in `docs/review/ch10.md` (9-11) and `docs/review_log.md`, "ch10: the team's faces".
 
 **Be honest with the user: the mix was checked by measurement and by reading the score, never by ear.**
 
@@ -40,6 +43,11 @@ Review files for the user:
 7. **Git:** one commit per logical unit (per chapter when chapters change), never push.
 8. **Music bed (2026-09-29):** "Upbeat Jazz" by Francisco Alvear (Mixkit) replaces the synthesized score, stretched to
    108 BPM and arranged to 3:00 by `tools/bed.py` (`CLAUDE.md`, Sound). The effects stay synthesized on the cues.
+9. **Team faces (2026-09-29):** each ch10 band carries its member's real photo (used with consent), from the deck's
+   ĐỘI NGŨ page (`assets/team/`, `tools/team.py extract`), cut out as a full-colour paper bust (`tools/team.py cut`,
+   `docs/team.json`, `ctx.portrait(k)`). The user picked full colour over a duotone and accepted its Brand 7.
+   `CLAUDE.md`: team photos only from `assets/team/`, never redrawn, distorted or AI-altered beyond cutout and colour
+   treatment; faces at least 300 px tall, never over a name, a role or another face (`tools/facecheck.mjs`).
 
 ## 3:00 timing (unchanged by the sound pass)
 
@@ -136,7 +144,9 @@ The approved ch01 sketch (`out/ch01_sound.mp4`, the synthesized score) stays on 
 | `tools/sound.py` | Scores the film, places the effects, mixes and masters (`--chapters`, `--stems`, `--stem-dir`, `--score`, `--no-aac-check`). |
 | `tools/soundcheck.py` | Analysis image; loudness per chapter, grid, harmony, and an onset in the mix for every hit cue. |
 | `tools/synccheck.mjs` | Every appearance cue starts on its frame; sync sheets of the stabs, alarms, slams, stamps and cuts. |
-| `lib/engine.js` | `?only=&soft=` loads a subset; `?timeline=/path.json` uses another timeline; collects `window.__cues`. |
+| `tools/team.py` | `extract`: the five team photos from the deck into `assets/team/`, pixel for pixel. `cut`: the busts ch10 shows (`assets/team/cut/`, `docs/team.json`); `--treat duotone` for the other option. Both deterministic. |
+| `tools/facecheck.mjs chNN` | Every frame: no text or face under a face; each face's height in frame at rest (the 300 px floor). |
+| `lib/engine.js` | `?only=&soft=` loads a subset; `?timeline=/path.json` uses another timeline; collects `window.__cues`; `ctx.portrait(k)` serves `docs/team.json`. |
 
 ## Open issues
 
@@ -150,3 +160,7 @@ The approved ch01 sketch (`out/ch01_sound.mp4`, the synthesized score) stays on 
 4. `frames.mjs` stills can differ by a few anti-aliased edge pixels between browser sessions or seek orders; compare
    before/after renders made with the same time list, one right after the other.
 5. Render cost: 1080p frames take about 0.5-0.8 s each per worker (ch02's skyline is the heaviest).
+6. ch10's faces: photos 1, 2 and 4 are small in the deck (240 px, 240 px, 324 px wide) and are enlarged 1.48-1.75×,
+   so they look soft at 100 %; sharper originals from the team would fix that (re-take `tools/team.py`'s per-photo
+   measurements). The layout is at its limits: before the lock, at the push, the right column is 18-28 px from the
+   frame's edge, and Hưng's crown about 20 px from the L34 line (`build()` throws if either ever stops fitting).
