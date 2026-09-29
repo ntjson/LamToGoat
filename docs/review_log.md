@@ -450,3 +450,14 @@ Every score is 8 or higher. Review files: `out/roughcut_sound.mp4` (960×540, 30
 clips with sound in `out/review/chNN.mp4` (contact and 360 px phone sheets beside them: unchanged pictures, text
 check clean in all 11), `out/review/sound_chNN.png` (level, spectrogram, cue marks, score) and
 `out/review/sync_chNN.png`; the whole film's analysis is `out/sound/analysis.png`.
+
+### Round 3 (confirm: the 1080p preview, rendered from scratch)
+
+`node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out/preview_1080p.mp4 --workers 10`:
+5,400 frames in 434 s, no errors.
+- **ffprobe:** video H.264 High, 1920×1080, yuv420p, 30 fps, 5,400 frames (179.999 s), x264 crf=23.0 in all 94
+  segments; audio AAC LC, 48 kHz stereo, 318 kbps, 180.000 s; container 180.000 s.
+- **Loudness on the muxed file:** loudnorm input_i -14.10 LUFS, input_tp -1.17 dBTP, LRA 6.5 LU; ebur128 -14.0 LUFS,
+  true peak -1.2 dBFS.
+- **Sync:** the file's decoded audio lines up with `out/sound/film.wav` at 0 samples of lag (codec residual -33 dB).
+- Scores unchanged from round 2: every chapter 8 or higher, Sync 9 throughout.
