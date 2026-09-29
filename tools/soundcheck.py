@@ -187,7 +187,7 @@ def main():
 
     t_from = a.t_from if a.t_from is not None else t0
     t_to = a.t_to if a.t_to is not None else t0 + len(x) / sr
-    rows = max(1, math.ceil((t_to - t_from) / a.row - 1e-9))
+    rows = max(1, math.ceil((t_to - t_from) / a.row - 1e-3))
     fig = plt.figure(figsize=(26, 7.2 * rows), dpi=80)
     f, tt, Z = stft(np.mean(x, axis=1), fs=sr, nperseg=4096, noverlap=4096 - 960)
     Zdb = 20 * np.log10(np.abs(Z) + 1e-9)

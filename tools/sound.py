@@ -1163,8 +1163,9 @@ class Film:
         if self.on("ch05"):
             at = self.chs["ch05"]["start"]
             v = ["F#3", "A3", "C#4", "E4"]
-            self.add(vibes(v, 4.6, 0.7, seed=5001, at=at, damp=4.0), at, -14, stem="vibes")
-            self.note("vibes", "ch05", at, 4.0, v, what="warm chord")
+            bar = 4 * beat  # it holds the first bar; the pedal lifts as the comping takes over
+            self.add(vibes(v, bar + 0.6, 0.7, seed=5001, at=at, damp=bar), at, -14, stem="vibes")
+            self.note("vibes", "ch05", at, bar, v, what="warm chord")
         for q in self.cue("ch07", "push"):
             if self.on("ch07"):
                 end = self.chs["ch07"]["end"]
