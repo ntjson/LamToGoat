@@ -174,6 +174,9 @@ export default {
     };
     // Each panel steps back when the next comes forward; the residents' panel after its flip, on the grid.
     T.back = [T.fwd[1], T.fwd[2], ctx.snap(T.flip[2] + FLIP_EDGE + 0.45)];
+    // Landing times of the moves above (for the sound's cues): where each curtain strip and each panel's hang first
+    // reaches its rest, and each flip's hit (edge-on: its back face shows).
+    const land = { curtain: T.curtain.map((c) => c + CURTAIN_LAND), hang: T.hang.map((h) => h + HANG_LAND), flip: T.flip.map((f) => f + FLIP_EDGE) };
 
     // ---- ground: three BLACK strips that drop as the curtain and part as the doors ----
     const seam = SEAMS.map((x, i) => jagged([x, TOP], [x, HEM], { seed: 430 + i, amp: 9, wave: 90 }));
@@ -275,7 +278,7 @@ export default {
     const doorY = [() => 0, (t) => spring(t, T.door, 0, 1500, DOOR), () => 0];
     const curtainY = [0, 1, 2].map((i) => (t) => spring(t, T.curtain[i], -(HEM + 20), 0, CURTAIN));
 
-    return { T, groundOf, panels, bubbleEls, stack, scroll, doorX, doorY, curtainY };
+    return { T, land, groundOf, panels, bubbleEls, stack, scroll, doorX, doorY, curtainY };
   },
 
   render(s, t) {
@@ -313,5 +316,30 @@ export default {
         b.style.transform = `translateY(${spring(t, T.bubbles[i], 24, 0, 'snap')}px) scale(${k})`;
       }
     });
+  },
+
+  // Event times (chapter-local) for the sound, from the T table: a move that lands carries `land` (its hit, on the
+  // grid); a panel's events carry i (which panel, left to right) and pan (where it hangs).
+  cues(s) {
+    const { T, land } = s;
+    const pan = [-0.6, 0, 0.6]; // the panels' centres: 365, 960 and 1555 px
+    return [
+      // 4.1 the BLACK curtain: its first strip starts to drop (off-frame, a few frames before t = 0); the last lands
+      { t: T.curtain[0], name: 'wipe', land: land.curtain[0] },
+      { t: land.curtain[2], name: 'thud' },
+      // 4.2 the panels hang in; each role steps forward with its pain, whose lines are pinned on (a line that lands
+      // with its panel's step is carried by that snap); the tick stamps onto the board's chest
+      ...T.hang.map((t, i) => ({ t, name: 'slide', land: land.hang[i], i, pan: pan[i] })),
+      ...T.fwd.map((t, i) => ({ t, name: 'snap', i, pan: pan[i] })),
+      ...T.tags.flatMap((tags, k) => tags.flatMap((t, i) => (t === T.fwd[k] ? [] : [{ t, name: 'pin', i, pan: pan[k] }]))),
+      { t: T.tick, name: 'stamp', pan: pan[0] },
+      // 4.3 the chat pours out of the manager's phone
+      ...T.bubbles.map((t, i) => ({ t, name: 'bubble', i })),
+      // 4.3-4.4 each panel turns over; its answer shows as it passes edge-on
+      ...T.flip.map((t, i) => ({ t, name: 'flip', i, pan: pan[i] })),
+      ...land.flip.map((t, i) => ({ t, name: 'chime', i, pan: pan[i] })),
+      { t: T.chord, name: 'lift' }, // all three answered: the panels lift together
+      { t: T.door, name: 'doors' }, // 5.1 the exit: the three columns part like doors
+    ];
   },
 };
