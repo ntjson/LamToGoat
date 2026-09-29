@@ -1356,7 +1356,7 @@ def fx_chime(f, q, k, run):
 
 
 def fx_cell(f, q, k, run):
-    f.add(cell_fx(0.4, seed=f.seed(q, k)), q["t"], -23 - 3 * ((k * 5) % 3) / 2, pan=q.get("pan", 0.0))
+    f.add(cell_fx(0.4, seed=f.seed(q, k)), q["t"], -20 - 3 * ((k * 5) % 3) / 2, pan=q.get("pan", 0.0))
 
 
 def fx_sweep(f, q, k, run):
