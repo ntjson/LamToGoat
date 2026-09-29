@@ -15,7 +15,7 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 | ch01 Hook | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 4 + 2 sound + 3 remake | sound: remade to fit the bed: the cluster, the bass bend and the stab on its D pedal |
 | ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 9 + 2 sound + 3 remake | sound: 164 events, noise; the skyline a keys arpeggio in F |
 | ch03 Market | 9 | 9 | 8 | 8 | 8 | 9 | 8 | 8 + 2 sound + 3 remake | sound: soft stab on SAM, D major |
-| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 + 2 sound + 3 remake | sound: a chime as each pain turns, on the bed's chords |
+| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 6 + 2 sound + 3 remake + 2 flip order | each role flips right after its own pain (Sync 9 -> 8: one reading margin is 0.16 s); sound: a chime as each pain turns, on the bed's chords |
 | ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 7 + 2 sound + 3 remake | sound: the bed's lift on the doors, bell on T.conf |
 | ch06 USP 1: before approval | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound + 3 remake | sound: "1" carried by the bed's own hit, alarm on "VƯỢT KHUNG" |
 | ch07 USP 2: after publication | 9 | 9 | 8 | 8 | 8 | 9 | 8 | 6 + 2 sound + 3 remake | sound: "2" carried by the bed's own hit, alarm, the held bass under the push |
@@ -822,3 +822,55 @@ timeline as committed), so it includes ch10's faces (four of the five members ar
 - **Sync:** the file's decoded audio lines up with `out/sound/film.wav` at 0 samples of lag (codec residual -37.7 dB).
 - `out/roughcut_sound.mp4` (960×540, 30 fps) was re-rendered with the same mix. The per-chapter clips `out/review/chNN.mp4` still carry the previous mix; the previous preview and draft are in
   `out/tmp/old_mix/` for comparison, with the first remake build's preview and draft (before the skyline fix). Scores unchanged from round 3 above.
+
+## ch04: each role flips right after its own pain (2026-09-29)
+
+The user's request. In ch04 the manager's panel (BAN QUẢN LÝ) waited for `s14(3)`, until the residents' pain had landed,
+so the manager and the residents flipped back to back at the end. Wanted order: pain 1, flip 1, pain 2, flip 2, pain 3,
+flip 3, each flip right after its own pain has been read and before the next pain lands (the manager's inside L13, after
+its pain and the chat's drift-off). Kept: the chapter's length, the timeline, the beat grid; flips on the grid; every pain
+and answer passing `readcheck`. Rebuilt: the flip cues and the mix. The chapter's rounds are in `docs/review/ch04.md`
+(7 and 8); `docs/shotlist.md` carries a note under ch04's table (its first plan had panel 2 flip after panel 3 stepped forward).
+
+| Role | Pain tags land (chapter-local s) | Flip, edge-on (grid units) | Before |
+|---|---|---|---|
+| Ban quản trị | 2.61, 4.27 | 7.74 (56) | unchanged |
+| Ban quản lý | 8.44, 9.97 (the chat drifts off from 9.97, gone by 10.6) | **11.49 (83)** | 14.55 (105), after the residents' tags had landed |
+| Cư dân | 13.02, **14.55** | 16.49 (119) | unchanged; the second tag was 13.72, before the first could be read |
+
+The change in `scenes/ch04.js`: `T.flip[1]` from `s14(3)` to `L13.end - ctx.grid`, and the residents' second tag from `s14(2)` to
+`s14(3)`, the beat the manager's flip used to hold. Everything else in the scene is as it was.
+
+### Round 1 (the manager's flip moved, nothing else)
+
+| Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems |
+|---|---|---|---|---|---|---|---|
+| 8 | 9 | 8 | 8 | 8 | 8 | 7 | (1) a 2.2 s hold and a 2.7 s gap between events in the residents' pain (13.72-16.33), where the chapter had none over 2 s; (2) the residents' second tag 0.69 s after the first, before it is read; (3) the manager's second tag readable 1.40 s of the 1.24 s it needs |
+
+Fixed (1) and (2) together: the residents' second tag on `s14(3)`, 1.53 s after the first (the other two roles: 1.67 s and
+1.53 s), 1.80 s of reading before its flip (needs 1.49 s). (3) stays: it passes, and both alternatives cost more (the flip
+one 16th later would put its chime 15 ms before the bed's keys chord, hat and bass on film beat 101; the tag one 16th earlier
+would land 0.14 s after the last bubble and 0.14 s before the chat's drift-off, three events in 0.28 s).
+
+### Round 2 (final)
+
+| Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems |
+|---|---|---|---|---|---|---|---|
+| 8 | 9 | 8 | 8 | 8 | 8 | 8 | none new (Sync 9 -> 8 for the 0.16 s margin above) |
+
+- **Reading** (`readcheck ch04`: 15 texts, none short). Readable time against need, before -> after: "Phản ánh qua Zalo," 5.97 -> 2.93 s
+  (1.24); "không ai theo dõi" 4.43 -> 1.40 (1.24); answer 2 5.47 -> 8.53 (2.61); "không rõ tiền đi đâu" 2.63 -> 1.80 (1.49); the rest unchanged
+  (answer 1 12.30, answer 3 3.60 against 2.48, "Đóng phí, nhưng" 3.33, the board's two tags).
+- **Rhythm:** no hold over 2 s; longest gap between clear events 1.8 s (was 1.9 s). **Grid:** flips' edge-on frames on grid units 56, 83, 119.
+- **Nothing else moved:** frames identical to a render from the previous commit before 11.10 s and after 16.00 s (only H.264 lookahead
+  noise, max 2 of 255, in the 7 frames before the first change); lossless stills at +0.5, +5.0, +7.0, +10.9, +16.2, +18.0, +19.9 pixel-identical.
+  Lint ok; text check 19 texts, none under 28 px; contact sheet, phone sheet, and strips of the three flips looked at.
+- **Sound:** `node tools/cues.mjs` -> 418 cues as before, three with new times: the manager's flip 58.827 -> 55.771 s, its chime 58.994 -> 55.938 s,
+  and the residents' second pin 58.160 -> 58.994 s. The mix was rebuilt (`sound.py`, about 50 s): -14.00 LUFS, -1.21 dBTP (AAC 320k: -1.24), and it
+  differs from the previous mix only between 55 and 62 s (+0.004 dB of master gain elsewhere; a -55 dB residual near 143 s from the effects'
+  joint level iteration).
+  - `soundcheck`: 47 pitched notes, 0 outside the chord the bed plays; 301 of 301 hit cues have an onset within 12 ms (median -0.4 ms); ch04 -15.38 LUFS (was -15.34).
+  - `tunecheck`: identical (worst -3.3 cents; the chimes 0.0). `sfxcheck`: 449 paper/UI events, max +2.9 dB over the music, none over +3.0; flips -2.0 .. +1.8 (was +1.4);
+    chimes +4.9 .. +5.0 against the +5.0 target. `synccheck`: ch04 12/12.
+  - The chimes are now `A4 F5` on all three flips (the bed plays F at film beats 93, 100 and 109), where the middle one was `C5 F5` over Fm9 at 58.99 s. The new
+    chime has no bed keys chord within 40 ms; the bed's bass plays a Db3 36 ms after it (`docs/bed_kit.md` (f) updated).

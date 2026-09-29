@@ -198,7 +198,7 @@ every event in [-40, +120] ms of the effect's onset, `land` for stamp, thud, sla
 | ch01 stab 9.127 | bass D3 -10, keys +20 | ch07 stab 107.778 | hat -5, bass Db2 +1, keys -35 |
 | ch03 stab 42.480 (soft) | bass Eb3 -35, hat -7 | ch07 climb 115.417 / .694 / .972 / 116.250 | free / keys -16 / free / keys +34 |
 | ch04 chime 52.188 | bass F3 +14, hat +18 | ch07 bubble land 117.222 | hat -38 |
-| ch04 chime 58.994 | free | ch07 alarm 123.750 | free |
+| ch04 chime 55.938 | bass Db3 +36 | ch07 alarm 123.750 | free |
 | ch04 chime 60.938 | free | ch07 push 125.833 | hat -4, bass Eb2 -1, keys +7 |
 | ch05 bell 73.022 | bass Bb2 +16, hat +21 | ch08 stab 138.581 | hat +19, bass F2 +32 |
 | ch06 stab 83.333 | hat -17, bass Eb2 +19, keys -14 | ch09 stab 153.026 | hat +16 |
@@ -211,7 +211,7 @@ Counts over all 87 (free = nothing within 40 ms; the others land within 25 ms of
 | stab | 7 | 0 | 6 | 4 | 2 | | slab | 29 | 8 | 9 | 8 | 6 |
 | alarm | 2 | 1 | 1 | 0 | 0 | | slam | 20 | 4 | 11 | 9 | 10 |
 | drop | 1 | 0 | 0 | 1 | 0 | | stamp | 5 | 0 | 5 | 3 | 1 |
-| chime | 3 | 2 | 1 | 1 | 0 | | thud | 6 | 1 | 4 | 3 | 3 |
+| chime | 3 | 1 | 1 | 1 | 0 | | thud | 6 | 1 | 4 | 3 | 3 |
 | bell | 1 | 0 | 1 | 1 | 0 | | punch | 2 | 0 | 2 | 1 | 2 |
 | climb | 4 | 2 | 0 | 0 | 1 | | caption | 3 | 1 | 0 | 0 | 1 |
 | band | 1 | 0 | 1 | 0 | 0 | | push | 1 | 0 | 1 | 1 | 1 |

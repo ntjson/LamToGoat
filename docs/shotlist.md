@@ -167,6 +167,12 @@ overlaps the UI by 4 px.
 | 4.3 | 53.4-58.2 | same | Panel 2 steps forward with its pain. Panel 1 FLIPs to NAVY with its answer. | pain 2 "Phản ánh qua Zalo, / không ai theo dõi"; answer 1 "Lịch sử thu chi / không thể sửa lén" LABEL 48 CREAM on NAVY | flip, warm chime |
 | 4.4 | 58.2-62.1 | same | Panel 3 steps forward with its pain. Panel 2 FLIPs at 58.9 s; panel 3 FLIPs at 61.2 s. | pain 3 "Không rõ tiền đi đâu"; answer 2 "Gửi phản ánh 24/7, / AI gợi ý, có lưu vết"; answer 3 "Biết từng khoản chi / vào việc gì, cho nhà thầu nào" | flip, flip, chime |
 
+> **Changed 2026-09-29 (the user): each panel flips right after its own pain has been read, before the next panel's pain lands.**
+> Order: pain 1, flip 1, pain 2, flip 2, pain 3, flip 3. Rows 4.3 and 4.4 above are the first plan, in which panel 2 flipped after panel 3
+> had stepped forward. Now panel 2 flips at the end of L13 (chapter-local 11.5 s, inside L13, after its pain and the chat's drift-off, before
+> panel 3 steps forward), and panel 3's second pain tag lands 1.5 s after its first (14.5 s). Panel 1's flip (7.7 s) and panel 3's (16.5 s) did
+> not move. Timeline, chapter length and grid unchanged; the flip and chime cues follow the new times (`node tools/cues.mjs`).
+
 ## ch05 Demo 1 (62.1-84.4)
 
 | Line | Est. | Draft voice |

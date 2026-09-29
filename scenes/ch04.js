@@ -149,9 +149,12 @@ export default {
     // never trails the music. A flip's hit is the moment its back face shows (edge-on), so it starts FLIP_EDGE
     // earlier; a panel's hang lands when its string first catches (HANG_LAND after it starts).
     // L12 (the board): the panels hang in; its pain lands in two tags, then the tick stamps.
-    // L13 (the manager): the board flips to its answer; the chat pours out, the pain lands, the chat drifts off.
-    // L14 (the residents): the pain lands early, the manager flips, the residents flip with time to read the answer,
-    // then all three lift together before the doors.
+    // L13 (the manager): the board flips to its answer; the chat pours out, the pain lands, the chat drifts off, and the
+    // manager's panel flips as the line ends.
+    // L14 (the residents): the pain lands, then the residents flip with time to read the answer, and all three lift
+    // together before the doors.
+    // Each role flips right after its own pain has been read and before the next role's pain lands (order: pain 1, flip 1,
+    // pain 2, flip 2, pain 3, flip 3).
     const at = (g) => g - HIT;
     const T = {
       // three strips, left to right, thump down on consecutive 16ths (the first one starts a frame before t = 0,
@@ -162,11 +165,15 @@ export default {
       tags: [
         [at(s12(3)), at(s12(6))], // "Bị nghi ngờ," / "kể cả khi làm đúng"
         [at(s13(3)), at(s13(8))], // "Phản ánh qua Zalo," / "không ai theo dõi"
-        [at(s14(1)), at(s14(2))], // "Đóng phí, nhưng" / "không rõ tiền đi đâu": early, so it reads before its flip
+        // "Đóng phí, nhưng" / "không rõ tiền đi đâu": the second tag takes the beat the manager's flip used to hold, 1.5 s
+        // after the first like the other two roles' tags, and still has 1.8 s to be read before its flip
+        [at(s14(1)), at(s14(3))],
       ],
       tick: at(s12(9)), // the tick stamps after "kể cả khi làm đúng"
-      // the residents' flip splits the rest of L14 so the pain and the answer both get their reading time
-      flip: [at(s13(1)), at(s14(3)), at(ctx.snap((s14(5) + s14(6)) / 2))].map((hit) => hit - FLIP_EDGE),
+      // the board flips just after L13 starts; the manager one 16th before L13 ends (its second tag has then been readable
+      // for 1.4 s, the chat is long gone, and the flip is done before the residents step forward); the residents' flip
+      // splits the rest of L14 so their pain and the answer both get their reading time
+      flip: [at(s13(1)), at(L13.end - ctx.grid), at(ctx.snap((s14(5) + s14(6)) / 2))].map((hit) => hit - FLIP_EDGE),
       bubbles: [2, 3, 4, 5, 6, 7].map((k) => at(s13(k))), // the chat pours out of the phone
       lost: at(s13(8)), // with "không ai theo dõi" the chat drifts off the panel
       chord: at(s14(8)), // all three answered: the panels lift together
