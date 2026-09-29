@@ -388,8 +388,19 @@ export default {
     g3.box.appendChild(banner);
     g3.box.appendChild(goal.el);
 
+    // For the sound's cues only: landing times T doesn't keep (a move's first arrival, a count's last lock, and when
+    // 9.3's group, then the whole sheet, has left the frame).
+    const lands = {
+      fac: T.fac + firstHit(FAC), // the façade
+      pct: s30(13) - LEAD, // "59,2%": its "2" locks
+      band: T.band + slideHit, // the timeline band
+      flag: T.flag + firstHit('snap'), // the flag
+      out93: T.out93 + 0.25, // 9.3 has cleared (the 0.25 s firstStep allows for)
+      exit: ctx.dur + reach(EXIT_P, (Math.max(...edge.map((p) => p[0])) - GP) / EXIT_D), // the sheet's cut edge is out
+    };
+
     return {
-      T, dur: ctx.dur, navy, fac, facFrom: H - F.y + 30, sweep, lab, labFrom: W - X0 + 40, fig, odo10, P10, d10, thang,
+      T, lands, dur: ctx.dur, navy, fac, facFrom: H - F.y + 30, sweep, lab, labFrom: W - X0 + 40, fig, odo10, P10, d10, thang,
       barBox, barFrom: W - X0 + 40, whole, pieceL, frontL, backL, pieceR, snip, pctBox, pct,
       cream, g93, pushK: PIV.k, cap, forLab, band, bandFrom: W + 100, dateEl, dateCh, flagG, flagFrom,
       steps, goal, banner, bannerFrom: W + 40 - (g3.x + BN.x), odoA, odoB,
@@ -467,5 +478,36 @@ export default {
     // Exit: the CREAM sheet and everything on it slide out left, uncovering ch10's BLACK field.
     const x = t >= s.dur ? spring(t, s.dur, 0, -EXIT_D, EXIT_P) : 0;
     s.cream.style.transform = `translateX(${x.toFixed(2)}px)`;
+  },
+
+  // Event times (chapter-local) for the sound: a move that lands carries `land` (its hit, on the grid), a count locks
+  // at `land`; the rest hit on `t`. 9.1's whoosh is ch08's exit. `pan` where an event is clearly on one side: 9.2's
+  // façade left and its figures right, 9.3's strip left and its flag right, the steps by their x.
+  cues(s) {
+    const { T, lands: L } = s;
+    const pan = (st) => Math.round(((st.x + st.w / 2) / W) * 200 - 100) / 100; // a step's centre, -1 … 1
+    const lit = s.sweep.map((g) => g.t);
+    const g3 = pan(s.steps[3]);
+    return [
+      { t: T.fac, name: 'rise', land: L.fac, pan: -0.5 }, // 9.2 the façade rises out of the NAVY field
+      { t: T.count, name: 'count', land: T.land10, pan: 0.3 }, // "10 TRIỆU" (its label and bar land with it)
+      { t: Math.min(...lit), name: 'sweep', land: Math.max(...lit), pan: -0.5 }, // the 500 windows light ORANGE
+      { t: T.month, name: 'slam', pan: 0.7 }, // "/THÁNG"
+      { t: T.snip, name: 'snip', n: 1, pan: 0.5 }, // the bar is cut at 59,2 %
+      { t: T.pct, name: 'count', land: L.pct, pan: 0.2 }, // "59,2%" counts digit by digit...
+      { t: T.part, name: 'flip', pan: 0.3 }, // the profit piece turns over to CREAM: "lợi nhuận ròng"
+      { t: T.pctStamp, name: 'slam', pan: 0.2 }, // ...and stamps
+      { t: T.cut93, name: 'cut' }, // 9.3 HARD CUT to CREAM...
+      { t: T.slam, name: 'stamp', pan: -0.4 }, // ...as "CẦN 200 TRIỆU" slams
+      { t: T.band, name: 'slide', land: L.band }, // the timeline band slides in from 10/2026
+      { t: L.flag, name: 'snap', pan: 0.4 }, // "HÒA VỐN VẬN HÀNH" snaps up at 08/2027
+      { t: T.dateSay, name: 'tick', pan: 0.2 }, // "08/2027" stamps once more
+      { t: T.out93, name: 'pan', land: L.out93 }, // 9.4 9.3's paper leaves left
+      ...s.steps.map((st, i) => ({ t: st.t0, name: 'slab', i, land: T.land[i], pan: pan(st) })), // the four steps
+      { t: T.goal, name: 'stab' }, // "20–25 TÒA"
+      { t: T.mrr, name: 'slide', land: T.mrrLand, pan: g3 }, // the MRR banner slides across GĐ3...
+      { t: T.mrrA, name: 'count', land: T.mrrStamp, pan: g3 }, // ...counts, and stamps as its last digit locks
+      { t: s.dur, name: 'pan', land: L.exit }, // exit (10.1): the sheet and the staircase slide out left
+    ];
   },
 };
