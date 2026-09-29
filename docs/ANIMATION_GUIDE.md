@@ -61,6 +61,8 @@ export default {
   - `ctx.snap(t, division = 4)`, `ctx.beat`, `ctx.grid`, `ctx.bpm`: the music's grid (section 3).
   - `ctx.dur`: your chapter's length. It ends when your last line ends.
   - `ctx.crop(shot)` → the `docs/crops.json` entry for a UI shot (`'5.5a'`).
+  - `ctx.portrait(k)` → the `docs/team.json` entry for team member `k` (0-4, band order): the cut-out's file, its
+    size and cut outline in stage px, where its face is (section 8, "Team photos").
   - `ctx.image(src)` → Promise of a decoded image.
   - `ctx.root` / `ctx.top`: your two layers (next list).
 - **Layers.**
@@ -272,6 +274,18 @@ Every boundary has one owner. There are two mechanisms:
 - **Test strings.** The crops already exclude the test-string description box and the explorer's step badges.
   Don't widen them.
 
+### Team photos (ch10)
+
+- **Source.** The five real photos in `assets/team/` (used with consent), extracted from the deck by
+  `tools/team.py extract`, and nothing else (CLAUDE.md). A scene never names those files (the lint rejects it): it
+  takes each member's cut-out through `ctx.portrait(k)`.
+- **Only cutout and colour treatment.** `tools/team.py cut` removes each photo's background by colour, cuts it as a
+  paper bust and writes it at 2× the stage size with one Lanczos resample: no redraw, no warp, no sharpening or
+  smoothing, no AI. The film shows the photos in their own colours (the user's pick, 2026-09-29).
+- **On screen.** A bust is paper: its cut gets `rough()` jitter and the lifted-paper shadow, and it moves only with
+  its band (translate, and the chapter's PUSH). At least 300 px of photo tall, the same head size for all five.
+  It never covers a name, a role or another face, and a bust always sits under the bands' text.
+
 ## 9. Banned (CLAUDE.md)
 
 - A centred title on a gradient.
@@ -295,7 +309,9 @@ node tools/review.mjs chNN --workers 2 [--tail <exit>] [--strip a:b ...]
 node tools/frames.mjs chNN out/tmp/chNN <t> [<t> ...]
 ```
 
-1. **Lint.** It must print `lint ok`. Answer each WARN in your review notes or fix it.
+1. **Lint.** It must print `lint ok`. Answer each WARN in your review notes or fix it. With team photos (ch10), also
+   `node tools/facecheck.mjs chNN`: in no frame a face covers a text or another face, and at rest each face keeps
+   300 px of photo in frame.
 2. **Review.** This renders the 960×540 30 fps draft, `out/review/chNN_contact.png` (2 fps) and
    `out/review/chNN_phone.png` (360 px tiles). With `--strip a:b` (chapter-local seconds) it adds every-other-frame
    strips of fast beats. It then prints the text-size check. Tiles are labelled `film time · +chapter time`.
