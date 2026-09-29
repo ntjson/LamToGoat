@@ -22,9 +22,9 @@ and check them, and what is left.
 
 Review files for the user:
 - `out/preview_1080p.mp4`: 1920×1080, 30 fps, CRF 23, 180.0 s, with the remade mix (AAC 320 kbps, 48 kHz) and ch10's faces. Rendered from a clean
-  worktree at `7828115` (7 min); measured on the file: -14.06 LUFS, -1.23 dBTP, LRA 6.8 LU, audio aligned with `film.wav` at 0 samples of lag.
+  worktree at `8810133` (7 min); measured on the file: -14.05 LUFS, -1.24 dBTP, LRA 6.8 LU, audio aligned with `film.wav` at 0 samples of lag.
 - `out/roughcut_sound.mp4`: the 960×540 30 fps draft with the same mix. `out/review/chNN.mp4` (per-chapter clips) still carry the **previous** mix.
-  The previous preview and draft are in `out/tmp/old_mix/` for A/B.
+  The previous preview and draft (and the first remake build's, before the skyline fix) are in `out/tmp/old_mix/` for A/B.
 - `out/sound/film.wav` (48 kHz stereo float), `out/sound/cues.json`, `out/sound/score.json` (every note and effect, with each paper/UI event's level and poke-out),
   `out/sound/stems/*.wav` (each stem at its level in the master, plus `bed_ref.wav`, the music the effects are judged against).
 - Check reports: `out/sound/sfxcheck.txt`, `tunecheck.txt`, `soundcheck.txt`, `synccheck.txt`; the analysis image `out/sound/analysis.png`.
@@ -210,7 +210,7 @@ Code, all deterministic (two runs give identical bytes): `tools/synth.py` (every
 
 **What the effects are, per family** (`docs/review_log.md` has every chapter): paper and UI sounds unpitched, at most +2.9 dB over the music (median -3.3), their spectral fine structure
 anti-correlated with the bed's (r -0.78 intro, -0.57 body); pitched notes within 3.3 cents of A4 = 441.3 (median 0.0), 0 of 47 outside the chord the bed plays; 301 of 301 hit cues have an
-onset in the effects' stems within 12 ms; no swing anywhere.
+onset in the effects' stems within 12 ms; every pitched hit within 0.3 dB of the level it was set to; no swing anywhere.
 
 ## Rebuild and check
 
@@ -232,7 +232,7 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
 - **One chapter with sound:** `node render.mjs --chapters ch05 --audio out/sound/film.wav --out out/review/ch05.mp4` (960×540). `--audio` must be the whole-film mix (`render.mjs` cuts it by film time).
   `sound.py --chapters ch05` builds only that chapter (4 s), normalized on its own: for a quick listen, not for muxing.
 - **`tools/bedhits.py`** (`--scan`, `--cues`, `--selftest`): what the bed plays and when; `sound.py` imports its `hits()`. **`docs/bed_kit.md`** has its measurements and caveats.
-- Last measured on the mix: -14.00 LUFS, -1.22 dBTP (AAC 320k: -1.23).
+- Last measured on the mix: -14.00 LUFS, -1.21 dBTP (after the AAC 320k round trip: -1.24, -14.01 LUFS).
 
 
 ## The team's faces in ch10 (in the film since `47ba699`)

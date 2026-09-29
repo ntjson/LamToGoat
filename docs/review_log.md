@@ -717,17 +717,17 @@ silent fade-in bar: read them as at least +6).
 
 | Ch | Paper and UI (cues -> events) | Poke, old -> new (median / max) | Loudness, old -> new | Pitched: what changed |
 |---|---|---|---|---|
-| ch01 | 19 -> 22: the complaint pop (a sine glide -> a falling band of noise), the bubbles' sine ticks -> noise ticks, 3 captions (the sine thump -> paper slap), scissor, split, slide, 2 snips, the drop's swoosh, the tear | +18.7 / +49.0 -> +0.3 / +2.7 | -14.1 -> -17.1 LUFS | cluster `C2 Db2 D2 G2` (D minor) -> `Db3 D3 Eb3 A3` (the intro's own C#/D/Eb motion and the fifth over the D pedal), the bed's keys, +4 LU; bass bend A1 -> D1 kept (the chord's fifth falling to its root) but on the bed's bass; stab `D3 F3 A3 Bb3 D4` + `D2 D1` + crash -> `D4 F#4 A4` + `D2 D1` (the D the bed plays), no crash, rings out into ch02, +15 LU over the intro music (was +18 over the same music, +25 over the dipped bed) |
-| ch02 | 160 -> 164: 129 cell ticks (pure sine ticks at random pitches 3-4.5 kHz, tonality 0.99 -> noise grains, 0.00), the 1.363 count and its locks, 13 snips, wipes, slides, slams, stamp, scissor, lift, click | -2.3 / +16.8 -> -3.6 / +2.7 | -16.8 -> -16.2 | the skyline's 24 low thumps -> 24 keys notes climbing through F A C over two octaves (`F3 ... C6`), -2 LU: the bed's F chord |
-| ch03 | 17 -> 26: flip, tag slides, 20.000đ count, arrow snap, 3 pins, window sweeps, TAM/SAM/SOM | +12.0 / +16.8 -> +1.7 / +2.9 | -17.9 -> -17.6 | soft stab on SAM `D3 Db4 Eb4 F#4` (2 of 4 outside the D) -> `D4 F#4 A4`, keys alone, +5 LU; the slab's thump `A3` (the F chord's 3rd) |
-| ch04 | 25 -> 30: curtain wipe and thud, panels, snaps, pins, the stamp, bubbles, flips, lift, doors | +8.4 / +15.5 -> -0.9 / +2.9 | -14.4 -> -15.4 | chimes `C5 F5`, `D5 F5`, `C5 F5` (D5 over Fm9 clashed) -> `A4 F5` over F, `C5 F5` over Fm9, `A4 F5` over F; the bed's keys, +5 LU (was +9) |
+| ch01 | 19 -> 22: the complaint pop (a sine glide -> a falling band of noise), the bubbles' sine ticks -> noise ticks, 3 captions (the sine thump -> paper slap), scissor, split, slide, 2 snips, the drop's swoosh, the tear | +18.7 / +49.0 -> +0.3 / +2.7 | -14.1 -> -17.0 LUFS | cluster `C2 Db2 D2 G2` (D minor) -> `Db3 D3 Eb3 A3` (the intro's own C#/D/Eb motion and the fifth over the D pedal), the bed's keys, +4 LU; bass bend A1 -> D1 kept (the chord's fifth falling to its root) but on the bed's bass; stab `D3 F3 A3 Bb3 D4` + `D2 D1` + crash -> `D4 F#4 A4` + `D2 D1` (the D the bed plays), no crash, rings out into ch02, +15 LU over the intro music (was +18 over the same music, +25 over the dipped bed) |
+| ch02 | 160 -> 164: 129 cell ticks (pure sine ticks at random pitches 3-4.5 kHz, tonality 0.99 -> noise grains, 0.00), the 1.363 count and its locks, 13 snips, wipes, slides, slams, stamp, scissor, lift, click | -2.3 / +16.8 -> -3.6 / +2.7 | -16.8 -> -16.7 | the skyline's 24 low thumps -> 24 keys notes climbing through F A C over two octaves (`F3 ... C6`), the bed's F chord, each at -7 LU so the overlapping run peaks +1 dB over the music (the old thumps ran +6 to +16) |
+| ch03 | 17 -> 26: flip, tag slides, 20.000đ count, arrow snap, 3 pins, window sweeps, TAM/SAM/SOM | +12.0 / +16.8 -> +1.7 / +2.9 | -17.9 -> -17.5 | soft stab on SAM `D3 Db4 Eb4 F#4` (2 of 4 outside the D) -> `D4 F#4 A4`, keys alone, +5 LU; the slab's thump `A3` (the F chord's 3rd) |
+| ch04 | 25 -> 30: curtain wipe and thud, panels, snaps, pins, the stamp, bubbles, flips, lift, doors | +8.4 / +15.5 -> -0.9 / +2.9 | -14.4 -> -15.3 | chimes `C5 F5`, `D5 F5`, `C5 F5` (D5 over Fm9 clashed) -> `A4 F5` over F, `C5 F5` over Fm9, `A4 F5` over F; the bed's keys, +5 LU (was +9) |
 | ch05 | 33 -> 44: slides, slams, the window's creak, cuts, snaps, the click, ticks | +6.0 / +10.3 -> -5.5 / +0.7 | -14.5 -> -12.9 | bell `Bb6` (a handbell) -> `C6`, the fifth of F7sus, in the keys' voice, +3 LU |
 | ch06 | 24 -> 35: cover, slides, bars, rises, pan, tick clicks, pin, count, friction and thud, tear, scissor, split, slams | +6.3 / +12.1 -> -3.3 / +2.8 | -13.5 -> -12.8 | stab "1" `Eb3 G3 Bb3 D4` + bass + crash (D4 outside Eb7) -> **left to the bed's own hit** (its keys chord -14 ms, its bass Eb2 +19 ms); rising tone `F4 -> C5` kept (Fm7's root and fifth), keys' spectrum; alarm brass `Bb1 E2 Bb2` then `A1 Eb2 A2` + snare + bass -> keys tritone stack `Ab3 D4 Ab4` over Abmaj7, then a semitone down `G3 Db4 G4` onto G7sus's root; the bed's bass under both hits, so none added |
 | ch07 | 36 -> 50: tears, rises, slides, checkbox click, seal stamp, snap, doors, scroll, cut, 4 copies with clicks, count, sly slide and scratch, slams | +7.4 / +19.0 -> -6.1 / +2.9 | -12.3 -> -12.8 | stab "2" `C3 Bb3 B3 Db4` + `C2 C1` (the wrong root over Db7) -> **left to the bed's own hit** (keys -35 ms, bass Db2 +1 ms); climb `Bb6 Bb7 Bb8 Bb9` (an octave a step) -> `G5 Ab5 Bb5 Db6`, each on its beat's chord (C7, then Bbm7); warm chord `Ab3 Bb3 D4 Eb4` (Ab and D outside Eb7) -> `G3 Bb3 Db4 Eb4`; alarm -> keys tritone stacks `F3 B3 F4`, then `E3 Bb3 E4` (Fm7 into Bbm7), no brass or snare, bass left out on hit 2 (the bed's own +4 ms); the bow (a bowed string) -> the bed's own bass held on Eb2, over the thinned bed |
 | ch08 | 20 -> 26: cover, slams, label snaps, five strips with stop-thuds, the navy strip, two punches, flutter | +6.1 / +11.7 -> -0.4 / +1.1 | -12.9 -> -12.8 | stab "CÓ CẢ HAI." `F3 C4` + `F2 F1` + crash -> `F4 C5 G5` (F5 and the bar's 9th), the bass left out (the bed's +32 ms), no crash |
-| ch09 | 17 -> 22: rise, counts, window sweep, slams, snip, flip, hard cut with the stamp, slide, flag snap, tick, pans, MRR count | +6.4 / +8.5 -> -7.4 / +0.3 | -13.4 -> -12.7 | four stair thumps (D E F# G, tom-like) -> `G3 C4 Eb4 G4`, each a tone of its own chord (Eb7, then Abmaj7 and its inversions); stab "20-25 TÒA" `Bb2 G3 Ab3 C4` + bass -> `Eb4 F4 Ab4 Bb4 C5 G5` (Bb7sus and the bar's 9th and 13th), the bass left out (the bed's +42 ms) |
+| ch09 | 17 -> 22: rise, counts, window sweep, slams, snip, flip, hard cut with the stamp, slide, flag snap, tick, pans, MRR count | +6.4 / +8.5 -> -7.4 / +0.3 | -13.4 -> -12.6 | four stair thumps (D E F# G, tom-like) -> `G3 C4 Eb4 G4`, each a tone of its own chord (Eb7, then Abmaj7 and its inversions); stab "20-25 TÒA" `Bb2 G3 Ab3 C4` + bass -> `Eb4 F4 Ab4 Bb4 C5 G5` (Bb7sus and the bar's 9th and 13th), the bass left out (the bed's +42 ms) |
 | ch10 | 9 -> 17: five band slides, the close, L34's lines, the glide | +8.3 / +10.5 -> -3.0 / -1.4 | -13.8 -> -14.9 | stab "ĐỘI KAWAIBU" `F3 C4` + `F2 F1` + crash -> **left to the bed's own hit** (its keys +29 ms, its bass +21 ms) |
-| ch11 | 9 -> 13: wipe, logo slide, two slams, three credit slides, the façade's rise, the windows' sweep (sine grains -> noise grains) | +9.8 / +12.0 -> -3.3 / +1.1 | -16.5 -> -16.9 | the `chord` cue stays silent: the bed's own final chord (Fm6) ends the film |
+| ch11 | 9 -> 13: wipe, logo slide, two slams, three credit slides, the façade's rise, the windows' sweep (sine grains -> noise grains) | +9.8 / +12.0 -> -3.3 / +1.1 | -16.5 -> -16.8 | the `chord` cue stays silent: the bed's own final chord (Fm6) ends the film |
 
 (369 cues became 449 events: a slide, a bar or a lift is a swoosh plus a landing.)
 
@@ -737,8 +737,10 @@ Code: `tools/synth.py` (new: every synth, the bed's keys, bass and hat), `tools/
 
 ### Checks (`out/sound/sfxcheck.txt`, `tunecheck.txt`, `soundcheck.txt`; all from the finished stems)
 
-- **Loudness:** `out/sound/film.wav` -14.00 LUFS, true peak -1.22 dBTP; as AAC 320 kbps (as `render.mjs` muxes it) -1.23 dBTP. Two runs give identical bytes.
+- **Loudness:** `out/sound/film.wav` -14.00 LUFS, true peak -1.21 dBTP; as AAC 320 kbps (as `render.mjs` muxes it) -1.24 dBTP. Two runs give identical bytes.
 - **Tuning** (`tunecheck`): 77 pitched notes measured in the stems against A4 = 441.3: median 0.0 cents, 95 % within 0.7, worst -3.3.
+- **Pitched levels** (`sfxcheck`): each pitched hit's loudest 100 ms over the music is within 0.3 dB of the level it was set to (stab +9.0, ch01's +14.7, soft stab +4.9, alarm +8.4, chime +5.0, climb +1.5,
+  bell +3.1, cluster +4.0, bass bend +6.1, held low note +2.0); the skyline's 24 overlapping notes peak +1.4 dB at most.
 - **Harmony** (`soundcheck`): 0 of 47 pitched notes and chords are outside the chord the bed plays on their beat (the chart's tones, extensions and bass, and a stab's bar
   extensions); before, 15 of 60.
 - **Paper and UI** (`sfxcheck`, 449 events): poke-out median -3.3 dB, **max +2.9 dB, 0 over +3.0**; the single-band guard max +13.9 dB; **tonality** at most 0.026 in every class
@@ -772,7 +774,7 @@ The three worst problems, found by reading the score and the levels against the 
 - **The alarm's second hit was lowered twice** (`F#3 C4 F#4` over G7sus instead of `G3 Db4 G4`): ch06 and ch07's Brand. Fixed: both hits come from the first hit's root.
 - **ch09's stab was a tight `F G Ab Bb` cluster:** the ring ordering put a non-chord extension (G) ahead of the chord's own 4th (Eb). Fixed: chord tones always outrank extensions.
 - **ch01's stab rang 1.3 s where the shotlist says "ring out",** leaving a near-silent hole at 10.6-11.1 s before ch02, and ch01 fell to -19.1 LUFS (5 LU under the old): Hook. Fixed: the
-  stab rings 3 s (tau 0.8) with its bass held, +15 LU over the intro; ch01 is -17.1 LUFS.
+  stab rings 3 s (tau 0.8) with its bass held, +15 LU over the intro; ch01 is -17.0 LUFS.
 Also fixed in the tools: the check's reference had the silent fade-in bar (the first events read +89 dB), and one dense run of cell ticks did not converge under the band guard.
 
 | Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Notes |
@@ -793,8 +795,8 @@ Also fixed in the tools: the check's reference had the silent fade-in bar (the f
 
 | Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Notes |
 |---|---|---|---|---|---|---|---|---|
-| ch01 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | the question's stab rings out into ch02; -17.1 LUFS (was -14.1: the old stab was +18 LU over the music) |
-| ch02 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 164 events all noise except the skyline's 24 keys notes; -16.2 LUFS |
+| ch01 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | the question's stab rings out into ch02; -17.0 LUFS (was -14.1: the old stab was +18 LU over the music) |
+| ch02 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 164 events all noise except the skyline's 24 keys notes; -16.7 LUFS |
 | ch03 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | soft stab D4 F#4 A4 on SAM |
 | ch04 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | chimes A4 F5 / C5 F5 / A4 F5 on the flips' edge-on frames |
 | ch05 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | bell C6 on T.conf |
@@ -805,15 +807,18 @@ Also fixed in the tools: the check's reference had the silent fade-in bar (the f
 | ch10 | 9 | 9 | 8 | 8 | 7 | 9 | 8 | "ĐỘI KAWAIBU" is the bed's own hit; Brand 7 is the faces (accepted) |
 | ch11 | 9 | 9 | 8 | 8 | 9 | 9 | 8 | the bed's final chord ends the film |
 
+One more problem was found after this round's first render, by measuring each pitched hit's achieved level against its target: **ch02's skyline, 24 overlapping keys notes each set alone at -2 LU, summed to +6 dB
+over the music.** Each note now sits at -7 LU and the run peaks +1 dB; the mix and both renders below are from after that fix.
+
 Every score is 8 or higher except ch10's Brand 7 (the full-colour faces, accepted by the user). **Still to be listened to:** the intro's D-pedal hits in ch01 and ch03 (the intro's synth lines
 are diffuse and its drone is +36 and +14 cents off the grid, so those two hits may beat against them), the five joins in the bed, and the choice above (the three stabs the bed's own hit now carries).
 
-### Round 3 (confirm: the 1080p preview, rendered from a clean worktree at `7828115`)
+### Round 3 (confirm: the 1080p preview, rendered from a clean worktree at `8810133`)
 
-`node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out/preview_1080p.mp4 --workers 10`: 5,400 frames in 7 min 1 s from a clean worktree (scenes, engine and
+`node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out/preview_1080p.mp4 --workers 10`: 5,400 frames in 6 min 55 s from a clean worktree (scenes, engine and
 timeline as committed), so it includes ch10's faces (four of the five members are in the frame at 165 s; the fifth band arrives later).
 - **ffprobe:** video H.264 High, 1920×1080, yuv420p, 30 fps, 5,400 frames (179.999 s); audio AAC LC, 48 kHz stereo, 321 kbps, 180.000 s.
-- **Loudness on the muxed file:** ebur128 -14.0 LUFS integrated, true peak -1.2 dBFS; loudnorm input_i -14.06 LUFS, input_tp -1.23 dBTP, LRA 6.8 LU.
-- **Sync:** the file's decoded audio lines up with `out/sound/film.wav` at 0 samples of lag (codec residual -38 dB).
+- **Loudness on the muxed file:** ebur128 -14.0 LUFS integrated, true peak -1.2 dBFS; loudnorm input_i -14.05 LUFS, input_tp -1.24 dBTP, LRA 6.8 LU.
+- **Sync:** the file's decoded audio lines up with `out/sound/film.wav` at 0 samples of lag (codec residual -37.7 dB).
 - `out/roughcut_sound.mp4` (960×540, 30 fps) was re-rendered with the same mix. The per-chapter clips `out/review/chNN.mp4` still carry the previous mix; the previous preview and draft are in
-  `out/tmp/old_mix/` for comparison. Scores unchanged from round 3 above.
+  `out/tmp/old_mix/` for comparison, with the first remake build's preview and draft (before the skyline fix). Scores unchanged from round 3 above.
