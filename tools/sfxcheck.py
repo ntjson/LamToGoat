@@ -135,6 +135,22 @@ def main():
         print(f"{len(dips)} events sound inside the two designed dips (ch01's drop to ch02, ch07's push to ch08): over the music "
               f"they replace, up to {max(r['poke'] for r in dips):+.1f} dB; over the dipped bed that is actually playing, "
               f"{np.min(vs):+.0f} to {np.max(vs):+.0f} dB")
+    # the pitched hits (not held to the +3 dB rule): where each stands over the music against the level it was set to
+    hits = [e for e in score["events"] if "hit" in e]
+    if hits:
+        mus = sum(load(d / f"{k}.wav") for k in ("piano", "bass", "vibes", "tone", "brass", "drums") if (d / f"{k}.wav").exists())[:n]
+        L_mus = meter.levels(mus, HOP)
+        span = {"thump": 0.5, "skyline thump": 0.5, "climb": 0.4, "chime": 0.6, "bell": 0.6, "cluster": 1.0, "stab": 1.0, "soft stab": 1.0, "alarm": 0.8,
+                "warm chord": 1.0, "falls a fifth": 1.0, "low sustained note": 2.5, "rising tone": 0.9}
+        by_hit = {}
+        for e in hits:
+            f0, f1 = meter.event_frames(e["at"] - t0, span.get(e["hit"], 0.8), nfr, HOP)
+            over = meter.db(L_mus["loud"][f0:f1].max()) - meter.db(R_ref["loud"][f0: f0 + 8].mean())  # the music at the note's start
+            by_hit.setdefault(e["hit"], []).append((e["rel"], over))
+        print("pitched hits, loudest 100 ms over the music (target -> measured; overlapping notes of a run add up):")
+        for k, v in by_hit.items():
+            print(f"  {k:19s} n={len(v):2d}  target {np.median([x[0] for x in v]):+5.1f}  measured median {np.median([x[1] for x in v]):+5.1f}, "
+                  f"range {min(x[1] for x in v):+5.1f} .. {max(x[1] for x in v):+5.1f}")
     if a.json:
         (ROOT / a.json).write_text(json.dumps({"limit": a.limit, "events": rows}, indent=0))
 

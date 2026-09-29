@@ -1374,7 +1374,7 @@ def fx_slab(f, q, k, run):
         pcs = chord_order(f.harm(run[n // 2]["t"]))[:4]
         ladder = sorted({m for m in range(53, 85) if m % 12 in pcs})
         m = ladder[min(len(ladder) - 1, i * len(ladder) // n)]
-        rel = -2.0
+        rel = -7.0  # each note far under the music: twenty-four of them overlap, and the run sums to about +1 dB over it
     else:  # a few steps: each a note of its own chord, at least a minor third above the one before
         prev = 52
         for x in run[: run.index(q) + 1]:
@@ -1382,7 +1382,8 @@ def fx_slab(f, q, k, run):
             prev = cand[0]
         m = prev
         rel = 4.0
-    f.hit(q, [("tone", keys([m], 0.6, 0.9, seed=f.seed(q, k), tau=0.16, bright=2.0, knock=0.12), 0.0, q.get("pan", 0.0))], at, rel, "thump")
+    f.hit(q, [("tone", keys([m], 0.6, 0.9, seed=f.seed(q, k), tau=0.16, bright=2.0, knock=0.12), 0.0, q.get("pan", 0.0))], at, rel,
+          "skyline thump" if n > 8 else "thump")
     f.note("tone", q["ch"], at, 0.6, [m], what="thump")
 
 
