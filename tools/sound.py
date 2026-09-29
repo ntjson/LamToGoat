@@ -15,6 +15,8 @@ Usage: uv run --with numpy --with scipy python tools/sound.py [--chapters ch01,c
 import argparse
 import json
 import math
+import subprocess
+import tempfile
 import zlib
 from pathlib import Path
 
@@ -27,6 +29,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SR = 48000
 TARGET_LUFS = -14.0
 TP_CEIL = -1.2  # dBTP after limiting: 0.2 dB under the -1 dBTP rule, for the AAC encode
+AAC_CEIL = -1.2  # dBTP the film's AAC encode may reach when decoded (render.mjs muxes AAC 320 kbps, 48 kHz)
 SWING = 0.6  # swung 8ths: the off-beat falls at 60 % of the beat
 
 NOTE = {n: i for i, n in enumerate(["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"])}
@@ -664,14 +667,75 @@ def limit(x, ceiling_db):
     return x * out[:, None]
 
 
+def limit_tp(x, ceiling_db):
+    """The same limiter on the exact true-peak envelope: each channel 4x oversampled, then the loudest of the four
+    sub-samples and of the two channels, per sample."""
+    c = 10 ** (ceiling_db / 20)
+    up = np.max(np.abs(resample_poly(x, 4, 1, axis=0)), axis=1)
+    env = np.maximum.reduceat(up, np.arange(0, len(up), 4))[: len(x)]
+    need = np.minimum(1.0, c / np.maximum(env, 1e-12))
+    look = int(0.004 * SR)
+    g = minimum_filter1d(need, size=2 * look + 1)
+    rel = math.exp(-1 / (0.08 * SR))
+    out = np.empty_like(g)
+    cur = 1.0
+    for i, v in enumerate(g):
+        cur = v if v < cur else v + (cur - v) * rel
+        out[i] = cur
+    return x * out[:, None]
+
+
+def aac_roundtrip(x):
+    """x encoded the way render.mjs muxes it (ffmpeg's AAC, 320 kbps, 48 kHz) and decoded again, sample-aligned."""
+    with tempfile.TemporaryDirectory() as d:
+        src, enc = Path(d) / "x.wav", Path(d) / "x.m4a"
+        wavfile.write(src, SR, x.astype(np.float32))
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-c:a", "aac", "-b:a", "320k", "-ar", str(SR), str(enc)], check=True)
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(enc), "-f", "f32le", "-ac", "2", "-ar", str(SR), "-"],
+                             check=True, capture_output=True).stdout
+    y = np.frombuffer(raw, np.float32).reshape(-1, 2).astype(np.float64)[: len(x)]
+    return np.pad(y, ((0, len(x) - len(y)), (0, 0)))
+
+
+def aac_safe(x, ceiling_db=AAC_CEIL):
+    """Keep the true peak of the AAC encode under the ceiling. The encoder rings on the sharpest transients (a snip is a
+    fraction of a millisecond of metal) and can overshoot the PCM's peak by more than a dB; where the decoded file
+    would pass the ceiling, lower the PCM there by what it needs, over a window wider than an AAC frame, and check
+    again. Returns the PCM and the decoded file's true peak."""
+    c = 10 ** (ceiling_db / 20)
+    look = int(0.024 * SR)
+    rel = math.exp(-1 / (0.08 * SR))
+    for _ in range(6):
+        y = aac_roundtrip(x)
+        up = np.max(np.abs(resample_poly(y, 4, 1, axis=0)), axis=1)
+        env = np.maximum.reduceat(up, np.arange(0, len(up), 4))[: len(x)]
+        if env.max() <= c:
+            break
+        need = minimum_filter1d(np.minimum(1.0, c / np.maximum(env, 1e-12)), size=2 * look + 1)
+        g = np.empty_like(need)
+        cur = 1.0
+        for i, v in enumerate(need):
+            cur = v if v < cur else v + (cur - v) * rel
+            g[i] = cur
+        x = x * g[:, None]
+    return x, 20 * np.log10(env.max())
+
+
 def master(x):
-    """Normalize to TARGET_LUFS with every true peak under TP_CEIL (limit, re-measure, repeat)."""
+    """Normalize to TARGET_LUFS with every true peak under TP_CEIL (limit, re-measure, repeat). On a long mix the
+    first limiter (whose envelope is the rectified signal's) can leave a true peak a hair over the ceiling; the exact
+    true-peak limiter finishes the job. (ch01's sketch never needed it, so it is unchanged.)"""
     for _ in range(6):
         g = 10 ** ((TARGET_LUFS - lufs(x)) / 20)
         x = x * g
         if true_peak_db(x) <= TP_CEIL + 0.02:
             break
         x = limit(x, TP_CEIL - 0.1)
+    for _ in range(4):
+        if true_peak_db(x) <= TP_CEIL + 0.02:
+            break
+        x = limit_tp(x, TP_CEIL - 0.1)
+        x = x * 10 ** ((TARGET_LUFS - lufs(x)) / 20)
     return x
 
 
@@ -1412,6 +1476,7 @@ def main():
     ap.add_argument("--stems", action="store_true", help="print each stem's level before mastering")
     ap.add_argument("--score", default=None, help="write every note and effect placed (JSON), for the analysis")
     ap.add_argument("--stem-dir", default=None, help="also write each stem (at its level in the master) to this directory")
+    ap.add_argument("--no-aac-check", action="store_true", help="skip the AAC encode check (the approved sketch had none)")
     a = ap.parse_args()
     tl = json.loads((ROOT / "docs" / "timeline.json").read_text())
     cues = json.loads((ROOT / a.cues).read_text())["cues"]
@@ -1441,10 +1506,14 @@ def main():
         for k, st in bus.stems.items():
             wavfile.write(d / f"{k}.wav", SR, (st[: len(x)] * 10 ** (STEMS[k] / 20) * g0).astype(np.float32))
     x = master(x)
+    aac = ""
+    if not a.no_aac_check:
+        x, tp_aac = aac_safe(x)
+        aac = f"; as AAC 320k {tp_aac:.2f} dBTP"
     out = ROOT / a.out
     out.parent.mkdir(parents=True, exist_ok=True)
     wavfile.write(out, SR, x.astype(np.float32))
-    print(f"{out.relative_to(ROOT)}: {len(x) / SR:.3f} s, {lufs(x):.2f} LUFS, true peak {true_peak_db(x):.2f} dBTP")
+    print(f"{out.relative_to(ROOT)}: {len(x) / SR:.3f} s, {lufs(x):.2f} LUFS, true peak {true_peak_db(x):.2f} dBTP{aac}")
     if a.score:
         p = ROOT / a.score
         p.write_text(json.dumps({"t0": t0, "t1": t1, "chords": {c: CHORDS[c] for c in chapters}, "events": film.log}, indent=0))
