@@ -156,7 +156,8 @@ export default {
     });
     const LINE_IN = W - lx + 60; // from wholly off-frame right
 
-    return { T, world, bands, title: title.el, line, LINE_IN };
+    // For the sound's cues: time from a move's start to its spring's first arrival (the slides, the close).
+    return { T, world, bands, title: title.el, line, LINE_IN, slideHit: firstHit('slide'), closeHit: firstHit(CLOSE) };
   },
 
   render(s, t0, ctx) {
@@ -171,5 +172,21 @@ export default {
       if (vis(e, t >= T.line[i])) e.style.transform = `translateX(${spring(t, T.line[i], s.LINE_IN, 0, 'slide').toFixed(1)}px)`;
     });
     s.world.style.transform = `scale(${spring(t, T.slam, 1, 1.025, PUSH)})`;
+  },
+
+  // Event times (chapter-local) for the sound: a move carries `land`, its spring's first arrival (HIT before its grid
+  // time); the title's SLAM hits on `t`, where it appears. 10.1's staircase leaving is ch09's exit and ch09's cue.
+  cues(s) {
+    const { T } = s;
+    return [
+      // 10.2 the five bands, in the order they arrive (i), each panned to the side it slides in from.
+      ...TEAM.map((m, k) => ({ t: T.in[k], name: 'slide', land: T.in[k] + s.slideHit, i: m.n, pan: m.right ? 0.7 : -0.7 }))
+        .sort((a, b) => a.t - b.t),
+      { t: T.close, name: 'snap', land: T.close + s.closeHit }, // 10.3 the stack closes up tight and drops
+      { t: T.slam, name: 'stab' }, // the team name SLAMs into the freed top
+      // L34's two lines slide in from the right, one per beat, and land right of centre (x 890-1590).
+      ...T.line.map((t) => ({ t, name: 'slide', land: t + s.slideHit, pan: 0.4 })),
+      { t: T.lock, name: 'slide', land: T.lock + s.slideHit }, // both sides glide to the common edge ("kết hợp")
+    ];
   },
 };
