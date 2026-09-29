@@ -26,8 +26,9 @@ ch01, and noted in the chapter's review file.
 
 ## 2. Module API
 
-`scenes/chNN.js` default-exports `{ build, render, underlap?, exit? }`. The engine (`lib/engine.js`) loads it
-dynamically; a missing file is a black frame.
+`scenes/chNN.js` default-exports `{ build, render, underlap?, exit?, cues? }`. The engine (`lib/engine.js`) loads it
+dynamically; a missing file is a black frame. `cues(state, ctx)` lists the chapter's event times for the sound
+(section 12).
 
 ```js
 import { step, spring, track, hash, rng, clamp, lerp } from '../lib/motion.js';
@@ -334,3 +335,70 @@ Return to the director:
 4. Facts on screen, each with its source row.
 5. Proposals: shared helpers or contract changes, if any.
 6. Open issues.
+
+## 12. Sound cues
+
+The film's sound is synthesized by `tools/sound.py`: a music bed on the timeline's grid, and effects on the scenes'
+own event times. Each chapter tells the sound where its events are with `cues(state, ctx)`.
+
+- **What it returns:** a new array of `{ t, name, ... }` in chapter-local seconds.
+  - `t` is when the sound starts. For an instant event (a SLAM appears, a stamp or snip hits) that is the hit.
+  - A move that travels and lands (slide, rise, bar, count...) starts at `t` and carries `land`: the time it lands,
+    which is its hit on the grid.
+  - `i` numbers the events of a run (the n-th bubble, cell, slab, strip); some effects step their pitch with it.
+  - `pan` (-1 left … 1 right) places the sound where the event is, when it is clearly on one side of the frame.
+  - Times may run past `ctx.dur` for an exit the chapter paints over the next one.
+- **Pure.** `cues()` reads the state `build()` returned and nothing else: it never touches the DOM, never changes
+  the state, and never changes a frame. If it needs a time that `build()` computed but didn't keep, `build()` may add
+  it to the state it returns. Proof, for every chapter that gets or changes `cues()`: sampled chapter-local frames
+  rendered before and after (`tools/frames.mjs`) compare with `magick compare -metric AE` = 0.
+- **Which events.** Follow the SFX column of each shot in `docs/shotlist.md`, with the times from the chapter's
+  `T` table (the shotlist's times are voice-era estimates). One sound per event the eye follows: a supporting label
+  that arrives with its figure doesn't get its own.
+- **Names.** Only the names below. `tools/sound.py` stops on any other name.
+- **Collect them** with `node tools/cues.mjs` (film seconds, in `out/sound/cues.json`).
+
+| Cue | On screen | Sound |
+|---|---|---|
+| `stab` | A SLAM the music marks: "TIỀN QUỸ / ĐI ĐÂU?" (ch01), the "1" (ch06), the "2" (ch07), "LÀM TỔ / CÓ CẢ HAI." (ch08), "20–25 TÒA" (ch09), "ĐỘI KAWAIBU" (ch10). `soft: true` for a small one (SAM in ch03) | the chapter's stab chord: piano, bass and a brush crash (piano only when soft) |
+| `alarm` | A figure breaks the rule: "VƯỢT KHUNG" (ch06), the verified → mismatch cut (ch07) | two-note alarm stab: low brass and snare |
+| `chord` | The film resolves: the end card's chord (ch11) | the final chord on vibraphone, piano and bass, left to ring |
+| `push` | The camera PUSHes in to close a chapter (ch07's badge) | the music thins to one low sustained note until the chapter ends |
+| `drop` | ch01 only: the "500" falls out of frame | a falling swoosh; the music drops out and one bass note falls until the stab |
+| `complaint` | The hook's complaint bubble slams in | a round pop |
+| `bubble` | A chat bubble arrives; the last of a run is muffled. With `land`: the hook's bubble returns and snaps flush (ch07) | a pitched tick; with `land`, a snap and a warm chord on the landing |
+| `caption` | A caption strip slams onto the paper | a paper stamp |
+| `slam` | DISPLAY type SLAMs | a paper stamp |
+| `stamp` | A seal or stamp tag is struck down | a deep stamp |
+| `slide` | Paper slides in and lands (`land`) | a swoosh over the travel and a soft landing thump |
+| `rise` | Type rises out of a slot and lands (`land`) | a short, light upward swoosh |
+| `bar` | A layer bar shoots across and lands (`land`) | a fast swoosh and a thud |
+| `wipe` | A field crosses the whole frame (a cover, a wipe); `land` if it lands | a long whoosh |
+| `pan` | Everything in frame travels across together and settles (`land`) | a long, low swoosh |
+| `doors` | Paper parts like doors, or two fields close in | two swooshes, left and right |
+| `split` | The halves of a cut sheet part | two swooshes, left and right (ch01 adds its low piano cluster) |
+| `lift` | A piece lifts off the paper | a short rising swoosh and a light snap |
+| `scroll` | A UI plate scrolls inside its window | a soft paper swoosh |
+| `scissor` | A scissor line runs across the paper | a scissor rasp ending in a snip |
+| `snip` | Scissors cut a piece out; `n: 1` for a single snip | snip-snip (one snip with `n: 1`) |
+| `tear` | Paper tears; `land` when the tear is complete | a tear |
+| `flip` | A panel turns on its vertical axis | a paper flip |
+| `chime` | A pain flips into LamTo's answer (ch04) | a warm chime |
+| `cell` | One small cell or window of a façade flips or lights, in a run of many (`i`) | a tiny tick, kept down as texture |
+| `sweep` | A run of windows lights in one sweep, from `t` to `land` | a rising rattle |
+| `count` | An odometer COUNTs from `t` and locks at `land` | an odometer rattle and a lock click |
+| `tick` | A tick mark or a step clicks on | a small click |
+| `climb` | A bracket steps up a list (`i` = step) | ticks that climb in pitch |
+| `pin` | A tag or label is pinned on | a pin |
+| `snap` | A short, stiff settle: a bracket, a flag, a tag | a snap |
+| `click` | A UI button is pressed, a clip clicks on | a click |
+| `bell` | A confirmation appears | a small bell |
+| `open` | A façade window opens onto a UI plate | a paper creak |
+| `band` | A band grows along a scale, from `t` to `land` | a rising tone |
+| `friction` | A tag drags along a bar and stops dead at `land` | a friction slide and a thud |
+| `thud` | A heavy landing: a curtain drops, a strip stops | a low thud |
+| `slab` | A slab or step rises from the bottom edge (`i` = which, left to right) | a pitched thump, rising with `i` |
+| `punch` | A hole is punched through paper | a punch |
+| `flutter` | Strips fall away with a spin | paper flutter |
+| `sly` | The edited copy slips in crooked, landing at `land` | a sly paper slide and a scratch |
+| `cut` | A HARD CUT inside a shot | a small, dry paper tick |

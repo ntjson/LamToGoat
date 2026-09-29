@@ -376,21 +376,21 @@ export default {
     const { T, land: L } = s;
     return [
       { t: 0.1, name: 'wipe' },
-      { t: T.one, name: 'slam' },
+      { t: T.one, name: 'stab' }, // the "1": the music marks it
       { t: T.claim, name: 'slide', land: L.claim },
       { t: T.layer, name: 'bar', land: L.layer },
       { t: T.truoc, name: 'rise', land: L.truoc },
       { t: T.duyet, name: 'rise', land: L.duyet },
       { t: T.pan, name: 'pan', land: L.pan },
       ...T.tick.map((t, i) => ({ t, name: 'tick', i })),
-      { t: T.ticks, name: 'tag' },
+      { t: T.ticks, name: 'pin' }, // "Ví dụ" pins on with the first tick
       { t: T.khung, name: 'slide', land: L.khung },
       { t: T.band, name: 'band', land: L.band },
       { t: T.tu, name: 'slide', land: L.tu },
       { t: T.count, name: 'count', land: L.count },
       { t: T.flag, name: 'friction', land: T.hit },
       { t: T.tear, name: 'tear' },
-      { t: T.strip, name: 'stab' },
+      { t: T.strip, name: 'alarm' }, // "VƯỢT KHUNG"
       { t: T.warn, name: 'slide', land: L.warn },
       { t: T.cut, name: 'scissor' },
       { t: T.split, name: 'split' },

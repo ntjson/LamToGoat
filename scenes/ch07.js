@@ -670,12 +670,12 @@ export default {
     return [
       { t: T.tear, name: 'tear', land: L.tear },
       { t: T.tear2, name: 'tear' },
-      { t: T.two, name: 'slam' },
+      { t: T.two, name: 'stab' }, // the "2": the music marks it
       { t: T.bar, name: 'bar', land: L.bar },
       { t: T.title, name: 'rise', land: L.title },
       { t: T.sub, name: 'rise', land: L.sub },
       { t: T.note, name: 'slide', land: L.note },
-      { t: T.check, name: 'slide', land: L.check },
+      { t: L.check, name: 'click' }, // the checkbox line clicks into place
       { t: T.btn, name: 'slide', land: L.btn },
       { t: T.seal, name: 'stamp' },
       { t: T.brk, name: 'snap' },
@@ -693,10 +693,11 @@ export default {
       { t: T.mabam, name: 'slam' },
       { t: T.card, name: 'slide', land: L.card },
       ...T.strips.map((t, i) => ({ t, name: 'slide', land: L.strips[i], i })),
+      ...L.strips.map((t, i) => ({ t, name: 'click', i })), // each copy locks in
       { t: T.roll, name: 'count', land: L.roll },
       { t: T.red, name: 'sly', land: L.red },
       { t: T.sua, name: 'slam' },
-      { t: T.alarm, name: 'stab' },
+      { t: T.alarm, name: 'alarm' }, // verified -> mismatch
       { t: T.bao, name: 'slide', land: L.bao },
       { t: T.push, name: 'push' },
       { t: T.kh, name: 'slam' },
