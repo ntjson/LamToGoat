@@ -461,3 +461,137 @@ check clean in all 11), `out/review/sound_chNN.png` (level, spectrogram, cue mar
   true peak -1.2 dBFS.
 - **Sync:** the file's decoded audio lines up with `out/sound/film.wav` at 0 samples of lag (codec residual -33 dB).
 - Scores unchanged from round 2: every chapter 8 or higher, Sync 9 throughout.
+
+## Music bed: "Upbeat Jazz" by Francisco Alvear (Mixkit) (2026-09-29)
+
+The user chose candidate 2 of four auditions as the film's music, in place of the synthesized score:
+- stretched to exactly 108 BPM, extended to 3:00 by repeating sections at phrase boundaries on bar lines, with no
+  audible seams, following the mood arc;
+- every sound effect kept on its cue, the picture timeline untouched, remixed to -14 LUFS with true peak at or below
+  -1 dBTP.
+
+`CLAUDE.md`'s sound rule now allows this one track. Source and license are in `audio/music/SOURCES.md`, the
+arrangement in `tools/bed.py`, the mix in `tools/sound.py --music bed`.
+
+**The track at 108 BPM.** It plays at 110.005 BPM (±0.002, 6 ms beat jitter), and rubberband stretches it by 0.98177
+(it then measures 107.997). Its form in 50 bars, from chord changes, low hits and a bar similarity matrix (the A/B
+pair repeats every 15 bars):
+- intro 1-9 (bar 1 fades in; two groups, 2-5 and 6-9)
+- A1 10-17 | B1 18-24 | A2 25-32 | B2 33-39 | A3 40-47
+- coda 48-49 | final chord 50
+
+**What repeats, and where:**
+
+| Film bars | Film time | Source bars | What plays | Chapters |
+|---|---|---|---|---|
+| 1-9 | 0:00.0-0:20.0 | 1-9 | the intro as recorded | ch01, ch02 |
+| 10-17 | 0:20.0-0:37.8 | 2-9 | **repeat:** the intro's phrase | ch02, ch03 |
+| 18-25 | 0:37.8-0:55.6 | 2-9 | **repeat:** the intro's phrase again | ch03, ch04 |
+| 26-29 | 0:55.6-1:04.4 | 6-9 | **repeat:** the intro's second group | ch04 |
+| 30-67 | 1:04.4-2:28.9 | 10-47 | the lift on ch05's downbeat, then A1 B1 A2 B2 A3 as recorded | ch05-ch09 |
+| 68-78 | 2:28.9-2:53.3 | 33-43 | **repeat:** B2 and A3's first group | ch09, ch10, ch11 |
+| 79-81 | 2:53.3-3:00.0 | 48-50 | the coda, final chord on the last bar (2:57.8), ringing to the cut | ch11 |
+
+So in the film:
+- sparse through ch04 (the intro: 29 bars);
+- brighter from ch05 (the track's own lift on its downbeat);
+- A3, the loudest section, from ch08, with the bed back from ch07's thin-out on the turnaround bar;
+- ch10 resolving from B2 into A;
+- ch11 ending on the coda.
+
+**The five joins.** Each follows a bar that sounds like the one the incoming section follows in the recording, with a
+10 ms equal-power crossfade ending 2 ms before the bar line. Where the intro restarts, a +3 dB ride easing to 0 dB
+by its second group keeps it from dropping. Measured against the recording's own downbeats (spectral flux median
+0.234, max 0.335; high-frequency burst max +1.2 dB; bar-to-bar level steps within ±3.6 dB):
+
+| Join | Film bar (time) | Flux | HF burst | Level step | Beats around it |
+|---|---|---|---|---|---|
+| 9 → 2 | 10 (20.00 s) | 0.277 | +0.6 dB | -1.3 dB | on the grid; the intro plays straight 8ths |
+| 9 → 2 | 18 (37.78 s) | 0.277 | +0.6 dB | -1.3 dB | as above |
+| 9 → 6 | 26 (55.56 s) | 0.181 | -0.7 dB | +6.4 dB | as above |
+| 47 → 33 | 68 (148.89 s) | 0.249 | +0.4 dB | +3.9 dB | 9 ms median |
+| 43 → 48 | 79 (173.33 s) | 0.208 | +1.5 dB | +0.3 dB | 7 ms median |
+
+Notes on the table:
+- **The 9 → 6 step** is the song's own gesture: its pull-back bar 9 leads into an entry, as its lift does (+8.6 dB).
+- **The 47 → 33 step** compares with +2.2 dB at 32 → 33 in the recording.
+- **The 43 → 48 burst** is bar 48's own cymbal: +1.2 dB at that downbeat in the recording.
+- **Beat tracking in the intro** locks onto the 8ths, half a beat off. The intro's onsets fall on the beat and on
+  the 8th (0.92 and 1.00 by position), so the intro is on the grid.
+
+**The mix.**
+- **Levels:**
+  - The bed at -17.5 dB. That puts its body at the old score's level: -18 LUFS median in ch05-ch09, at master gain.
+  - The sparse intro +4 dB until a 20 ms ramp onto ch05's downbeat, so it sits about 5 dB under the body.
+  - -2.5 dB eased in over ch10's first two bars, so ch10-ch11 settle.
+- **Breaks:**
+  - From ch01's drop to ch02 the bed dips out: the bass note falls, the question lands alone.
+  - From ch07's push to ch08 it thins to a low-passed trace under one bowed note on its bass.
+- **Effects** stay on their cues at their levels. Those that sound notes take them from what the bed sounds on
+  their beat:
+  - the stabs (piano over the bed's bass note, bass in two octaves, crash) and the soft stab;
+  - the chimes, the climb (each step on its own beat), the bell, the rising tone and the loop's warm chord;
+  - the skyline and stair thumps (the skyline an octave up, clear of the bed's bass).
+- **ch11's `chord` cue is silent:** the bed's own final chord ends the film.
+- **ch01's approved hits keep their notes:** D minor sits in the track's F.
+
+**Checks** (measured, not heard):
+- **Preview**, `out/preview_1080p.mp4`, rendered from a clean worktree at `a350881`:
+  - Another session had uncommitted, mid-edit ch10 and engine changes: `cues.mjs` stopped on ch10 in the working
+    tree. The clean build's cues, bed and mix are byte-identical to the ones reviewed.
+  - ffprobe: H.264 High, 1920×1080, yuv420p, 30 fps, 5,400 frames (179.999 s), crf=23.0 in all 94 segments; AAC LC,
+    48 kHz stereo, 320 kbps, 180.000 s; container 180.000 s.
+- **Loudness on the muxed file:** loudnorm input_i -14.08 LUFS, input_tp -1.20 dBTP, LRA 8.9 LU; ebur128 -14.0 LUFS,
+  true peak -1.2 dBFS. The loudness range grew from 6.2 LU: the sparse start against the body.
+- **Sync:**
+  - The file's audio lines up with `out/sound/film.wav` at 0 samples of lag.
+  - The bed's tracked beats sit 6 ms (median) from the film's grid in ch05-ch11 (196 beats).
+  - An onset within 12 ms of 301 of 304 hit cues. Three neighbours in ch02's 40 ms skyline run merge in the
+    detector; those thumps stand 11.6 LU over the bed.
+  - The cues and the picture are unchanged, so the 71 appearance cues still start on their frames.
+- **Harmony:** 0 of the 22 notes and chords the cues play over the bed is a note the bed isn't sounding.
+- **Balance:**
+  - ch05-ch09: the bed sits where the old score sat, and each effect stands over it about as far as it did (slams
+    +4 to +6 LU, stamps +4 to +7).
+  - ch01-ch04: the effects lead more strongly, over the sparse intro.
+- **Deterministic:** two runs of `bed.py` and of `sound.py` give identical bytes.
+
+### Round 1 (the first bed mix, the bed at -20 dB)
+
+| Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems |
+|---|---|---|---|---|---|---|---|---|
+| ch01 | 7 | 9 | 9 | 8 | 8 | 8 | 8 | the bed -36 LUFS median: the opening is effects over near-silence |
+| ch02 | 7 | 9 | 8 | 8 | 8 | 7 | 8 | 5 of 24 skyline thumps masked under the bed's bass; the intro loop restarts 4.2 dB down |
+| ch03 | 8 | 9 | 8 | 8 | 8 | 8 | 8 | the bed 12 dB under the old score; the second restart 4.2 dB down |
+| ch04 | 7 | 9 | 8 | 8 | 8 | 8 | 8 | the bed barely heard under the chimes |
+| ch05 | 8 | 9 | 8 | 8 | 8 | 8 | 8 | the lift lands, but the body 2 dB under the old score |
+| ch06 | 8 | 9 | 9 | 8 | 8 | 8 | 8 | the "1" stab read against the wrong beat's notes at a beat line |
+| ch07 | 9 | 9 | 8 | 8 | 8 | 7 | 9 | two climb ticks off the bed's chord (voiced from the first tick's beat) |
+| ch08 | 8 | 9 | 9 | 8 | 8 | 8 | 8 | the bed low under the driving section |
+| ch09 | 8 | 9 | 9 | 8 | 8 | 8 | 8 | as ch08 |
+| ch10 | 7 | 9 | 8 | 8 | 8 | 8 | 7 | the bed at full body level (3.5 LU over the effects): no resolving |
+| ch11 | 9 | 9 | 8 | 8 | 9 | 8 | 8 | none new |
+
+Fixes:
+- **Levels:** the bed at -17.5 dB, the intro +4 dB, ch10-ch11 eased by 2.5 dB.
+- **Seams:** the +3 dB ride on the intro's restarts.
+- **Pitched thumps and ticks:** the skyline thumps an octave up; the climb voiced per step.
+- **The notes' beat:** looked up with a 1 ms tolerance, so a hit on a beat line reads its own beat.
+
+### Round 2
+
+| Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch01 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | the track fades in under the chat; the bed dips out for the question |
+| ch02 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | skyline thumps clear of the bed; the first restart at -1.3 dB |
+| ch03 | 9 | 9 | 8 | 8 | 8 | 9 | 8 | soft stab on SAM on the bed's notes |
+| ch04 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | the second group enters under L13 (the song's own entry); chimes on the bed's notes |
+| ch05 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | the track's lift exactly on ch05's downbeat, as the doors part |
+| ch06 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | "1" and "VƯỢT KHUNG" on their frames; the overrun over B1's darker bars |
+| ch07 | 9 | 9 | 8 | 8 | 8 | 9 | 9 | the loop's warm chord on the bed's notes; thin-out under the bow from the push |
+| ch08 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | the bed returns on the turnaround into A3, the track's loudest section |
+| ch09 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | stair thumps climb on the bed's notes into "20–25 TÒA"; the 47→33 join under 9.4 |
+| ch10 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | B2 resolving into A, eased 2.5 dB (committed ch10: another session is editing it) |
+| ch11 | 9 | 9 | 8 | 8 | 9 | 9 | 8 | the coda; the final chord on the last bar as the windows finish lighting, ringing to the cut |
+
+Every score is 8 or higher; the pictures, and so VN, Read and Motion, are unchanged.

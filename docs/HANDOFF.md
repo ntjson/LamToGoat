@@ -1,4 +1,4 @@
-# Handoff: after the whole-film sound pass (2026-09-29)
+# Handoff: after the whole-film sound pass and the Mixkit music bed (2026-09-29)
 
 For the next session. Read `CLAUDE.md`, `docs/brief.md` and `docs/ANIMATION_GUIDE.md` first; their rules hold unless
 something below overrides them. Work is on branch **`film`**. There is no remote. **Never push.**
@@ -13,7 +13,7 @@ something below overrides them. Work is on branch **`film`**. There is no remote
 | 4 Engine + ch01 | approved |
 | 5 Guide + ch02-ch11 | done: every chapter built, reviewed (8+ on all criteria) and committed separately |
 | 6 Rough cut review | done without a voice |
-| 7 Polish, sound, final render, deliverables | **the whole-film sound is done and reviewed (every chapter 8+); it waits for the user's ear.** Then the final render and deliverables. |
+| 7 Polish, sound, final render, deliverables | **the whole-film sound is done and reviewed (every chapter 8+): the Mixkit bed "Upbeat Jazz" under the synthesized effects (2026-09-29). It waits for the user's ear.** Then the final render and deliverables. |
 
 Review files for the user:
 - `out/preview_1080p.mp4`: 1920×1080, 30 fps, CRF 23, 180.0 s, with the mix (AAC 320 kbps, 48 kHz).
@@ -22,7 +22,9 @@ Review files for the user:
 - `out/sound/film.wav` (48 kHz stereo float), `out/sound/cues.json`, `out/sound/score.json` (every note and effect).
 - `out/sound/analysis.png`: level, spectrogram with chapter lines and cue marks, and the score as a piano roll with
   each bar's chord; per chapter in `out/review/sound_chNN.png`; sync sheets in `out/review/sync_chNN.png`.
-- The rounds and all measurements are in `docs/review_log.md`, "Sound pass".
+- `out/sound/bed.wav` and `bed.json` (the arranged Mixkit bed, its plan, joins and pitch classes per beat);
+  `out/review/bed_joins.png` (a spectrogram around each join).
+- The rounds and all measurements are in `docs/review_log.md`, "Sound pass" and "Music bed".
 
 **Be honest with the user: the mix was checked by measurement and by reading the score, never by ear.**
 
@@ -36,6 +38,8 @@ Review files for the user:
 5. **ch01's look is approved.** Changes to shared code must keep its frames pixel-identical.
 6. **The screenshot set is final.** Crops are in `docs/crops.json`; the demo manager shows as "Kawaibu".
 7. **Git:** one commit per logical unit (per chapter when chapters change), never push.
+8. **Music bed (2026-09-29):** "Upbeat Jazz" by Francisco Alvear (Mixkit) replaces the synthesized score, stretched to
+   108 BPM and arranged to 3:00 by `tools/bed.py` (`CLAUDE.md`, Sound). The effects stay synthesized on the cues.
 
 ## 3:00 timing (unchanged by the sound pass)
 
@@ -50,43 +54,57 @@ Review files for the user:
 
 ## The sound, as built
 
-Everything is synthesized in `tools/sound.py` (no samples, no stock audio, no Eleven Music).
+**The music bed is "Upbeat Jazz" by Francisco Alvear (Mixkit)** (the user's choice, 2026-09-29, from four auditioned
+candidates; `audio/music/SOURCES.md` for the source and license). The effects are synthesized in `tools/sound.py`.
 - **Cues.** Every chapter exports `cues(state, ctx)`: its event times, from its own `T` table, in one vocabulary of
   42 names (`docs/ANIMATION_GUIDE.md`, section 12: name, what happens on screen, which effect plays). `sound.py`
   stops on any other name. `node tools/cues.mjs` collects them (418 cues) into `out/sound/cues.json`.
-- **Music** on the timeline's grid, chord changes on chapter starts, swung 8ths (`CHORDS`, `FEEL`, `KEY`, `Film`):
-  - ch01: the approved sketch (`CHARTS["ch01"]`, its seeds, gains and order untouched).
-  - ch02-ch04: D minor, sparse (walking bass and brushes); ch04 adds an A-E vibraphone chime as each pain turns.
-  - ch05-ch07: opens to D major on a vibraphone chord as ch04's doors part; vibraphone comping; ch07 lifts to G, its
-    loop gets a warm chord, and at its push the band stops for one bowed A.
-  - ch08-ch09: driving (ride, feathered kick, comping piano, skip notes); ch10-ch11: resolving (two-feel), the final
-    D6/9 on the logo's landing, ringing to the 30 ms cut at 180.0 s.
-  - Stabs on the `stab` cues (the question, "1", "2", "CÓ CẢ HAI.", "20–25 TÒA", "ĐỘI KAWAIBU"; soft on SAM), alarms
-    (two falling tritones, low brass and snare) on `alarm` ("VƯỢT KHUNG", the mismatch cut).
-  - The walking bass is generated from the charts, seeded per chord; a stab's, alarm's or the bow's note takes the
-    bass. Brushes run through every chapter in its feel and stop only for ch01's drop, ch07's push and the final
-    chord.
-- **Balance.** The sketch's stems (`STEMS`) plus vibes and brass; each effect's level set so it stands over the bed
-  about as far as ch01's do, and fast runs stay down as texture.
-- **Master.** The sketch's normalize-and-limit loop, then an exact true-peak stage, then an AAC check: the mix is
-  encoded as `render.mjs` muxes it, decoded, and lowered locally wherever the AAC would pass -1.2 dBTP (ch02's snips
-  made the encoder overshoot by 1.7 dB). `--no-aac-check` skips it.
-- **Measured:** WAV -14.0 LUFS, true peak -1.2 dBFS; its AAC -14.0 LUFS (ebur128), loudnorm -14.10 LUFS and
-  -1.17 dBTP. Two runs give identical bytes.
+- **The bed** (`tools/bed.py`, `out/sound/bed.wav`):
+  - The track (110.005 BPM measured) is stretched by rubberband to exactly 108 BPM.
+  - It is arranged on the film's 81 bars, joined only at phrase boundaries, with a 10 ms crossfade just before each
+    bar line.
+  - The plan, film bars from source bars:
 
-Rebuild and check (deterministic):
+    | Film bars | Source bars | Section | Chapters |
+    |---|---|---|---|
+    | 1-9 | 1-9 | intro | ch01-ch02 |
+    | 10-17 | 2-9 | intro repeat | ch02-ch03 |
+    | 18-25 | 2-9 | intro repeat | ch03-ch04 |
+    | 26-67 | 6-47 | intro's second group, the lift on ch05's downbeat, then A1 B1 A2 B2 A3 as recorded | ch04-ch09 |
+    | 68-78 | 33-43 | B2 and A3's first group again | ch09-ch11 |
+    | 79-81 | 48-50 | coda; final chord on the last bar | ch11 |
+
+  - The track's form at 108 BPM: intro 1-9, A1 10-17, B1 18-24, A2 25-32, B2 33-39, A3 40-47, coda 48-49, final
+    chord 50.
+- **The mix** (`sound.py`, `--music bed`, the default):
+  - Levels: the bed at -17.5 dB. The sparse intro is +4 dB until ch05's downbeat, and the bed eases -2.5 dB through
+    ch10-ch11.
+  - Breaks: the bed dips out from ch01's drop to ch02. From ch07's push to ch08 it thins to a low-passed trace under
+    one bowed note on its bass.
+  - Notes: stabs, chimes, pitched thumps and ticks, the rising tone, the bell and the loop's warm chord take their
+    notes from what the bed sounds on that beat (`bed.json`). ch01's approved hits keep theirs. The ch11 `chord`
+    cue is silent: the bed's own final chord ends the film.
+- **The synthesized score** is kept as `--music synth` (the walking bass, brushes, vibraphone and stabs of the first
+  sound pass). Its ch01 still rebuilds the approved sketch byte for byte.
+- **Master.** Normalize and limit, an exact true-peak stage, then an AAC check: the mix is encoded as `render.mjs`
+  muxes it, decoded, and lowered locally wherever the AAC would pass -1.2 dBTP. `--no-aac-check` skips it.
+- **Measured:** see `docs/review_log.md`, "Music bed". Two runs of `bed.py` and of `sound.py` give identical bytes.
+
+Rebuild and check (deterministic). **While another session has uncommitted scene or engine edits, build and render
+from a clean worktree** (`git worktree add --detach ../LamToGoat-build HEAD`, symlink `node_modules`); a broken
+chapter in the working tree stops `cues.mjs`, and a scene edited mid-render mixes versions.
 
 ```sh
 node tools/cues.mjs                                                     # out/sound/cues.json
+uv run python tools/bed.py                                              # out/sound/bed.wav + bed.json
 uv run --with numpy --with scipy python tools/sound.py --score out/sound/score.json   # out/sound/film.wav
 uv run --with numpy --with scipy --with matplotlib python tools/soundcheck.py         # analysis + report
 node tools/synccheck.mjs                                                # picture-side sync + sheets
 node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out/preview_1080p.mp4 --workers 10
 ```
 
-ch01 regression: `node tools/cues.mjs --chapters ch01 --out out/tmp/cues_ch01.json` then
-`tools/sound.py --chapters ch01 --cues out/tmp/cues_ch01.json --no-aac-check` rebuilds the handoff's ch01 file byte
-for byte (sha256 55c09f38…). The approved `out/ch01_sound.mp4` stays the reference.
+The approved ch01 sketch (`out/ch01_sound.mp4`, the synthesized score) stays on record: `sound.py --music synth
+--chapters ch01 --cues <ch01 cues> --no-aac-check` rebuilds it byte for byte (sha256 55c09f38…).
 
 ## Next, only with the user's OK on the sound
 
@@ -122,9 +140,13 @@ for byte (sha256 55c09f38…). The approved `out/ch01_sound.mp4` stays the refer
 
 ## Open issues
 
-1. **Not heard.** The sound has never been listened to by the one who built it; the user's ear is the real test.
-2. Weak supporting labels on the phone sheet (ch04's role descriptors, ch09's phase labels, ch03's B2B2C tags, ch11's
+1. **Not heard.** The sound has never been listened to by the one who built it; the user's ear is the real test,
+   above all for the bed's five joins.
+2. **The bed's license.** Mixkit's full legal text was not read (it is rendered by script). Its summary allows
+   commercial use in online video with no attribution, and forbids redistributing the track itself. So the MP3 must
+   not be published with this repository. Read the license before the final release.
+3. Weak supporting labels on the phone sheet (ch04's role descriptors, ch09's phase labels, ch03's B2B2C tags, ch11's
    credits): all pass the 28 px floor, and the user has accepted them so far.
-3. `frames.mjs` stills can differ by a few anti-aliased edge pixels between browser sessions or seek orders; compare
+4. `frames.mjs` stills can differ by a few anti-aliased edge pixels between browser sessions or seek orders; compare
    before/after renders made with the same time list, one right after the other.
-4. Render cost: 1080p frames take about 0.5-0.8 s each per worker (ch02's skyline is the heaviest).
+5. Render cost: 1080p frames take about 0.5-0.8 s each per worker (ch02's skyline is the heaviest).

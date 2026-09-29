@@ -83,6 +83,10 @@ overlaps the UI by 4 px.
 - Crop sizes and coordinates are in the reference table at the end.
 
 **Sound.** All synthesized. There is no Eleven Music and no stock audio.
+> **Since 2026-09-29 the music bed is "Upbeat Jazz" by Francisco Alvear (Mixkit),** stretched to 108 BPM and arranged
+> to 3:00 by `tools/bed.py`, which follows the arc below (sparse to ch05, brighter from ch05, driving ch08-ch09,
+> resolving ch10-ch11). The effects are still synthesized on the cues, and the stabs land on the SLAMs on the bed's
+> notes. The score described next is kept as `tools/sound.py --music synth`.
 - **Music:** a walking upright-bass line, brushed snare and piano stabs at about 108 BPM with swung eighths.
   - ch01-ch04: minor and sparse.
   - ch05-ch07: opens to major with vibraphone.
