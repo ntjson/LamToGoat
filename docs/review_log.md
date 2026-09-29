@@ -12,21 +12,23 @@ Each chapter's rounds are in `docs/review/chNN.md`; ch01's are under gate 4 belo
 
 | Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Rounds | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| ch01 Hook | 8 | 9 | 9 | 8 | 8 | 8 | 8 | 4 | no voice: captions added, on the grid |
-| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 8 | 8 | 9 | 3:00: holds trimmed, stamp earlier |
-| ch03 Market | 9 | 9 | 8 | 8 | 8 | 8 | 8 | 8 | 3:00: holds trimmed, last tag earlier |
-| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 | no voice: text added, on the grid |
-| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 7 | 3:00: holds trimmed |
-| ch06 USP 1: before approval | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 | no voice: text added, on the grid |
-| ch07 USP 2: after publication | 9 | 9 | 8 | 8 | 8 | 9 | 9 | 6 | no voice: text added, on the grid |
-| ch08 Competition | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 | no voice: text added, on the grid |
-| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 | 3:00: holds trimmed |
-| ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 8 | no voice: text added, on the grid |
-| ch11 Close | 9 | 9 | 8 | 8 | 9 | 9 | 8 | 7 | no voice: text added, on the grid |
+| ch01 Hook | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 4 + 2 sound | sound: the approved sketch, in the film mix |
+| ch02 Problem | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 9 + 2 sound | sound: 184 cues on the frames; D minor bed |
+| ch03 Market | 9 | 9 | 8 | 8 | 8 | 9 | 8 | 8 + 2 sound | sound: soft stab on SAM |
+| ch04 Who hurts | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 6 + 2 sound | sound: a chime as each pain turns |
+| ch05 Demo 1 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: opens to major, bell on T.conf |
+| ch06 USP 1: before approval | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: stab on "1", alarm on "VƯỢT KHUNG" |
+| ch07 USP 2: after publication | 9 | 9 | 8 | 8 | 8 | 9 | 9 | 6 + 2 sound | sound: stab on "2", alarm, the bow under the push |
+| ch08 Competition | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: driving, stab on "CÓ CẢ HAI." |
+| ch09 Business | 8 | 9 | 9 | 8 | 8 | 9 | 8 | 7 + 2 sound | sound: stairs climb into the stab |
+| ch10 Team | 8 | 9 | 8 | 8 | 8 | 9 | 8 | 8 + 2 sound | sound: two-feel, stab on "ĐỘI KAWAIBU" |
+| ch11 Close | 9 | 9 | 8 | 8 | 9 | 9 | 8 | 7 + 2 sound | sound: the final chord rings to 180.0 s |
 
 Since 2026-09-28 the film has no voice-over, so the **Voice** column (voice sync) became **Sync**: cuts and SLAMs
-on the 108 BPM grid, and every text holds long enough to read. Whole film: `out/roughcut.mp4` (960×540, 30 fps,
-5,400 frames, exactly 180.0 s). Its checks are in the last section below.
+on the 108 BPM grid, and every text holds long enough to read. Since the sound pass (2026-09-29) **Sync** also
+covers the sound: every hit on the frame where its event happens, the music on the grid. Whole film: `out/roughcut.mp4`
+(960×540, 30 fps, 5,400 frames, exactly 180.0 s, silent); with the mix, `out/roughcut_sound.mp4` and
+`out/preview_1080p.mp4`. Their checks are in the last sections below.
 
 ## Gate 1: style frames (2026-09-28)
 
@@ -349,3 +351,102 @@ Checks:
   frame.
 - **Rough cut:** `out/roughcut.mp4` is 5,400 frames at 30 fps = 180.0 s. All cuts next to trimmed chapters are
   clean (`tools/boundary.mjs`). No shot holds still over 2 s, and the longest gap between visual events is 2.2 s.
+
+## Sound pass: music and effects for the whole film (2026-09-29)
+
+The film's sound, built on the approved ch01 sketch and the shotlist's Sound section: everything synthesized in
+`tools/sound.py`, the effects on the scenes' own cues (`cues()` in every chapter, one vocabulary in
+`docs/ANIMATION_GUIDE.md`, section 12), the music on the timeline's grid. The pictures did not change: every
+chapter's `cues()` was proven pure (202 sampled frames before and after, `magick compare -metric AE` = 0), and the
+timeline is untouched, so every reading hold is as before. **VN, Read and Motion carry over. Hook, Brand and
+Variety keep the picture's scores: the mix was checked by measurement and by reading the score, not by ear.
+Sync now covers the sound.**
+
+What plays:
+
+| Ch | Music | Stabs and alarms | Effects |
+|---|---|---|---|
+| ch01 | the approved sketch, note for note: walking bass in D minor, brushes from bar 2, the drop's falling note | the question: piano D-F-A-Bb-D, bass, brush crash | 20 cues: bubbles, captions, scissor, split, slide, snips, tear |
+| ch02 | D minor, sparse: walking bass and brushes, as ch01 | none | 184: wipes, 24 pitched slab thumps, the 1.363 count and its locks, 129 cell ticks, cut, slide, scissor, lift, 13 snips, clip click, stamp |
+| ch03 | Autumn Leaves in D minor | soft stab (piano) on SAM, a deceptive Bbmaj7 | 19: flip, tag slides, the 20.000đ count, arrow snap, slab, slam, 3 pins, window sweeps, TAM/SAM/SOM (descending), counts |
+| ch04 | D minor; an A-E vibraphone chime as each pain turns into its answer | none | 28: curtain wipe and thud, panels, snaps, pins, the ✓ stamp, the manager's chat (bubbles), flips, lift, the doors into ch05 |
+| ch05 | opens to D major on a vibraphone chord as the doors part; vibraphone comping | none | 34: slides, slams, the window's creak, screen cuts, the "Gửi phản ánh" click, snap and small bell on T.conf, brackets, stamp, chain ticks |
+| ch06 | D major; A7 through the overrun, resolving on "NGƯỜI QUYẾT ĐỊNH." | "1" (Dmaj9); alarm on "VƯỢT KHUNG" (low brass Bb/E then A/Eb, snare) | 27: cover, slides, bar, rises, pan, tick clicks, "Ví dụ" pin, rising tone with the band, count, friction and thud, tear, scissor, split, slams |
+| ch07 | G major; a warm Cmaj9 as the hook's bubble snaps flush (the loop); at the push the band stops and a bowed A holds to ch08 | "2" (G6/9); alarm on the verified → mismatch cut | 43: tears, rises, slides, checkbox click, seal stamp, snap, doors, scroll, climb, cut, bubble, four copies with lock clicks, count, sly slide and scratch, slams |
+| ch08 | driving: B minor to D, ride, feathered kick, comping piano, skip notes in the bass | "CÓ CẢ HAI." (D add9) | 21: cover, slams, label snaps, five strips with stop-thuds, the navy strip, two punches, flutter, the exit's whoosh |
+| ch09 | driving in D; four stair thumps climb D-E-F#-G into the stab | "20–25 TÒA" (Gmaj9, pushed on the "and" of 4) | 22: rise, counts, window sweep, slams, snip, flip, hard cut with the "CẦN 200 TRIỆU" stamp, slide, flag snap, tick, pans, stair thumps, MRR slide and count |
+| ch10 | resolving: two-feel bass, whole-bar vibraphone chords | "ĐỘI KAWAIBU" (D6/9) | 10: five band slides, each panned to its side, the close, L34's lines, the glide |
+| ch11 | A7sus to the final D6/9 (piano, vibraphone, bass, soft crash) on the logo's landing, ringing to the 30 ms cut at 180.0 s | none | 10: wipe, logo slide, the promise's two slams, three credit slides, the façade's rise, the windows' sweep |
+
+Every shot's SFX column is covered, with two exceptions: 3.2's "stamp" (nothing is stamped there since the unit
+shows from the count's first frame; the count's lock is the hit) and 8.3's "thud" (nothing lands heavily; the five
+stop-thuds of 8.2 carry it).
+
+Checks (tools/soundcheck.py, tools/synccheck.mjs, ffmpeg):
+- **Loudness.** `out/sound/film.wav` -14.0 LUFS integrated, true peak -1.2 dBFS (ebur128). Its AAC 320 kbps
+  encode, as `render.mjs` muxes it: -14.0 LUFS, true peak -1.2 dBFS (ebur128); loudnorm -14.10 LUFS, -1.17 dBTP.
+  Chapters -12.7 (ch07, ch08) to -15.9 LUFS (ch03): the problem half a little under, the driving half over, the
+  close falling away.
+- **ch01 kept as approved.** The film's ch01 slice matches the sketch to within 0.2 dB of gain; the rest of the
+  difference is the limiter treating a few transients differently (residual -35 dB overall, -28 dB at worst, on
+  the stab). `tools/sound.py --chapters ch01 --no-aac-check` rebuilds the handoff's file byte for byte.
+- **Grid and harmony.** All 342 notes the music plays sit within 0.04 ms of a beat or a swung 8th; none of the 84
+  piano and vibraphone chords has a note outside its bar's chord and tensions.
+- **Sync, sound side.** The mix has an onset within 12 ms of all 304 hit-type cues (median +0.2 ms, 95 % within
+  4.3 ms). The muxed AAC lines up with the WAV at 0 samples (cross-correlation).
+- **Sync, picture side.** All 71 appearance cues (SLAMs, stamps, captions, pins, bubbles, hard cuts, punches)
+  start on their frame at 60 fps. The sync sheets (`out/review/sync_chNN.png`: the frame before and the frame at
+  every stab, alarm, slam, stamp and cut) show each one landing with its type or picture.
+- **Balance.** Each effect stands over the bed at its moment about as far as ch01's do (slams +1 to +8 LU, stamps
+  +5 to +7, most slides +1 to +4). Fast runs stay down as texture: the 13 snips 3 LU under the bed, and the 129
+  cell ticks at about the brushes' level in their own band (2.5-6 kHz, median -0.5 dB): a light crackle.
+- **Deterministic.** Two runs give identical bytes.
+
+### Round 1 (the first whole-film mix)
+
+| Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems |
+|---|---|---|---|---|---|---|---|---|
+| ch01 | 8 | 9 | 9 | 8 | 8 | 8 | 8 | none: the sketch, unchanged |
+| ch02 | 8 | 9 | 8 | 8 | 8 | 7 | 8 | the 129 cell ticks buried, 22 LU under the bed; the AAC encode rings to -0.1 dBTP on the snips |
+| ch03 | 9 | 9 | 8 | 8 | 8 | 7 | 8 | pins, arrow snap and window sweeps under the bed; the slab thump on D over Fmaj7 |
+| ch04 | 8 | 9 | 8 | 8 | 8 | 7 | 8 | the chime's D against A7's C#; snaps and pins under the bed |
+| ch05 | 8 | 9 | 8 | 8 | 8 | 7 | 8 | snaps (-7 LU), chain ticks (-8) and the click (-15) under the bed |
+| ch06 | 8 | 9 | 9 | 8 | 8 | 7 | 8 | rises 10 LU under the bed; the walking note rings on under the "1" stab and the alarm |
+| ch07 | 9 | 9 | 8 | 8 | 8 | 7 | 9 | rises and climbs under the bed; the walking note rings on under the alarm and the push |
+| ch08 | 8 | 9 | 9 | 8 | 8 | 7 | 8 | label snaps 10 LU under the bed, flutter 6 under |
+| ch09 | 8 | 9 | 9 | 8 | 8 | 7 | 8 | the flag snap 11 LU under; the last stair thump (G) on F#m7; the walking note under the stab |
+| ch10 | 8 | 9 | 8 | 8 | 8 | 8 | 8 | the two-feel held a chromatic C under Dmaj7 for two beats |
+| ch11 | 9 | 9 | 8 | 8 | 9 | 8 | 8 | the windows' sweep fell in pitch instead of climbing |
+
+Fixes, all in `tools/sound.py`:
+- Levels: each effect type measured against the bed at its moment and set toward ch01's contrast (snaps, ticks,
+  rises, clicks, pins, doors, flutter +4 to +6 dB, cells +11 dB); the comping, ride and kick 2-3 dB down. ch01's own
+  recipes untouched.
+- The bass: a stab's, an alarm's or the bow's note now damps the walking note under it (one bass); the walker no
+  longer goes back and forth or repeats notes, and the two-feel's held note is diatonic.
+- Harmony: the chime is A-E (a chord tone or tension over every ch04 chord); ch09's last half bar is A7sus, so the
+  stair thumps' G is its 7th; ch03's slab thump is F, its bar's root.
+- The sweep rebuilt from grains that climb; ch05's opening chord holds exactly its bar.
+- Mastering: an exact true-peak stage, then an AAC check that lowers the PCM where the encode would pass
+  -1.2 dBTP (it was -0.1 on the ch02 snips).
+
+### Round 2
+
+| Chapter | Hook | VN | Read | Motion | Brand | Sync | Variety | Notes |
+|---|---|---|---|---|---|---|---|---|
+| ch01 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | the sketch in the film mix, 0.2 dB quieter; 14/14 appearances on their frame |
+| ch02 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | cells a light crackle at the brushes' level in their band; snips safe on AAC; 5/5 appearances; stamp on "KHÔNG KÈM CHỨNG TỪ" |
+| ch03 | 9 | 9 | 8 | 8 | 8 | 9 | 8 | pins +1 LU over the bed; soft stab on SAM; 5/5 appearances |
+| ch04 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | chimes on the answers' edge-on frames; 12/12 appearances |
+| ch05 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | the major opening on the doors; bell on T.conf; 9/9 appearances |
+| ch06 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | "1" and "VƯỢT KHUNG" on their frames; resolves on "NGƯỜI QUYẾT ĐỊNH."; 5/5 appearances |
+| ch07 | 9 | 9 | 8 | 8 | 8 | 9 | 9 | "2", the loop's chord, the alarm on the badge's cut, the bow under the push; 8/8 appearances |
+| ch08 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | stop-thuds on the strips' stops; stab on "CÓ CẢ HAI."; 5/5 appearances |
+| ch09 | 8 | 9 | 9 | 8 | 8 | 9 | 8 | stairs climb D-E-F#-G into the stab on "20–25 TÒA"; 5/5 appearances |
+| ch10 | 8 | 9 | 8 | 8 | 8 | 9 | 8 | bands panned to their sides; stab on "ĐỘI KAWAIBU"; 1/1 appearance |
+| ch11 | 9 | 9 | 8 | 8 | 9 | 9 | 8 | the final chord on the logo's landing, ringing to the cut; 2/2 appearances |
+
+Every score is 8 or higher. Review files: `out/roughcut_sound.mp4` (960×540, 30 fps, with the mix), per-chapter
+clips with sound in `out/review/chNN.mp4` (contact and 360 px phone sheets beside them: unchanged pictures, text
+check clean in all 11), `out/review/sound_chNN.png` (level, spectrogram, cue marks, score) and
+`out/review/sync_chNN.png`; the whole film's analysis is `out/sound/analysis.png`.
