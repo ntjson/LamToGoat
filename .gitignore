@@ -11,3 +11,6 @@ wheels/
 node_modules/
 out/
 .env
+
+# Music candidates
+audio/music/candidates/
