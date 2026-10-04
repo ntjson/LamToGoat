@@ -13,6 +13,7 @@ const rules = [
   ['error', /fetch\(|XMLHttpRequest/, 'no network access from scenes: facts are in the code, crops come via ctx.crop()'],
   ['error', /assets\/screens\/[^'"`]*['"`]/, 'screenshots only through plate(ctx, shot) / ctx.crop(shot), never by path'],
   ['error', /assets\/team\/[^'"`]*['"`]/, 'team photos only through ctx.portrait(k) (docs/team.json), never by path'],
+  ['error', /assets\/recordings\/[^'"`]*['"`]/, 'recordings of the app only through ctx.recording(name) and lib/footage.js, never by path'],
   ['warn', /opacity/, 'nothing fades: appear by visibility plus scale/translate/clip'],
   ['warn', /['"]visible['"]/, "use vis(el, on) (visibility 'inherit'), not 'visible'"],
   ['warn', /filter\s*:\s*['"`][^'"`]*(blur|drop-shadow\([^)]*\b(1[5-9]|[2-9]\d)px)/, 'no blur/glow; paper shadows stay small and hard'],
