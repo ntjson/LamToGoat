@@ -1,49 +1,42 @@
-// ch05 Demo 1 (shots 5.1-5.6). The product, shown only through its own screenshots: a resident's report goes in
-// through a window of the building, the AI suggests how to triage it, and a named manager decides, every step on
-// record. Timing is reading time on the music's grid: every beat derives from L15-L18 (ctx.line / ctx.syl / ctx.snap),
-// every hit sits on a grid time; nothing uses film-absolute time.
+// ch05 Demo 1 (shots 5.1-5.6). The product, shown only through real-time recordings of the real app
+// (tools/record_app.mjs): a resident files the hook's complaint on a phone, step by step, and a named manager
+// confirms the AI's triage suggestion on a laptop, every step on record. The phone and laptop are cut-paper props,
+// the hands and the cursor overlays (lib/props.js); the recordings play on their screens, speed-ramped so every tap
+// and click lands on the music's grid exactly where and when the recording tapped (lib/footage.js). Timing is reading
+// time on the grid: every beat derives from L15-L18 (ctx.line / ctx.snap); nothing uses film-absolute time.
 //
 // 5.1  ch04's NAVY doors part over our CREAM ground (ch04 owns that exit; until EXIT.ch04 we paint the ground only).
-// 5.2  The logo slides in at left; the line slides in at right, line by line; "kiểm chứng được" slams as the top of
-//      the façade rises under it. The line stays whole until L15 ends.
-// 5.3  The whole NAVY façade (8 × 5 windows) rises; one window lights ORANGE and the camera pushes into it. The app
-//      rises in the window, "CƯ DÂN GỬI / PHẢN ÁNH" slams beside it, and the window snaps taller as the report fills in
-//      (5.3a → 5.3b → 5.3c) while "Ảnh · vị trí · 24/7" assembles under the DISPLAY.
-// 5.4  The window closes onto "Gửi phản ánh", then opens out of it onto the confirmation.
-// 5.5  HARD CUT to CREAM with "AI GỢI Ý"; report #7 slides in; the AI suggestion rises under it, tucked into a NAVY
-//      pocket that shows only its first line; three ORANGE brackets snap under "Thang máy", "Cao" and "240 phút", each
-//      with a tag hanging from it: "nhóm sự cố", "mức khẩn", "hạn xử lý".
-// 5.6  The confirm panel slides in; the NAVY tag and the button land; the manager (Kawaibu) snaps in; a NAVY band
-//      slides along the bottom and reveals the all-green accountability chain one step per 8th note.
+// 5.2  The phone rises in, held in a left hand, on "Việc của tôi". The logo and the promise slide in at left; the right
+//      index finger taps "+ Phản ánh" before the promise leaves.
+// 5.3  "CƯ DÂN GỬI / PHẢN ÁNH" slams; the camera pushes in on the report box as the hook's words type in (fast-forward;
+//      there is no keyboard in the recording, so none is drawn); back out for "Chọn vị trí" → "Tầng 3" → "Thang máy
+//      B", one tap per beat, and "Gửi phản ánh"; "Ảnh · vị trí · 24/7" assembles under the DISPLAY. No photo is
+//      attached: the web build cannot attach one (decision 2026-10-04); the form's photo row shows.
+// 5.4  The camera pushes in as the app confirms ("Phản ánh của bạn đã được ghi nhận.", the bell, on a grid time); the
+//      finger taps back to "Việc của tôi", the new report on top.
+// 5.5  The phone and the text pan out left as the laptop pans in with report #7 and its AI suggestion (the seeded
+//      design suggestion: no AI endpoint runs in the sandbox, decision 2026-10-04); "AI GỢI Ý" slams. The camera
+//      pushes in and paper closes round the suggestion; three ORANGE brackets snap under "Thang máy", "Cao" and
+//      "240 phút" as the cursor passes each, each with its tag on a NAVY pocket: "nhóm sự cố", "mức khẩn", "hạn xử lý".
+// 5.6  Back out: the cursor picks Vị trí (Tầng 1 / Thang máy A) and clicks "Xác nhận phân loại"; as the real case page
+//      loads, "NGƯỜI QUYẾT ĐỊNH" stamps; the page scrolls to "Kawaibu đã chấp nhận gợi ý như đã ghi." over the
+//      accountability chain, the camera pushes in and paper closes round them; "mọi bước đều lưu vết".
 // ch06 covers the held last frame with BLACK (its underlap + kit.cover), so nothing here animates past ctx.dur.
-import { spring, track, noise1, clamp, step } from '../lib/motion.js';
+import { spring, track, step, clamp } from '../lib/motion.js';
 import { C, el, rough, rect, clip, jagged } from '../lib/paper.js';
-import { W, H, text, tag, aperture, plate, vis, prog } from '../lib/kit.js';
+import { W, H, text, tag, vis } from '../lib/kit.js';
 import { EXIT } from '../lib/handoff.js';
+import { screen, remap, unmap, settled, cursorAt } from '../lib/footage.js';
+import { phone, holdHand, pointHand, laptop, cursor, PHONE, LAPTOP } from '../lib/props.js';
 
 const SEED = 500; // this chapter's seeds are 500-599
 
-// Positions measured inside the screenshots, in source px relative to each crop's origin (the file and the crop are
-// in docs/crops.json). They are converted with the crop's own scale from ctx.crop(), so no screen size is typed here.
-// 5.5b, web/desktop-report-triage@4x.png, first line "Gợi ý Thang máy, mức khẩn Cao, hàng đợi Thang máy, hạn trong
-// 240 phút.": ink extents of the three suggested values, punctuation excluded.
-const WORDS_55B = [[270, 607], [948, 1064], [2035, 2296]]; // "Thang máy", "Cao", "240 phút"
-const DESC_55B = 158; // lowest descender of that line (g, y, p); the brackets hang below it
-const NEXT_55B = 235; // top of the next line ("Vị trí diễn giải", its tilde included); the brackets stay above it
-// 5.5a, same file: the photo pill of its last row ("Ảnh báo cáo") ends 900 px below the crop's top (972 px tall). The AI
-// card overlaps 5.5a only below midway between the two, so its edge never cuts a row.
-const BOTTOM_55A = 900;
-// 5.3c, app/flow-01-form-filled@3x.png: the "Gửi phản ánh" button starts 885 px below the crop's top.
-const BTN_53C = 885;
-// 5.6a, web/desktop-report-triage@4x.png: the form fields (Danh mục, Mức khẩn) start 80 px in; the button aligns there.
-const FIELD_56A = 80;
-// 5.6d, web/desktop-case-completed@4x.png: midway between one step's widest ink (circle or label) and the next one's,
-// where the reveal stops after each tick: Báo cáo | Phân loại | Công việc | Công bố đề xuất | Thanh toán | Công bố.
-const GAPS_56D = [532, 976, 1384, 1898, 2326];
-
 const HIT = 0.034; // hits lead their grid point by two frames at 60 fps at most (the guide allows 0.05 s), never trail
-const PUSH = { f: 1.8, z: 1 }; // the camera pushing into the lit window
-const RISE = { f: 1.8, z: 0.8 }; // the app rising in the window; its overshoot stays inside SPARE
+const CAM = { f: 1.25, z: 1 }; // the camera: pushes in and pulls back, no overshoot
+const PUSHL = { f: 2.6, z: 1 }; // the quick push into the laptop: settled before the paper closes round its window
+const REACH = { f: 2.8, z: 1 }; // the tapping hand moving to its next target (critically damped: it lands, it never overshoots)
+const LEAD = 0.42; // ...so it sets off this long before each touch and arrives within 1 px of it
+const PRESS = { f: 7, z: 1 }; // the fingertip going down on the glass and lifting
 const HANG = { f: 1.7, z: 0.3 }; // a tag swinging on its bracket after it drops in
 
 // Seconds after a spring starts at which it first reaches its target.
@@ -53,63 +46,31 @@ function firstReach(preset) {
   return t;
 }
 const ARRIVE = firstReach('slide'); // 0.39 s
-const RISE_LAND = firstReach(RISE);
-const SPARE = 16; // 5.3a is this much taller than its window (the grey margin under the box), so the rise may overshoot
-const DS = 120; // "CƯ DÂN GỬI / PHẢN ÁNH", DISPLAY: the frame's key message reads on the phone
-const TAGS55 = ['nhóm sự cố', 'mức khẩn', 'hạn xử lý']; // hanging under the three brackets (added with the voice gone)
-const GROW = { f: 3.2, z: 1 }; // the window snapping taller, never past the plate it shows
-const OPEN = { f: 2.6, z: 1 }; // the window opening out of the button onto the confirmation
-const TICK = { f: 3.4, z: 0.85 }; // the chain's reveal, one step per tick
 
-// The façade: 8 × 5 windows filling the frame. The camera pushes into PICK until that window is the aperture AP.
-const COLS = 8;
-const ROWS = 5;
-const PICK = [2, 2]; // column, row of the resident's window
-const AP = { x: 150, y: 126 }; // top-left of the aperture once pushed in; its size comes from the plates
+// The tapping hand's lean per tap (deg; negative leans the finger left): the arm always comes from the lower right,
+// steeper for targets high on the screen so it never lies across what has just appeared.
+const LEAN = { 'Phản ánh': -12, 'Đã xảy ra chuyện gì?': -34, 'Chọn vị trí': -28, 'Tầng 3': -28, 'Thang máy B': -28, 'Gửi phản ánh': -20, 'Quay lại': -58 };
+const HAND_K = 0.47; // the hand's scale in phone units: its finger is 47 units wide
+
+// Phone framings: body top-left (x, y) on the stage and scale z (stage px per recording CSS px).
+const REST = { x: 1210, y: 74, z: 1.04 };
+const TYPE = { x: 860, y: 113, z: 1.95 }; // the report box, its typed words at about 31 px
+const CONF = { x: 860, y: -16, z: 1.9 }; // the screen's top half: the back arrow and the confirmation, both in frame
+// Laptop framings, the same way (z in stage px per page CSS px).
+const WIDE = { x: 475, y: 180, z: 0.8 };
+const ZOOM = 2.1; // the push into the suggestion: its line at about 35 px
+const ZOOM2 = 2.2; // the push into the decision and the chain: their text at about 30 px
 
 const px = (v) => `${v.toFixed(1)}px`;
-const poly = (pts) => `polygon(${pts.map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(',')})`;
-const box4 = (r, d = 0) => [[r.x + d, r.y + d], [r.x + r.w - d, r.y + d], [r.x + r.w - d, r.y + r.h - d], [r.x + d, r.y + r.h - d]];
 
-// A hand-cut clockwise polygon whose wobble belongs to the paper: along each edge the noise is sampled at a fraction
-// of that edge times a fixed reference length (lens[i]), so when the shape is pushed in or resized the cut stretches
-// with it instead of boiling. Each layer: { amp (screen px, inward), seed, lens: [one per edge] }.
-function roughBox(r, layers, spacing = 9) {
-  return roughPoly(box4(r), layers, spacing);
-}
-function roughPoly(cs, layers, spacing = 9) {
-  const pts = [];
-  for (let i = 0; i < cs.length; i++) {
-    const [x0, y0] = cs[i];
-    const [x1, y1] = cs[(i + 1) % cs.length];
-    const len = Math.hypot(x1 - x0, y1 - y0);
-    if (len < 0.5) continue;
-    const nx = -(y1 - y0) / len;
-    const ny = (x1 - x0) / len;
-    const n = clamp(Math.round(len / spacing), 2, 240);
-    for (let k = 0; k < n; k++) {
-      const u = k / n;
-      let off = 0;
-      for (const L of layers) {
-        if (L.amp <= 0) continue;
-        const d = u * L.lens[i];
-        const sd = L.seed + 17 * i;
-        off += L.amp * (0.5 + 0.35 * noise1(d / 60, sd) + 0.15 * noise1(d / 7, sd + 7));
-      }
-      pts.push([x0 + (x1 - x0) * u + nx * off, y0 + (y1 - y0) * u + ny * off]);
-    }
-  }
-  return pts;
-}
-
-// Type on ctx.top sits above the stage grain; fill its glyphs with the same grained paper so it matches type printed
-// on ctx.root (the grain darkens paper by about 7 %, so plain type up here would read brighter than its neighbours).
+// Type on ctx.top sits above the stage grain; fill its glyphs with the same grained paper (works for light colours
+// on dark paper, as on ctx.root).
 function grainText(e, color) {
   e.classList.add('grained');
   Object.assign(e.style, { backgroundColor: color, color: 'transparent', backgroundClip: 'text', webkitBackgroundClip: 'text' });
 }
 
-// The logo's artwork box inside its transparent PNG, so "460 px wide" means the visible logo.
+// The logo's artwork box inside its transparent PNG, so "w px wide" means the visible logo.
 function alphaBox(img) {
   const cv = document.createElement('canvas');
   cv.width = img.naturalWidth;
@@ -143,82 +104,193 @@ function piece(parent, html, style = {}) {
   return s;
 }
 
+// Four sheets of paper that close in round a window (stage px) from the frame's edges, each with a scissor-cut inner
+// edge: like the aperture of the old façade, but the paper arrives. colors: [top, right, bottom, left]. Each sheet's
+// box is its whole paper (well past the frame), so no edge of it can show while it travels.
+const CLOSE = { f: 3.4, z: 0.9 }; // the sheets arriving: quick, and no bounce over the window's edge
+function closers(parent, win, colors, seed) {
+  const M = 80;
+  const sides = [
+    { r: [-M, -M - 400, W + 2 * M, win.y + M + 400], edge: [[-M, win.y], [W + M, win.y]], from: [0, -(win.y + M)] },
+    { r: [win.x + win.w, -M, W - win.x - win.w + M + 400, H + 2 * M], edge: [[win.x + win.w, -M], [win.x + win.w, H + M]], from: [W - win.x - win.w + M, 0] },
+    { r: [-M, win.y + win.h, W + 2 * M, H - win.y - win.h + M + 400], edge: [[W + M, win.y + win.h], [-M, win.y + win.h]], from: [0, H - win.y - win.h + M] },
+    { r: [-M - 400, -M, win.x + M + 400, H + 2 * M], edge: [[win.x, H + M], [win.x, -M]], from: [-(win.x + M), 0] },
+  ];
+  return sides.map((sd, i) => {
+    const [x, y, w, h] = sd.r;
+    const cut = jagged(sd.edge[0], sd.edge[1], { seed: seed + i, amp: 3, wave: 60 });
+    // the sheet: the rectangle on the far side of the cut edge, the cut replacing its inner side
+    let poly;
+    if (i === 0) poly = [[x, y], [x + w, y], ...cut.slice().reverse()];
+    else if (i === 1) poly = [...cut, [x + w, y + h], [x + w, y]];
+    else if (i === 2) poly = [...cut, [x, y + h], [x + w, y + h]];
+    else poly = [...cut, [x, y], [x, y + h]];
+    const local = rough(poly, { seed: seed + 10 + i, amp: 1.2 }).map(([px0, py0]) => [px0 - x, py0 - y]);
+    const e = el(parent, 'grained', {
+      left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px`, backgroundColor: colors[i],
+      backgroundPosition: `${-x}px ${-y}px`, clipPath: clip(local),
+    });
+    return { el: e, from: sd.from };
+  });
+}
+
 export default {
   async build(ctx) {
     const L15 = ctx.line('L15');
     const L16 = ctx.line('L16');
     const L17 = ctx.line('L17');
     const L18 = ctx.line('L18');
-    const syl = (id) => (k) => ctx.syl(id, k);
-    const s15 = syl('L15');
-    const s16 = syl('L16');
-    const s17 = syl('L17');
-    const s18 = syl('L18');
-
-    // Beats (chapter-local seconds) on the music's grid: every hit and landing is a ctx.line/ctx.syl time (or a
-    // 16th/8th counted from one), led by HIT so its first frame never trails the music; a slide starts ARRIVE before
-    // its landing. Each beat's text lands early and stays whole until the beat ends. The max() guards keep the order
-    // if the timeline re-flows and a beat gets short.
-    const g = ctx.grid;
+    const g = ctx.grid; // a 16th
+    const b = ctx.beat;
+    const e8 = 2 * g; // an 8th
     const at = (t) => t - HIT;
     const ceilGrid = (t) => {
       const s = ctx.snap(t);
       return s < t - 1e-6 ? s + g : s;
     };
-    const T = {};
-    // L15: the logo lands on the first 16th after ch04's doors are gone; the promise slides in line by line and
-    // "kiểm chứng được" slams as the façade's top rises under it. It stays unoccluded until L15 ends.
-    T.logo = at(ceilGrid(Math.max(L15.start, EXIT.ch04 + ARRIVE + HIT))) - ARRIVE;
-    T.lines = [s15(3), s15(5), s15(7)].map((t) => Math.max(T.logo + 0.3, at(t) - ARRIVE));
-    T.verify = at(s15(9));
-    T.band52 = T.verify - ARRIVE; // lands as "kiểm chứng được" slams
-    T.fac = L15.end; // then the whole façade rises over 5.2 in the gap (it lands just before the next 16th)
-    T.covered = T.fac + 0.8; // 5.2 is fully under the façade
-    T.lit = at(ceilGrid(T.fac + ARRIVE)); // the resident's window lights as the façade lands
-    // L16: push in; the app rises in the window; "CƯ DÂN GỬI / PHẢN ÁNH" slams beside it, then the form fills in
-    // with "24/7", "Ảnh ·", "vị trí ·"; the window closes onto "Gửi phản ánh" and opens on the confirmation.
-    T.push = Math.max(T.lit + 0.1, at(L16.start));
-    T.rise = Math.max(T.push + 0.3, at(s16(3)) - RISE_LAND); // the app is in place on a 16th
-    T.disp = [at(s16(4)), at(s16(5))].map((t) => Math.max(T.rise + 0.3, t)); // "CƯ DÂN GỬI", "PHẢN ÁNH"
-    T.b = Math.max(T.disp[1] + 0.3, at(s16(7))); // location picker, and "24/7"
-    T.c = Math.max(T.b + 0.5, at(s16(9))); // the filled report, and "Ảnh ·"
-    T.anh = T.c;
-    T.vitri = Math.max(T.anh + 0.15, at(s16(10))); // "vị trí ·"
-    T.press = Math.max(T.vitri + 0.3, at(s16(12))); // the window closes onto "Gửi phản ánh"
-    T.conf = T.press + 2 * g; // ...and opens onto the confirmation (5.4), which holds to the cut
-    // L17: HARD CUT to cream on the beat; "AI GỢI Ý" slams with it, report #7 slides in, the suggestion rises in its
-    // NAVY pocket, and each bracket snaps with its tag hanging under it. 5.5 leaves as L17 ends.
-    T.cut = ceilGrid(Math.max(T.conf + 0.5, L17.start));
-    T.tag55 = T.cut;
-    T.p55a = Math.max(T.cut, at(T.cut + 3 * g) - ARRIVE);
-    T.p55b = Math.max(T.p55a + 0.2, at(s17(3)) - ARRIVE);
-    T.br = [4, 6, 8].map((k) => Math.max(T.p55b + ARRIVE + 0.2, at(s17(k)))); // "nhóm sự cố", "mức khẩn", "hạn xử lý"
-    T.exit55 = Math.max(T.br[2] + 1.2, L17.end); // 5.5 leaves to the left...
-    // L18: ...as the confirm panel slides in, landing on L18's start; the tag, the button and the manager land on
-    // 16ths; the band lands and the chain reveals one step per 8th note.
-    T.p56a = Math.max(T.exit55, at(L18.start) - ARRIVE);
-    T.tag56 = Math.max(T.p56a + ARRIVE, at(s18(1)));
-    T.btn = Math.max(T.tag56 + 0.3, at(s18(3)));
-    T.id = Math.max(T.btn + 0.3, at(s18(5)));
-    const bandLand = ceilGrid(Math.max(T.id + 0.3 + ARRIVE, s18(7)));
-    T.band = at(bandLand) - ARRIVE;
-    T.ticks = [1, 2, 3, 4, 5].map((k) => at(bandLand + (k * ctx.beat) / 2)); // steps 2-6
-    // Landing times of the moves above (for the sound's cues): each spring's first arrival at its target.
-    const land = {
-      logo: T.logo + ARRIVE, lines: T.lines.map((x) => x + ARRIVE), band52: T.band52 + ARRIVE, fac: T.fac + ARRIVE,
-      rise: T.rise + RISE_LAND, p55a: T.p55a + ARRIVE, p55b: T.p55b + ARRIVE, p56a: T.p56a + ARRIVE,
-      band: T.band + ARRIVE,
+    const app = await ctx.recording('app');
+    const web = await ctx.recording('web');
+    const tapOf = (label) => {
+      const tp = app.taps.find((x) => x.label === label);
+      if (!tp) throw new Error(`the app recording has no tap on "${label}"`);
+      return tp;
     };
+    const keys = app.keys.map(([t]) => t);
+    const firstFrameAfter = (rec, rt) => rec.frames.find(([t]) => t > rt)[0];
 
-    // Ground.
+    // ---- Beats (chapter-local seconds) on the music's grid. Every tap and click lands on an 8th; slams, stamps and
+    // paper landings on 16ths; each beat's text lands early and stays whole until its beat ends.
+    const T = {};
+    // L15: the phone rises in as soon as ch04's doors are gone; the logo and the promise slide in line by line,
+    // "kiểm chứng được" slams; the finger taps "+ Phản ánh" a beat before the promise leaves.
+    T.phone = at(ceilGrid(EXIT.ch04 + ARRIVE + HIT)) - ARRIVE;
+    T.logo = at(ceilGrid(Math.max(L15.start, T.phone + 0.15 + ARRIVE + HIT))) - ARRIVE;
+    T.lines = [3, 5, 7].map((k) => Math.max(T.logo + 0.3, at(ctx.syl('L15', k)) - ARRIVE));
+    T.verify = at(ctx.syl('L15', 9));
+    T.handIn = ctx.snap(L15.end - 3 * b, 2); // the tapping hand comes in from the lower right
+    T.tap = {};
+    T.tap['Phản ánh'] = ctx.snap(L15.end - b, 2);
+    T.out15 = L15.end; // the logo and the promise leave
+    // L16: the report box; the hook's words type in, fast-forward, while the camera pushes in; then the location,
+    // one tap per beat; "Gửi phản ánh"; the confirmation on the bar line... a beat later, back to the list.
+    T.tap['Đã xảy ra chuyện gì?'] = L16.start;
+    T.disp = [at(L16.start + g), at(L16.start + 3 * g)]; // "CƯ DÂN GỬI", "PHẢN ÁNH" (between the key clicks)
+    T.k0 = L16.start + g + 0.07; // the first character (after the box's own focus animation, at real speed)
+    T.k1 = L16.start + 7 * g; // the last
+    T.keys = [1, 2, 3].map((k) => L16.start + k * e8); // key clicks on straight 8ths while the words type in
+    T.pushType = L16.start + 0.06;
+    T.pullType = T.k1;
+    T.tap['Chọn vị trí'] = ctx.snap(T.k1 + g, 2);
+    T.tap['Tầng 3'] = T.tap['Chọn vị trí'] + b;
+    T.tap['Thang máy B'] = T.tap['Tầng 3'] + b;
+    T.tap['Gửi phản ánh'] = T.tap['Thang máy B'] + b;
+    T.conf = T.tap['Gửi phản ánh'] + b; // the confirmation appears (the bell)
+    T.pushConf = T.tap['Gửi phản ánh'] + g;
+    T.tap['Quay lại'] = T.conf + b;
+    // "Ảnh ·" as the camera is back on the whole form (its photo row); "vị trí ·" as the form shows the location.
+    const back = settled(app, tapOf('Thang máy B').down) - tapOf('Thang máy B').down;
+    T.bits = { '24/7': at(L16.start + 5 * g), 'Ảnh ·': at(ctx.snap(T.pullType + 0.42)), 'vị trí ·': at(ceilGrid(T.tap['Thang máy B'] + Math.min(back, b - 0.12))) };
+    // L17: the pan to the laptop (the list has been up for about half a second); "AI GỢI Ý" as it lands; the push into
+    // the suggestion; the brackets snap as the cursor passes each suggested value; back out as L17 ends.
+    T.listed = T.tap['Quay lại'] + e8; // the list shows the new report (the app's fade-through, a little fast)
+    T.panLand = ctx.snap(T.listed + 0.45 + ARRIVE, 2);
+    T.pan = at(T.panLand) - ARRIVE;
+    T.ai = at(T.panLand);
+    T.push1 = T.panLand + e8;
+    T.close1 = T.panLand + 2 * e8; // the paper closes round the suggestion...
+    T.closed1 = T.close1 + e8; // ...and is in place
+    T.br = [T.closed1, T.closed1 + e8, T.closed1 + 3 * e8];
+    T.pull1 = L17.end;
+    // L18: the cursor picks the location (the click on L18's first beat), clicks the button; as the case page loads,
+    // "NGƯỜI QUYẾT ĐỊNH" stamps; the scroll, the push, the paper; "mọi bước đều lưu vết".
+    T.clickLoc = L18.start;
+    T.clickGo = L18.start + 2 * b;
+    T.page = L18.start + 2 * b + e8;
+    T.scroll = T.page + b;
+    T.push2 = T.scroll + 0.05;
+    T.close2 = T.scroll + e8;
+    T.closed2 = T.close2 + e8;
+    T.trail = at(T.closed2);
+
+    // ---- The recordings' time remaps: film time -> recording time. Around each tap the recording plays at real
+    // speed until the screen settles (its ripple and its transition play as recorded); the still stretches between
+    // are compressed or held. The typing is fast-forwarded between its first and last character.
+    const K = [[0, 0]];
+    const add = (F, R) => {
+      const [f0, r0] = K[K.length - 1];
+      if (F > f0 + 1e-6 && R > r0 + 1e-6) K.push([F, R]);
+    };
+    const tapKey = (label, room) => {
+      const tp = tapOf(label);
+      const F = T.tap[label];
+      add(F, tp.down);
+      const s = settled(app, tp.down);
+      add(F + Math.min(s - tp.down, room), tp.down + Math.min(s - tp.down, room));
+    };
+    tapKey('Phản ánh', T.tap['Đã xảy ra chuyện gì?'] - T.tap['Phản ánh'] - 0.2);
+    tapKey('Đã xảy ra chuyện gì?', g);
+    add(T.k0, keys[0]);
+    add(T.k1, keys[keys.length - 1]);
+    for (const label of ['Chọn vị trí', 'Tầng 3', 'Thang máy B']) tapKey(label, b - 0.12);
+    tapKey('Gửi phản ánh', 0.12);
+    const rConf = firstFrameAfter(app, app.marks.confirm - 1e-3); // the frame that first shows the confirmation
+    add(T.conf, rConf);
+    add(T.tap['Quay lại'], tapOf('Quay lại').down);
+    add(T.listed, app.marks.listed);
+    add(ctx.dur, app.frames[app.frames.length - 1][0]);
+    T.appKeys = K;
+    const appT = remap(K);
+    const appF = unmap(K);
+    // The laptop: the cursor's crossing of each suggested value (its centre) lands on a bracket's 8th.
+    const tri = web.boxes.triage;
+    const vals = ['Thang máy', 'Cao', '240 phút'].map((s) => tri.values.find((v) => v.text === s).box);
+    const lineMoveStart = web.mouse[0][0];
+    // The move along the suggestion line: the longest run of logged points at one height.
+    let run = [];
+    for (let i = 0, j = 0; i < web.mouse.length; i = j) {
+      for (j = i; j < web.mouse.length && Math.abs(web.mouse[j][2] - web.mouse[i][2]) < 0.01; j++);
+      if (j - i > run.length) run = web.mouse.slice(i, j);
+    }
+    const crossing = (x) => run.find(([, mx]) => mx >= x)[0];
+    const lineEnd = run[run.length - 1][0];
+    const clickLoc = web.clicks.find((c) => c.label === 'Vị trí').down;
+    const clickGo = web.clicks.find((c) => c.label === 'Xác nhận phân loại').down;
+    // The location steps through the list as the arrow keys move (the list itself is native, not in the frames),
+    // from the first frame that changes after the click to the frame of its input event (Enter).
+    const picked = web.page_events.find((ev) => ev.k === 'input' && ev.t > clickLoc).t;
+    const pick = web.frames.filter(([t]) => t > clickLoc + 0.3 && t <= picked + 0.01);
+    const wheel = web.page_events.filter((ev) => ev.k === 'wheel');
+    const scrolls = web.page_events.filter((ev) => ev.k === 'scroll');
+    const rPage = firstFrameAfter(web, web.marks.confirmed - 1e-3); // the first frame of the case page
+    const KW = [[0, 0]];
+    const addW = (F, R) => {
+      const [f0, r0] = KW[KW.length - 1];
+      if (F > f0 + 1e-6 && R > r0 + 1e-6) KW.push([F, R]);
+    };
+    addW(T.push1, lineMoveStart);
+    vals.forEach((v, i) => addW(T.br[i], crossing(v[0] + v[2] / 2)));
+    addW(T.br[2] + (lineEnd - crossing(vals[2][0] + vals[2][2] / 2)) * 1.1, lineEnd);
+    addW(T.clickLoc, clickLoc);
+    addW(T.clickLoc + 0.14, pick[0][0] - 0.01); // the location steps through the list (the arrow keys)...
+    addW(T.clickLoc + 0.39, pick[pick.length - 1][0]); // ...to Tầng 1 / Thang máy A
+    addW(T.clickGo, clickGo);
+    addW(T.page, rPage);
+    addW(T.scroll, wheel[0].t);
+    addW(T.scroll + (scrolls[scrolls.length - 1].t - wheel[0].t), scrolls[scrolls.length - 1].t);
+    addW(ctx.dur, web.frames[web.frames.length - 1][0]);
+    T.webKeys = KW;
+    const webT = remap(KW);
+    const webF = unmap(KW);
+
+    // ---- Ground.
     el(ctx.root, '', { width: `${W}px`, height: `${H}px`, background: C.cream });
 
-    // ---- 5.2: logo at left (ctx.top, so it shows exactly as the file is), the line at right (on the paper).
+    // ---- 5.2: the logo (ctx.top, so it shows exactly as the file is) and the promise (on the paper), at left.
     const logoImg = await ctx.image('/assets/brand/lamto-logo.png');
     const art = alphaBox(logoImg);
-    const LOGO_W = 460;
+    const LOGO_W = 360;
     const ls = LOGO_W / art.w;
-    const LOGO = { x: 250, y: Math.round((H - art.h * ls) / 2) - 60 }; // the artwork's top-left on screen
+    const LOGO = { x: 130, y: 150 };
     const logo = el(ctx.top, '', {});
     const logoEl = logoImg.cloneNode();
     logoEl.className = 'abs';
@@ -227,336 +299,278 @@ export default {
       left: px(LOGO.x - art.x * ls), top: px(LOGO.y - art.y * ls),
     });
     logo.appendChild(logoEl);
-
     const LS = 64;
-    const TX = LOGO.x + LOGO_W + 150;
     const lineH = Math.round(LS * 1.2);
-    const TY = Math.round(LOGO.y + (art.h * ls) / 2 - 1.5 * lineH);
+    const TY = Math.round(LOGO.y + art.h * ls + 90);
     const lines = ['Từ một phản ánh', 'đến khoản chi', 'ai cũng '].map((s, i) =>
-      el(ctx.root, 'label', { left: `${TX}px`, top: `${TY + i * lineH}px`, fontSize: `${LS}px`, lineHeight: 1.2, color: C.black, whiteSpace: 'nowrap' }, s.normalize('NFC')));
+      el(ctx.root, 'label', { left: `${LOGO.x}px`, top: `${TY + i * lineH}px`, fontSize: `${LS}px`, lineHeight: 1.2, color: C.black, whiteSpace: 'nowrap' }, s.normalize('NFC')));
     const verify = piece(lines[2], 'kiểm chứng được', { color: C.navy, transformOrigin: '0% 70%' });
 
-    // ---- 5.3 / 5.4: the façade and its window (all on ctx.top: the window's paper must overlap the app plates).
-    const p53a = await plate(ctx, '5.3a');
-    const p53b = await plate(ctx, '5.3b');
-    const p53c = await plate(ctx, '5.3c');
-    const p54 = await plate(ctx, '5.4');
-    const c53a = ctx.crop('5.3a');
-    const cardX = (ctx.crop('5.3c').crop[0] - c53a.crop[0]) * c53a.scale; // 5.3a/5.3b cards start this far in
-    AP.w = p53c.w; // the window is exactly a card wide
-    const hA = p53a.h - SPARE;
-    const btnY = BTN_53C * ctx.crop('5.3c').scale; // top of "Gửi phản ánh" inside 5.3c
-    // Window rects (screen) after the push, one per state: 5.3a, 5.3b, 5.3c, closed onto the button, the confirmation.
-    const RA = { x: AP.x, y: AP.y, w: AP.w, h: hA };
-    const RB = { ...RA, h: p53b.h };
-    const RC = { ...RA, h: p53c.h };
-    const RP = { x: AP.x, y: AP.y + btnY - 8, w: AP.w, h: p53c.h - btnY + 8 };
-    const RF = { x: AP.x + AP.w / 2 - p54.w / 2, y: AP.y, w: p54.w, h: p54.h };
-    // Plate positions (screen) at rest. The confirmation starts behind the button (F0, containing RP) and rises with
-    // the window to RF on the same spring, so the window never leaves the plate.
-    const POS = { a: [AP.x - cardX, AP.y], b: [AP.x - cardX, AP.y], c: [AP.x, AP.y], f: [RF.x, RF.y] };
-    const F0 = AP.y + p53c.h - p54.h;
-    // Window deltas from RA, one spring per change (the window snaps taller, closes onto the button, opens again).
-    const D = {
-      x: track(0, [[T.conf, RF.x - RA.x, OPEN]]),
-      y: track(0, [[T.press, RP.y - RA.y, 'snap'], [T.conf, RF.y - RA.y, OPEN]]),
-      w: track(0, [[T.conf, RF.w - RA.w, OPEN]]),
-      h: track(0, [[T.b, RB.h - hA, GROW], [T.c, RC.h - hA, GROW], [T.press, RP.h - hA, 'snap'], [T.conf, RF.h - hA, OPEN]]),
+    // ---- 5.3 / 5.4: who sends it, and what goes with it (left column, on the paper).
+    const DS = 120;
+    const DX = 130;
+    const DY = 300;
+    const disp = ['CƯ DÂN GỬI', 'PHẢN ÁNH'].map((s, i) =>
+      text(ctx.root, 'disp cut-text', s, { size: DS, color: C.black, left: `${DX}px`, top: `${DY + i * Math.round(DS * 1.1)}px`, transformOrigin: '0% 70%' }).el);
+    const label = el(ctx.root, 'label', { left: `${DX}px`, top: `${DY + 2 * Math.round(DS * 1.1) + 22}px`, fontSize: '56px', lineHeight: 1.2, color: C.navy, whiteSpace: 'nowrap' });
+    const bits = Object.keys(T.bits).sort((a, b2) => ['Ảnh ·', 'vị trí ·', '24/7'].indexOf(a) - ['Ảnh ·', 'vị trí ·', '24/7'].indexOf(b2)).map((s, i) => {
+      if (i) label.appendChild(document.createTextNode(' '));
+      return { e: piece(label, s, { transformOrigin: '50% 60%' }), t: T.bits[s] };
+    });
+
+    // ---- The phone rig (ctx.top: its paper overlaps the recording): palm, phone and screen, thumb and fingertips,
+    // the tapping hand; all in the phone's units under one camera transform.
+    const prig = el(ctx.top, '', { transformOrigin: '0 0' });
+    const under = el(prig, '', {});
+    const ph = phone(prig, { seed: SEED + 20 });
+    const over = el(prig, '', {});
+    holdHand(under, over, { seed: SEED + 40 });
+    const appScreen = await screen(ph.screen, app);
+    const hand = pointHand(over, { seed: SEED + 60 });
+    // The hand's path (phone units): in from the lower right, each tap's contact point at its time, aside while the
+    // words type in. One spring per change of target for x, y and lean; the fingertip's press from the log.
+    const sp = (tp) => [PHONE.sx + tp.x, PHONE.sy + tp.y];
+    const OFF = [760, 1500];
+    const ASIDE = [470, 830];
+    const HOVER = [44, 70]; // the finger waits just below and right of its first target, then goes in
+    const hx = [[T.handIn, sp(tapOf('Phản ánh'))[0] + HOVER[0], REACH], [T.tap['Phản ánh'] - LEAD, sp(tapOf('Phản ánh'))[0], REACH]];
+    const hy = [[T.handIn, sp(tapOf('Phản ánh'))[1] + HOVER[1], REACH], [T.tap['Phản ánh'] - LEAD, sp(tapOf('Phản ánh'))[1], REACH]];
+    const ha = [[T.handIn, LEAN['Phản ánh'], REACH]];
+    const order = ['Phản ánh', 'Đã xảy ra chuyện gì?', 'Chọn vị trí', 'Tầng 3', 'Thang máy B', 'Gửi phản ánh', 'Quay lại'];
+    const press = [];
+    order.forEach((lab, i) => {
+      const tp = tapOf(lab);
+      const F = T.tap[lab];
+      const down = appF(tp.down);
+      const up = appF(tp.up);
+      if (Math.abs(down - F) > 1e-3) throw new Error(`tap "${lab}" maps to ${down.toFixed(3)} s, not its beat ${F.toFixed(3)} s`);
+      if (i > 0) {
+        const [x, y] = sp(tp);
+        hx.push([F - LEAD, x, REACH]);
+        hy.push([F - LEAD, y, REACH]);
+        ha.push([F - LEAD, LEAN[lab], REACH]);
+      }
+      press.push([down, 1, PRESS], [up, 0, PRESS]);
+      if (lab === 'Quay lại') { // done: the hand leaves the way it came, clear of the list
+        hx.push([up + 0.03, OFF[0], REACH]);
+        hy.push([up + 0.03, OFF[1], REACH]);
+        ha.push([up + 0.03, -30, REACH]);
+      }
+      if (lab === 'Đã xảy ra chuyện gì?') { // aside while the words type in
+        hx.push([up + 0.05, ASIDE[0], REACH]);
+        hy.push([up + 0.05, ASIDE[1], REACH]);
+        ha.push([up + 0.05, -18, REACH]);
+      }
+    });
+    T.handX = track(OFF[0], hx);
+    T.handY = track(OFF[1], hy);
+    T.handA = track(-16, ha);
+    T.press = track(0, press);
+    T.handUp = appF(tapOf('Quay lại').up);
+    // The camera on the phone rig.
+    T.camP = {
+      z: track(REST.z, [[T.pushType, TYPE.z, CAM], [T.pullType, REST.z, CAM], [T.pushConf, CONF.z, CAM]]),
+      x: track(REST.x, [[T.pushType, TYPE.x, CAM], [T.pullType, REST.x, CAM], [T.pushConf, CONF.x, CAM], [T.pan, CONF.x - 2300, 'slide']]),
+      y: track(1180, [[T.phone, REST.y, 'slide'], [T.pushType, TYPE.y, CAM], [T.pullType, REST.y, CAM], [T.pushConf, CONF.y, CAM]]),
     };
 
-    // The push: the grid is the wide shot's screen space; zooming by S about P lands window PICK exactly on RA. S puts
-    // the next window to the right 160 px past the frame's edge, so only one window remains once the camera is in.
-    const PX = W / COLS;
-    const PY = H / ROWS;
-    const S = (W + 160 - AP.x) / PX;
-    const WW = AP.w / S;
-    const WH = hA / S;
-    const wins = [];
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        wins.push({ x: c * PX + (PX - WW) / 2, y: r * PY + (PY - WH) / 2, w: WW, h: WH, seed: SEED + 50 + r * COLS + c, pick: c === PICK[0] && r === PICK[1] });
-      }
-    }
-    const pw = wins.find((w) => w.pick);
-    const P = { x: (AP.x - S * pw.x) / (1 - S), y: (AP.y - S * pw.y) / (1 - S) };
-    // The façade sheet (world, clockwise) with a diagonal cut along its top, and an inset copy for the cream underlay.
-    const OUT = [[-40, -60], [W + 40, -300], [W + 40, H + 160], [-40, H + 160]];
-    const OUT_IN = [[-32, -44], [W + 32, -284], [W + 32, H + 152], [-32, H + 152]];
-    const outLens = OUT.map(([x0, y0], i) => Math.hypot(OUT[(i + 1) % 4][0] - x0, OUT[(i + 1) % 4][1] - y0));
-    const RISE_FROM = H + 320; // the whole sheet starts below the frame
-    const BAND52 = 930; // ...rises to here under the promise (its first row of windows in view), then all the way
-    const rise = track(RISE_FROM, [[T.band52, BAND52, 'slide'], [T.fac, 0, 'slide']]);
-    const gridLens = [WW, WH, WW, WH];
-    const apLens = [AP.w, hA, AP.w, hA];
+    // ---- The laptop rig: laptop and screen, the cursor; in the page's units under one camera transform.
+    const lrig = el(ctx.top, '', { transformOrigin: '0 0' });
+    const lp = laptop(lrig, { seed: SEED + 80 });
+    const webScreen = await screen(lp.screen, web);
+    // Framings of the two push-ins: a page region (CSS px of the viewport) brought to a window on the stage.
+    const frameOf = (r, wx, wy, z) => ({ x: wx - (LAPTOP.sx + r[0]) * z, y: wy - (LAPTOP.sy + r[1]) * z, z });
+    const R1 = [tri.line[0] - 34, tri.heading[1] - 16, tri.line[0] + tri.line[2] + 40, tri.line[1] + tri.line[3] + 14];
+    // The case page after the scroll (viewport CSS px): the decision (its heading and line) and, below the page's
+    // "Tiến độ" section, the accountability chain (its heading and steps).
+    const cs = web.boxes.case;
+    const sy = web.scroll;
+    const R2 = [tri.line[0] - 30, cs.decision_heading[1] - sy - 14, cs.chain[0] + cs.chain[2] + 24, cs.chain[1] + cs.chain[3] - sy + 12];
+    const MID = [cs.decision[1] + cs.decision[3] - sy + 12, cs.chain_heading[1] - sy - 14]; // the band between them
+    const WIN1 = { x: 330, y: 250 };
+    const S1 = frameOf(R1, WIN1.x, WIN1.y, ZOOM);
+    const WIN2 = { x: Math.round((W - (R2[2] - R2[0]) * ZOOM2) / 2) + 40, y: H - 26 - Math.round((R2[3] - R2[1]) * ZOOM2) };
+    const S2 = frameOf(R2, WIN2.x, WIN2.y, ZOOM2);
+    const win1 = { x: WIN1.x, y: WIN1.y, w: (R1[2] - R1[0]) * ZOOM, h: (R1[3] - R1[1]) * ZOOM };
+    const win2 = { x: WIN2.x, y: WIN2.y, w: (R2[2] - R2[0]) * ZOOM2, h: (R2[3] - R2[1]) * ZOOM2 };
+    const mid = { y0: S2.y + (LAPTOP.sy + MID[0]) * ZOOM2, y1: S2.y + (LAPTOP.sy + MID[1]) * ZOOM2 };
+    T.camL = {
+      z: track(WIDE.z, [[T.push1, S1.z, PUSHL], [T.pull1, WIDE.z, CAM], [T.push2, S2.z, PUSHL]]),
+      x: track(W + 60, [[T.pan, WIDE.x, 'slide'], [T.push1, S1.x, PUSHL], [T.pull1, WIDE.x, CAM], [T.push2, S2.x, PUSHL]]),
+      y: track(WIDE.y, [[T.push1, S1.y, PUSHL], [T.pull1, WIDE.y, CAM], [T.push2, S2.y, PUSHL]]),
+    };
+    T.clickPress = track(0, web.clicks.flatMap((c) => [[webF(c.down), 1, PRESS], [webF(c.down + 0.09), 0, PRESS]]));
 
-    const under = el(ctx.top, 'grained', { width: `${W}px`, height: `${H}px`, backgroundColor: C.cream });
-    const lit = el(ctx.top, 'grained', { width: `${W}px`, height: `${H}px`, backgroundColor: C.orange });
-    const win = el(ctx.top, '', { overflow: 'hidden' });
-    for (const p of [p53a, p53b, p53c, p54]) win.appendChild(p.el);
-    const navy = el(ctx.top, 'grained', { width: `${W}px`, height: `${H}px`, backgroundColor: C.navy });
-    // Who sends it (added when the voice was dropped): CREAM DISPLAY flush left beside the window, its cap line level
-    // with the window's top edge; "Ảnh · vị trí · 24/7" sits under it.
-    const DX = AP.x + AP.w + 100;
-    const DLH = Math.round(DS * 1.1);
-    const DY = AP.y - Math.round(DS * 0.2);
-    const disp = ['CƯ DÂN GỬI', 'PHẢN ÁNH'].map((s, i) => {
-      const d = text(ctx.top, 'disp cut-text', s, { size: DS, color: C.cream, left: `${DX}px`, top: `${DY + i * DLH}px`, transformOrigin: '0% 70%' });
-      grainText(d.el, C.cream);
-      return d.el;
-    });
-    const label = el(ctx.top, 'label', { left: `${DX}px`, top: `${DY + 2 * DLH + 18}px`, fontSize: '56px', lineHeight: 1.2, whiteSpace: 'nowrap' });
-    const bits = ['Ảnh ·', 'vị trí ·', '24/7'].map((s, i) => {
-      if (i) label.appendChild(document.createTextNode(' '));
-      const b = piece(label, s, { transformOrigin: '50% 60%' });
-      grainText(b, C.cream);
-      return b;
-    });
-    const bitT = [T.anh, T.vitri, T.b];
-
-    // ---- 5.5: the AI suggestion. The tag is paper on the ground; the plates and the brackets on ctx.top.
-    const tag55 = tag(ctx.root, 'AI GỢI Ý', { cls: 'disp cut-text', size: 110, color: C.black, bg: C.orange, seed: SEED + 20, rot: -2 });
-    const p55a = await plate(ctx, '5.5a', { backing: C.navy, seed: SEED + 21 });
-    const p55b = await plate(ctx, '5.5b', { backing: C.navy, seed: SEED + 22 });
-    const TAG55 = { x: 80, y: 72 };
-    const P55A = { x: TAG55.x + tag55.w + 70, y: 90 };
-    // 5.5b rises to sit just under report #7, over nothing but its bottom margin (its last row ends BOTTOM_55A in),
-    // so the whole report shows above the suggestion and the pocket below it holds the tags.
-    const P55B = { x: TAG55.x, y: P55A.y + Math.round(((BOTTOM_55A + ctx.crop('5.5a').crop[3]) / 2) * ctx.crop('5.5a').scale) };
-    const sb = ctx.crop('5.5b').scale;
-    const BR_TOP = DESC_55B * sb + 7;
-    const BR_BOT = NEXT_55B * sb - 6;
-    // The pocket: 5.5b rises tucked into a NAVY sheet whose scissor-cut edge runs under the brackets' bars (between
-    // them and the next UI line), so only the suggestion's first line shows and the tags hang on paper, never on UI
-    // text. It moves with the plate (plate coordinates) and spans the frame, so it also tucks 5.5a's lower rows away.
-    // Right of the plate the pocket steps up to report #7's bottom margin, so the two cards sit in one NAVY sheet.
-    const PK = { x: -P55B.x - 80, y: BR_BOT - 11 - 130, w: W + 160, h: H + 400 };
-    const pkEdge = 130 + 5; // the edge under the brackets, in pocket coordinates
-    const pkNotch = { x: p55b.w + 4 - PK.x, y: Math.round(P55A.y + p55a.h - 12 - P55B.y - PK.y) };
-    el(p55b.el, 'grained', {
-      left: px(PK.x), top: px(PK.y), width: px(PK.w), height: px(PK.h), backgroundColor: C.navy,
-      backgroundPosition: `${-(PK.x + P55B.x)}px ${-(PK.y + P55B.y)}px`,
-      clipPath: clip([
-        ...jagged([0, pkEdge], [pkNotch.x, pkEdge], { seed: SEED + 35, amp: 3.5, wave: 60 }),
-        ...jagged([pkNotch.x, pkEdge], [pkNotch.x, pkNotch.y], { seed: SEED + 37, amp: 2.5, wave: 40 }).slice(1),
-        ...jagged([pkNotch.x, pkNotch.y], [PK.w, pkNotch.y], { seed: SEED + 38, amp: 3.5, wave: 60 }).slice(1),
-        [PK.w, PK.h], [0, PK.h],
-      ]),
-    });
-    // The tags hang from the brackets' bars (tucked 5 px under them), CREAM paper with BLACK LABEL 56, each centred
-    // under its bracket unless that crowds its neighbour; then both move apart, still hanging from their brackets.
-    const tg55 = WORDS_55B.map(([a, b], i) => ({
-      ...tag(p55b.el, TAGS55[i], { size: 56, color: C.black, bg: C.cream, padX: 0.36, padY: 0.24, seed: SEED + 36 + i, rot: [-1.5, 1.2, -1][i], grained: true }),
-      c: ((a + b) / 2) * sb,
-    }));
-    const lefts = tg55.map((tg) => tg.c - tg.w / 2);
-    for (let i = 1; i < tg55.length; i++) {
-      const over = lefts[i - 1] + tg55[i - 1].w + 40 - lefts[i];
-      if (over > 0) {
-        lefts[i - 1] -= over / 2;
-        lefts[i] += over / 2;
-      }
-    }
-    const tags55 = tg55.map((tg, i) => {
-      Object.assign(tg.el.style, { left: px(lefts[i]), top: px(BR_BOT - 5), transformOrigin: `${px(tg.c - lefts[i])} 0px` });
-      return tg.el;
-    });
-    const brackets = WORDS_55B.map(([a, b], i) => {
-      const x0 = a * sb - 7;
-      const w = (b - a) * sb + 14;
-      const h = BR_BOT - BR_TOP;
-      const bar = 13;
-      const tab = 10;
-      const u = [[0, 0], [tab, 0], [tab, h - bar], [w - tab, h - bar], [w - tab, 0], [w, 0], [w, h], [0, h]];
-      const e = el(p55b.el, 'grained', {
-        left: px(x0), top: px(BR_TOP), width: px(w), height: px(h), backgroundColor: C.orange,
-        clipPath: clip(rough(u, { seed: SEED + 30 + i, amp: 1.4, wave: 30, spacing: 5 })), transformOrigin: '50% 100%',
+    // ---- 5.5: the paper that closes round the suggestion (CREAM, with a NAVY pocket below it for the tags), the
+    // brackets under the three suggested values and their tags.
+    const pocketTop = win1.y + win1.h - 6;
+    const shut1 = closers(ctx.top, win1, [C.cream, C.cream, C.navy, C.cream], SEED + 100);
+    // The cursor rides above that paper (it is an overlay, like the hand) and under the tags; the camera is applied
+    // to it by hand. The paper that closes round the decision later covers it where it rests.
+    const curLayer = el(ctx.top, '', { transformOrigin: '0 0' });
+    const cur = cursor(curLayer, { seed: SEED + 95 });
+    const bracketLayer = el(ctx.top, '', {});
+    const TAGS = ['nhóm sự cố', 'mức khẩn', 'hạn xử lý'];
+    const vx = (v) => S1.x + (LAPTOP.sx + v) * ZOOM;
+    const vy = (v) => S1.y + (LAPTOP.sy + v) * ZOOM;
+    const tg = TAGS.map((s, i) => tag(bracketLayer, s, { size: 56, color: C.black, bg: C.cream, padX: 0.36, padY: 0.24, seed: SEED + 36 + i, rot: [-1.5, 1.2, -1][i], grained: true }));
+    const centres = vals.map((v) => vx(v[0] + v[2] / 2));
+    const lefts = [];
+    tg.forEach((t, i) => lefts.push(i ? Math.max(centres[i] - t.w / 2, lefts[i - 1] + tg[i - 1].w + 40) : centres[i] - t.w / 2));
+    const brackets = vals.map((v, i) => {
+      const x0 = vx(v[0]) - 7;
+      const w = v[2] * ZOOM + 14;
+      const y0 = vy(v[1] + v[3]) + 6;
+      const h = pocketTop + 12 - y0;
+      const u = [[0, 0], [10, 0], [10, h - 13], [w - 10, h - 13], [w - 10, 0], [w, 0], [w, h], [0, h]];
+      const e = el(bracketLayer, 'grained', {
+        left: px(x0), top: px(y0), width: px(w), height: px(h), backgroundColor: C.orange,
+        backgroundPosition: `${-x0}px ${-y0}px`, clipPath: clip(rough(u, { seed: SEED + 30 + i, amp: 1.4, wave: 30, spacing: 5 })), transformOrigin: '50% 100%',
       });
+      Object.assign(tg[i].el.style, { left: px(lefts[i]), top: px(pocketTop + 12), transformOrigin: `${px(centres[i] - lefts[i])} 0px` });
       return e;
     });
+    const aiTag = tag(ctx.top, 'AI GỢI Ý', { cls: 'disp cut-text', size: 110, color: C.black, bg: C.orange, seed: SEED + 20, rot: -2, grained: true });
+    const AI = { x: 60, y: 40 };
 
-    // ---- 5.6: the decision, then the trail.
-    const p56a = await plate(ctx, '5.6a', { backing: C.navy, seed: SEED + 23 });
-    const p56b = await plate(ctx, '5.6b', { backing: C.orange, seed: SEED + 24 });
-    const p56c = await plate(ctx, '5.6c', { backing: C.navy, seed: SEED + 25 });
-    const tag56 = tag(ctx.root, 'NGƯỜI QUYẾT ĐỊNH', { cls: 'disp cut-text', size: 64, color: C.cream, bg: C.navy, seed: SEED + 26, rot: -2 });
-    const c56d = ctx.crop('5.6d');
-    const chainW = Math.round(c56d.crop[2] * c56d.scale);
-    const chainH = Math.round(c56d.crop[3] * c56d.scale);
-    const CH = { x: Math.round((W - chainW) / 2), y: H - 56 - chainH };
-    const BY = CH.y - 116; // the band's top edge
-    const P56A = { x: W - 80 - p56a.w, y: 40 };
-    const P56B = { x: P56A.x + Math.round(FIELD_56A * ctx.crop('5.6a').scale), y: BY + 8 }; // the band covers it later
-    const TAG56 = { x: 100, y: 190 };
-    const P56C = { x: TAG56.x, y: TAG56.y + tag56.h + 36 };
-
-    const band = el(ctx.top, '');
-    const chainBox = el(band, '', { left: `${CH.x}px`, top: `${CH.y}px`, width: `${chainW}px`, height: `${chainH}px`, overflow: 'hidden' });
-    await plate(ctx, '5.6d', { parent: chainBox });
-    // The shutter: NAVY paper over the steps not yet revealed, with a scissor-cut leading edge (it overhangs the window
-    // by 14 px above and below, under the band's paper).
-    const sh = chainH + 28;
-    const shutter = el(chainBox, 'grained', {
-      left: '-12px', top: '-14px', width: `${chainW + 52}px`, height: `${sh}px`, backgroundColor: C.navy,
-      clipPath: clip([...jagged([12, sh], [12, 0], { seed: SEED + 41, amp: 5, wave: 40 }), [chainW + 52, 0], [chainW + 52, sh]]),
+    // ---- 5.6: the paper round the decision and the chain; "NGƯỜI QUYẾT ĐỊNH"; "mọi bước đều lưu vết".
+    const shut2 = closers(ctx.top, win2, [C.cream, C.cream, C.cream, C.cream], SEED + 120);
+    // A NAVY band slides in over the page's "Tiến độ" section between the two (a mask: nothing is redrawn), carrying
+    // "mọi bước đều lưu vết" down to the chain.
+    const band = el(ctx.top, '', {});
+    const BX = -160; // the band's paper runs well past both edges of the frame, so its overshoot never shows an end
+    const BW = W + 320;
+    const by0 = Math.floor(mid.y0) - 8;
+    const bandPoly = [...jagged([BX, mid.y0], [BX + BW, mid.y0], { seed: SEED + 130, amp: 3, wave: 60 }), ...jagged([BX + BW, mid.y1], [BX, mid.y1], { seed: SEED + 131, amp: 3, wave: 60 })];
+    el(band, 'grained', {
+      left: `${BX}px`, top: `${by0}px`, width: `${BW}px`, height: `${Math.ceil(mid.y1 - mid.y0) + 16}px`, backgroundColor: C.navy,
+      backgroundPosition: `${-BX}px ${-by0}px`, clipPath: clip(rough(bandPoly, { seed: SEED + 132, amp: 1 }).map(([x0, y0]) => [x0 - BX, y0 - by0])),
     });
-    aperture(band, C.navy, { x: CH.x, y: CH.y, w: chainW, h: chainH, sheet: [-60, BY, W + 120, H - BY + 80], seed: SEED + 42, amp: 3 });
-    const bandLabel = text(band, 'label', 'mọi bước đều lưu vết', { size: 52, color: 'transparent', left: `${CH.x}px`, top: `${CH.y - 88}px` });
-    grainText(bandLabel.el, C.cream);
-    const gaps = GAPS_56D.map((g) => g * c56d.scale);
-    const reveal = track(gaps[0], [...gaps.slice(1), chainW + 12].map((g, k) => [T.ticks[k], g, TICK]));
+    const TS = 72;
+    const trail = text(band, 'label', 'mọi bước đều lưu vết', { size: TS, color: 'transparent', left: `${win2.x + 34}px`, top: `${Math.round((mid.y0 + mid.y1) / 2 - TS * 0.62)}px` });
+    grainText(trail.el, C.cream);
+    const decTag = tag(ctx.top, 'NGƯỜI QUYẾT ĐỊNH', { cls: 'disp cut-text', size: 84, color: C.cream, bg: C.navy, seed: SEED + 26, rot: -2, grained: true });
+    const DEC = { x: 60, y: Math.max(20, win2.y - 150) };
+
+    // Landing times (for the sound): each spring's first arrival at its target.
+    const land = {
+      phone: T.phone + ARRIVE, logo: T.logo + ARRIVE, lines: T.lines.map((x) => x + ARRIVE), pan: T.pan + ARRIVE,
+      close1: T.close1 + firstReach(CLOSE), close2: T.close2 + firstReach(CLOSE), trail: T.trail,
+    };
+    // Where each tap sits across the frame, with the camera where it is at that moment.
+    const pans = {};
+    for (const lab of order) {
+      const F = T.tap[lab];
+      pans[lab] = clamp((T.camP.x(F) + (PHONE.sx + tapOf(lab).x) * T.camP.z(F) - 960) / 960, -1, 1);
+    }
 
     return {
-      T, land, logo, lines, verify, under, lit, win, navy, disp, label, bits, bitT,
-      p53: { a: p53a, b: p53b, c: p53c, f: p54 }, POS, F0, RA, D, wins, P, S, LNS: Math.log(S), OUT, OUT_IN, outLens, rise, gridLens, apLens,
-      tag55, p55a, p55b, brackets, tags55, TAG55, P55A, P55B,
-      p56a, p56b, p56c, tag56, P56A, P56B, P56C, TAG56, band, shutter, reveal,
+      T, land, pans, appT, webT, appScreen, webScreen, logo, lines, verify, disp, bits, prig, hand, lrig, cur, shut1, shut2,
+      bracketLayer, brackets, tags: tg.map((t) => t.el), aiTag, AI, decTag, DEC, band, web, order, curLayer,
     };
   },
 
-  render(s, t) {
+  render(s, t0, ctx) {
+    const t = Math.min(t0, ctx.dur); // hold the last frame for ch06's cover
     const { T } = s;
 
-    // ---- 5.2
-    const in52 = t >= T.logo && t < T.covered;
-    if (vis(s.logo, in52)) s.logo.style.transform = `translateX(${spring(t, T.logo, -760, 0, 'slide').toFixed(1)}px)`;
+    // ---- 5.2: the logo and the promise.
+    const in15 = t >= T.logo && t < T.out15 + 1.2;
+    const ex15 = spring(t, T.out15, 0, -1500, 'drop');
+    if (vis(s.logo, in15)) s.logo.style.transform = `translateX(${px(spring(t, T.logo, -760, 0, 'slide') + ex15)})`;
     s.lines.forEach((e, i) => {
-      if (vis(e, t >= T.lines[i] && t < T.covered)) e.style.transform = `translateX(${spring(t, T.lines[i], 1200, 0, 'slide').toFixed(1)}px)`;
+      if (vis(e, in15 && t >= T.lines[i])) e.style.transform = `translateX(${px(spring(t, T.lines[i], -1300, 0, 'slide') + ex15)})`;
     });
     if (vis(s.verify, t >= T.verify)) s.verify.style.transform = `scale(${spring(t, T.verify, 1.12, 1, 'slam').toFixed(4)})`;
 
-    // ---- 5.3 / 5.4
-    const on53 = t >= T.band52 && t < T.cut;
-    for (const e of [s.under, s.navy, s.label, s.win]) vis(e, on53);
-    vis(s.lit, on53 && t >= T.lit && t < T.rise + 1.2);
-    if (on53) {
-      const k = prog(t, T.push, PUSH);
-      const z = Math.exp(s.LNS * k);
-      const dy = s.rise(t);
-      const cam = (r) => ({ x: s.P.x + (r.x - s.P.x) * z, y: s.P.y + (r.y - s.P.y) * z + dy, w: r.w * z, h: r.h * z });
-      const camPt = ([x, y]) => [s.P.x + (x - s.P.x) * z, s.P.y + (y - s.P.y) * z + dy];
-      const polys = [];
-      const o = s.OUT.map(camPt); // TL, TR, BR, BL
-      const covers = o[0][0] < -30 && o[3][0] < -30 && o[1][0] > W + 30 && o[2][0] > W + 30 && o[0][1] < -30 && o[1][1] < -30 && o[2][1] > H + 30 && o[3][1] > H + 30;
-      if (covers) polys.push(box4({ x: -20, y: -20, w: W + 40, h: H + 40 }));
-      else polys.push(roughPoly(o, [{ amp: 4, seed: SEED + 1, lens: s.outLens }], 12));
-      let R = null;
-      for (const w of s.wins) {
-        let r = cam(w);
-        if (w.pick) {
-          r = { x: r.x + s.D.x(t), y: r.y + s.D.y(t), w: r.w + s.D.w(t), h: r.h + s.D.h(t) };
-          R = r;
-          const d = 4 * k; // the aperture's paper overlaps the app by 4 px once the camera is in
-          polys.push(roughBox({ x: r.x + d, y: r.y + d, w: r.w - 2 * d, h: r.h - 2 * d },
-            [{ amp: 2.2 * (1 - k), seed: w.seed, lens: s.gridLens }, { amp: 3 * k, seed: SEED + 3, lens: s.apLens }]));
-        } else if (r.x < W + 10 && r.y < H + 10 && r.x + r.w > -10 && r.y + r.h > -10) {
-          polys.push(roughBox(r, [{ amp: 2.2, seed: w.seed, lens: s.gridLens }]));
-        }
-      }
-      s.navy.style.clipPath = clip(...polys);
-      s.under.style.clipPath = poly(s.OUT_IN.map(camPt));
-      s.lit.style.clipPath = poly(box4(R));
-      Object.assign(s.win.style, { left: px(R.x), top: px(R.y), width: px(Math.max(0, R.w)), height: px(Math.max(0, R.h)) });
-      const show = { a: t >= T.rise && t < T.b, b: t >= T.b && t < T.c, c: t >= T.c && t < T.conf, f: t >= T.conf };
-      for (const key of ['a', 'b', 'c', 'f']) {
-        const p = s.p53[key];
-        if (vis(p.el, show[key])) {
-          const [x, y0] = s.POS[key];
-          let y = y0;
-          if (key === 'a') y = spring(t, T.rise, y0 + s.RA.h + SPARE, y0, RISE);
-          if (key === 'f') y = spring(t, T.conf, s.F0, y0, OPEN);
-          p.el.style.transform = `translate(${px(x - R.x)}, ${px(y - R.y)})`;
-        }
-      }
-      s.bits.forEach((b, i) => {
-        if (vis(b, t >= s.bitT[i])) b.style.transform = `translateY(${spring(t, s.bitT[i], -26, 0, 'snap').toFixed(1)}px)`;
-      });
-    }
+    // ---- 5.3 / 5.4: the left column (it pans out with the phone).
+    const panP = spring(t, T.pan, 0, -2300, 'slide');
     s.disp.forEach((d, i) => {
-      if (vis(d, on53 && t >= T.disp[i])) d.style.transform = `scale(${spring(t, T.disp[i], 1.14, 1, 'slam').toFixed(4)})`;
+      if (vis(d, t >= T.disp[i] && t < T.pan + 1)) d.style.transform = `translateX(${px(panP)}) scale(${spring(t, T.disp[i], 1.14, 1, 'slam').toFixed(4)})`;
+    });
+    s.bits.forEach(({ e, t: tb }) => {
+      if (vis(e, t >= tb && t < T.pan + 1)) e.style.transform = `translate(${px(panP)}, ${px(spring(t, tb, -26, 0, 'snap'))})`;
     });
 
-    // ---- 5.5
-    const in55 = t >= T.cut && t < T.exit55 + 1.2;
-    const ex = spring(t, T.exit55, 0, -2600, 'drop'); // clear of the frame before 5.6a lands
-    if (vis(s.tag55.el, in55 && t >= T.tag55)) {
-      s.tag55.el.style.transform = `translate(${px(s.TAG55.x + ex)}, ${px(s.TAG55.y)}) scale(${spring(t, T.tag55, 1.25, 1, 'slam').toFixed(4)})`;
+    // The phone: camera, recording, hand.
+    const onP = t >= T.phone && t < T.pan + 1;
+    if (vis(s.prig, onP)) {
+      s.prig.style.transform = `translate(${px(T.camP.x(t))}, ${px(T.camP.y(t))}) scale(${T.camP.z(t).toFixed(4)})`;
+      s.appScreen.at(s.appT(t));
+      const handOn = t >= T.handIn - 0.05;
+      if (vis(s.hand.el, handOn)) s.hand.place(T.handX(t), T.handY(t), T.handA(t), HAND_K, clamp(T.press(t)));
     }
-    if (vis(s.p55a.el, in55)) {
-      s.p55a.el.style.transform = `translate(${px(s.P55A.x + ex + spring(t, T.p55a, W - s.P55A.x + 40, 0, 'slide'))}, ${px(s.P55A.y)})`;
+
+    // ---- 5.5 / 5.6: the laptop.
+    const onL = t >= T.pan;
+    if (vis(s.lrig, onL)) {
+      const cam = `translate(${px(T.camL.x(t))}, ${px(T.camL.y(t))}) scale(${T.camL.z(t).toFixed(4)})`;
+      s.lrig.style.transform = cam;
+      s.curLayer.style.transform = cam;
+      const rt = s.webT(t);
+      s.webScreen.at(rt);
+      const c = cursorAt(s.web.mouse, rt);
+      s.cur.place(LAPTOP.sx + c[0], LAPTOP.sy + c[1], clamp(T.clickPress(t)));
     }
-    if (vis(s.p55b.el, in55 && t >= T.p55b)) {
-      s.p55b.el.style.transform = `translate(${px(s.P55B.x + ex)}, ${px(s.P55B.y + spring(t, T.p55b, H - s.P55B.y + 40, 0, 'slide'))})`;
-    }
-    s.brackets.forEach((b, i) => {
-      if (vis(b, t >= T.br[i])) b.style.transform = `translateY(${spring(t, T.br[i], 12, 0, 'snap').toFixed(1)}px) scaleX(${spring(t, T.br[i], 0.3, 1, 'snap').toFixed(4)})`;
-    });
-    // Each tag drops in with its bracket and swings to rest on it.
-    s.tags55.forEach((e, i) => {
-      if (vis(e, t >= T.br[i])) {
-        e.style.transform = `translateY(${spring(t, T.br[i], -12, 0, 'snap').toFixed(1)}px) rotate(${spring(t, T.br[i], [5, -4, 4][i], 0, HANG).toFixed(3)}deg)`;
+    vis(s.curLayer, onL);
+    // The paper round the suggestion closes as the push lands and opens as L17 ends; the brackets and tags ride the
+    // pocket out.
+    const shut = (sheets, tClose, tOpen) => sheets.forEach((sh, i) => {
+      const on = t >= tClose && (tOpen === null || t < tOpen + 1.2);
+      if (vis(sh.el, on)) {
+        const k = 1 - step(t - tClose, CLOSE) + (tOpen === null ? 0 : step(t - tOpen, 'drop'));
+        sh.el.style.transform = `translate(${px(sh.from[0] * k)}, ${px(sh.from[1] * k)})`;
       }
     });
-
-    // ---- 5.6
-    if (vis(s.p56a.el, t >= T.p56a)) {
-      s.p56a.el.style.transform = `translate(${px(s.P56A.x + spring(t, T.p56a, 1150, 0, 'slide'))}, ${px(s.P56A.y)})`;
+    shut(s.shut1, T.close1, T.pull1);
+    shut(s.shut2, T.close2, null);
+    const pocketDrop = s.shut1[2].from[1] * step(t - T.pull1, 'drop');
+    vis(s.bracketLayer, t >= T.br[0] && t < T.pull1 + 1.2);
+    s.bracketLayer.style.transform = `translateY(${px(pocketDrop)})`;
+    s.brackets.forEach((e, i) => {
+      if (vis(e, t >= T.br[i])) e.style.transform = `translateY(${px(spring(t, T.br[i], 12, 0, 'snap'))}) scaleX(${spring(t, T.br[i], 0.3, 1, 'snap').toFixed(4)})`;
+    });
+    s.tags.forEach((e, i) => {
+      if (vis(e, t >= T.br[i])) e.style.transform = `translateY(${px(spring(t, T.br[i], -12, 0, 'snap'))}) rotate(${spring(t, T.br[i], [5, -4, 4][i], 0, HANG).toFixed(3)}deg)`;
+    });
+    if (vis(s.aiTag.el, t >= T.ai && t < T.pull1 + 1.2)) {
+      s.aiTag.el.style.transform = `translate(${px(s.AI.x + spring(t, T.pull1, 0, -900, 'drop'))}, ${px(s.AI.y)}) scale(${spring(t, T.ai, 1.25, 1, 'slam').toFixed(4)})`;
     }
-    if (vis(s.tag56.el, t >= T.tag56)) {
-      s.tag56.el.style.transform = `translate(${px(s.TAG56.x)}, ${px(s.TAG56.y)}) scale(${spring(t, T.tag56, 1.22, 1, 'slam').toFixed(4)})`;
+    if (vis(s.decTag.el, t >= T.page)) {
+      s.decTag.el.style.transform = `translate(${px(s.DEC.x)}, ${px(s.DEC.y)}) scale(${spring(t, T.page, 1.22, 1, 'slam').toFixed(4)})`;
     }
-    if (vis(s.p56b.el, t >= T.btn)) {
-      s.p56b.el.style.transform = `translate(${px(s.P56B.x)}, ${px(s.P56B.y + spring(t, T.btn, 36, 0, 'snap'))})`;
-    }
-    if (vis(s.p56c.el, t >= T.id)) {
-      s.p56c.el.style.transform = `translate(${px(s.P56C.x + spring(t, T.id, -70, 0, 'snap'))}, ${px(s.P56C.y)})`;
-    }
-    if (vis(s.band, t >= T.band)) {
-      s.band.style.transform = `translateX(${px(spring(t, T.band, -(W + 160), 0, 'slide'))})`;
-      s.shutter.style.transform = `translateX(${px(s.reveal(t))})`;
-    }
+    if (vis(s.band, t >= T.trail - ARRIVE)) s.band.style.transform = `translateX(${px(spring(t, T.trail - ARRIVE, -(W + 220), 0, 'slide'))})`;
   },
 
-  // Event times (chapter-local) for the sound, from the SFX column of 5.2-5.6 (5.1 is ch04's doors and the music's
-  // downbeat). A move that lands carries `land` (its spring's first arrival); the rest hit on `t`. `pan` is where the
-  // event sits across the frame, (x - 960) / 960 at its centre in the layout, when it is clearly to one side.
+  // Event times (chapter-local) for the sound (docs/ANIMATION_GUIDE.md, section 12). Taps, key clicks and clicks are
+  // the recording's own events, placed on the film's timeline by the remap (each on an 8th); `pan` is where the event
+  // sits across the frame, (x - 960) / 960.
   cues(s) {
     const { T, land: L } = s;
-    const WIN = -0.4; // the resident's window, then the aperture (x 150-1009)
-    const BR = [-0.7, -0.3, 0.4]; // the brackets under "Thang máy", "Cao", "240 phút"
-    const STEP = [-0.4, -0.1, 0.1, 0.4, 0.7]; // the chain's steps 2-6, each revealed by its tick
     return [
-      // 5.2 the logo, then the promise line by line; "kiểm chứng được" slams as the façade's top lands under it
-      { t: T.logo, name: 'slide', land: L.logo, pan: -0.5 },
-      ...T.lines.map((t, i) => ({ t, name: 'slide', land: L.lines[i], pan: 0.3 })),
-      { t: T.band52, name: 'slide', land: L.band52 },
-      { t: T.verify, name: 'slam', pan: 0.4 },
-      // 5.3 the whole façade rises (the window lights as it lands) and the push into that window opens the aperture
-      { t: T.fac, name: 'slide', land: L.fac },
-      { t: T.push, name: 'open', pan: WIN },
-      { t: T.rise, name: 'slide', land: L.rise, pan: WIN }, // the app rises in the window
-      ...T.disp.map((t) => ({ t, name: 'slam', pan: 0.4 })), // "CƯ DÂN GỬI", "PHẢN ÁNH"
-      { t: T.b, name: 'cut', pan: WIN }, // HARD CUT to the location picker; "24/7" drops in with it
-      { t: T.c, name: 'cut', pan: WIN }, // HARD CUT to the filled report; "Ảnh ·" drops in with it
-      { t: T.vitri, name: 'snap', pan: 0.4 }, // "vị trí ·" drops in on its own
-      { t: T.press, name: 'click', pan: WIN }, // the window closes onto "Gửi phản ánh"
-      // 5.4 ...and snaps open onto the confirmation
-      { t: T.conf, name: 'snap', pan: WIN },
-      { t: T.conf, name: 'bell', pan: WIN },
-      // 5.5 HARD CUT to cream as "AI GỢI Ý" slams; report #7 slides in, the suggestion slides up under it; each bracket
-      // snaps with its tag hanging from it
-      { t: T.cut, name: 'cut' },
-      { t: T.tag55, name: 'slam', pan: -0.7 },
-      { t: T.p55a, name: 'slide', land: L.p55a, pan: 0.3 },
-      { t: T.p55b, name: 'slide', land: L.p55b },
-      ...T.br.map((t, i) => ({ t, name: 'snap', i, pan: BR[i] })),
-      // 5.6 the confirm panel slides in as 5.5 leaves left; "NGƯỜI QUYẾT ĐỊNH" stamps; the button, then the manager,
-      // snap in; the band slides in carrying "mọi bước đều lưu vết" and the chain's first step; one tick per step after
-      { t: T.p56a, name: 'slide', land: L.p56a, pan: 0.4 },
-      { t: T.tag56, name: 'stamp', pan: -0.6 },
-      { t: T.btn, name: 'snap', pan: 0.4 },
-      { t: T.id, name: 'snap', pan: -0.6 },
-      { t: T.band, name: 'slide', land: L.band },
-      ...T.ticks.map((t, i) => ({ t, name: 'tick', i, pan: STEP[i] })),
+      // 5.2 the phone rises in; the logo and the promise slide in line by line; "kiểm chứng được" slams
+      { t: T.phone, name: 'slide', land: L.phone, pan: 0.5 },
+      { t: T.logo, name: 'slide', land: L.logo, pan: -0.6 },
+      ...T.lines.map((t, i) => ({ t, name: 'slide', land: L.lines[i], pan: -0.4 })),
+      { t: T.verify, name: 'slam', pan: -0.3 },
+      // 5.3-5.4 the finger's taps on the glass; "CƯ DÂN GỬI", "PHẢN ÁNH"; the key clicks; the confirmation
+      ...s.order.map((lab) => ({ t: T.tap[lab], name: 'tap', pan: s.pans[lab] })),
+      ...T.disp.map((t) => ({ t, name: 'slam', pan: -0.6 })),
+      ...T.keys.map((t, i) => ({ t, name: 'key', i, pan: 0.3 })),
+      { t: T.conf, name: 'bell', pan: 0.3 },
+      // 5.5 the pan to the laptop; "AI GỢI Ý"; the paper closes round the suggestion; three brackets; it opens
+      { t: T.pan, name: 'pan', land: L.pan },
+      { t: T.ai, name: 'slam', pan: -0.7 },
+      { t: T.close1, name: 'doors', land: L.close1 },
+      ...T.br.map((t, i) => ({ t, name: 'snap', i, pan: [-0.4, -0.15, 0.35][i] })),
+      { t: T.pull1, name: 'doors' },
+      // 5.6 the two clicks; "NGƯỜI QUYẾT ĐỊNH" as the case page loads; the scroll; the paper; the trail
+      { t: T.clickLoc, name: 'click', pan: 0.35 },
+      { t: T.clickGo, name: 'click', pan: 0.35 },
+      { t: T.page, name: 'stamp', pan: -0.6 },
+      { t: T.scroll, name: 'scroll' },
+      { t: T.close2, name: 'doors', land: L.close2 },
+      { t: T.trail - ARRIVE, name: 'slide', land: L.trail, pan: -0.8 },
     ];
   },
 };

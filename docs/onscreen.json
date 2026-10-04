@@ -318,7 +318,7 @@
      "read"
     ],
     [
-     "app: report form, picker, photo",
+     "app recording: report form, the hook's words typed, location picker",
      "ui",
      "glance"
     ]
@@ -350,7 +350,7 @@
      "read"
     ],
     [
-     "web: report #7, AI suggestion",
+     "web recording: report #7, AI suggestion",
      "ui",
      "glance"
     ]
@@ -392,7 +392,7 @@
      "read"
     ],
     [
-     "web: confirm panel, chain",
+     "web recording: location picked, Xác nhận phân loại, decision, chain",
      "ui",
      "glance"
     ]
