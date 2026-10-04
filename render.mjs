@@ -1,7 +1,8 @@
 // Render the film (or part of it) to H.264.
 //   node render.mjs [--from s] [--to s] [--chapters ch01,ch02] [--tail s] [--fps 30] [--scale 0.5]
 //                   [--out out/draft.mp4] [--workers n] [--crf n] [--preset p] [--final] [--audio out/sound/film.wav]
-// Drafts default to 960x540 at 30 fps. --final means 1920x1080, 60 fps, CRF 16, preset slow.
+// Drafts default to 960x540 at 30 fps. --final means 1920x1080, 60 fps, CRF 16, preset slow (--crf/--preset override).
+// Video is H.264 yuv420p, BT.709, tagged.
 // --audio muxes the film's mix (tools/sound.py), trimmed to the rendered range, as AAC 320 kbps at 48 kHz; without
 // it the file is silent, as before.
 // --chapters renders only those chapters' time range and loads only them (plus the chapter before each, for
@@ -57,7 +58,8 @@ function plan(timings, { from, to, fps }) {
 
 export async function render(opts) {
   const o = { fps: 30, scale: 0.5, crf: 18, preset: 'veryfast', out: 'out/draft.mp4', ...opts };
-  if (o.final) Object.assign(o, { fps: 60, scale: 1, crf: 16, preset: 'slow' }, opts.fpsOverride ? { fps: opts.fpsOverride } : {});
+  // --final sets the defaults; an explicit --crf, --preset or --scale still wins.
+  if (o.final) Object.assign(o, { fps: 60, scale: 1, crf: 16, preset: 'slow' }, opts, opts.fpsOverride ? { fps: opts.fpsOverride } : {});
   const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/timeline.json'), 'utf8'));
   if (o.chapters) {
     const sel = timings.chapters.filter((c) => o.chapters.includes(c.id));
@@ -98,8 +100,12 @@ export async function render(opts) {
       await page.evaluate(() => window.__ready);
       for (let job = queue.shift(); job; job = queue.shift()) {
         const file = path.join(segDir, `${String(job.i).padStart(4, '0')}.mp4`);
+        // RGB to BT.709 limited-range YUV, tagged as such. ffmpeg's default matrix is BT.601 and leaves the file
+        // untagged; players read untagged HD as BT.709, which shifted saturated reds and greens by up to 15 levels.
         const enc = ffmpeg(['-y', '-f', 'image2pipe', '-framerate', String(o.fps), '-c:v', 'png', '-i', '-',
-          '-c:v', 'libx264', '-preset', o.preset, '-crf', String(o.crf), '-pix_fmt', 'yuv420p',
+          '-vf', 'scale=out_color_matrix=bt709:out_range=tv,format=yuv420p,'
+            + 'setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv',
+          '-c:v', 'libx264', '-preset', o.preset, '-crf', String(o.crf),
           '-r', String(o.fps), '-movflags', '+faststart', file]);
         for (let n = job.a; n < job.b; n++) {
           await page.evaluate((t) => window.seek(t), n / o.fps);
