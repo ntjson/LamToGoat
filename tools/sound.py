@@ -1091,6 +1091,18 @@ def fx_tick(f, q, k, run):
     f.fx(q, "tick", tap(3600, 0.003, 0.25, seed=f.seed(q, k)), q.get("land", q["t"]), pan=q.get("pan", 0.0))
 
 
+def fx_tap(f, q, k, run):
+    # A fingertip on the phone's glass (ch05): a soft knock with a little click on top, unpitched; on the recording's
+    # own touch, which the scene's remap puts on an 8th.
+    f.fx(q, "tick", tap(1900, 0.0025, 0.55, 0.6, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0))
+
+
+def fx_key(f, q, k, run):
+    # A key click while the words type in (ch05): a crisp, light tick a little under the taps, unpitched, on straight
+    # 8ths (the typing itself is fast-forwarded between them).
+    f.fx(q, "tick", tap(4300, 0.002, 0.15, 0.55, seed=f.seed(q, k)), q["t"], pan=q.get("pan", 0.0), rel=-0.5)
+
+
 def legacy_climb(f, q, k, run):
     steps = ["D6", "F#6", "A6", "D7"]
     note = steps[min(q.get("i", k), len(steps) - 1)]
@@ -1403,6 +1415,8 @@ EFFECTS = {
     "climb": fx_climb, "pin": fx_pin, "snap": fx_snap, "click": fx_click, "bell": fx_bell, "open": fx_open,
     "band": fx_band, "friction": fx_friction, "thud": fx_thud, "slab": fx_slab, "punch": fx_punch,
     "flutter": fx_flutter, "sly": fx_sly, "cut": fx_cut,
+    # ch05's recording of the real app: the finger's taps on the glass and the key clicks
+    "tap": fx_tap, "key": fx_key,
 }
 
 

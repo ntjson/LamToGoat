@@ -33,7 +33,7 @@ import sound  # noqa: E402
 
 # Cues whose sound starts with a hit exactly on t (or on land, where the handler puts it).
 HITS = {"complaint", "bubble", "caption", "slam", "stamp", "stab", "alarm", "chord", "snip", "scissor", "flip",
-        "chime", "cell", "tick", "climb", "pin", "snap", "click", "bell", "thud", "slab", "punch", "cut"}
+        "chime", "cell", "tick", "climb", "pin", "snap", "click", "bell", "thud", "slab", "punch", "cut", "tap", "key"}
 AT_LAND = {"stamp", "tick", "pin", "snap", "click", "thud", "slab"}
 MUSIC = {"stab", "alarm", "chord", "push", "drop"}
 COLORS = {"bass": "#3b6fd4", "piano": "#d23b2e", "vibes": "#2e9e57", "brass": "#e08a00", "arco": "#7a3bd4",
