@@ -937,3 +937,44 @@ confirmation (tuned: 0.0 cents). Only ch05's cues changed (34 → 32); the remix
 over the music; 47 pitched notes, 0 outside the chord; 300 of 300 hit cues with an onset within 12 ms; picture sync 68 of
 68 appearances on their cue (ch05 6 of 6). ch05: 40 events, median -3.7 dB, max +2.9 dB; taps -6.6 dB, keys -14.6 dB in
 the 100 ms loudness (short clicks measure low, like the film's other ticks). **Not heard by the builder.**
+
+## ch07: the payoff as a match cut; no text twice in one frame (2026-10-04)
+
+**The task (the user):** 7.3's payoff said everything twice: the hook's complaint as the real report and as the
+hook's bubble at once, and "phản ánh ban đầu" (caption) beside "Phản ánh gốc" (the report's label). New rule: the same
+text never appears twice in one frame (CLAUDE.md, written as the user approved it: no phrase or statement twice, the
+film's type and the real UI's text counted, one shared word not a repeat, ch07's four identical hashes the one
+exception). Keep the idea (the complaint lost in the hook's chat is the one LamTo proves was handled), ch07's length,
+the timeline, the grid, the real UI, L24's message, and a sound callback to the hook's bubble tick at the match.
+
+**Gates (stills, scratch in `out/tmp/ch07match/`):** three payoffs (A match cut, B tear reveal, C wordless callback):
+the user picked A. Two rewordings of 7.2's label: the user picked "ngay cả ban quản lý / cũng không sửa được" and had
+the lock note (7.2a) left out (its last words are the checkbox line's), its slide cue with it.
+
+**What changed:** 7.3: the window shuts on the chain (+9.86), the hook's bubble slams in alone (+10.0), set at the
+report's own size, line break and line pitch (53.2 px; both lines end within about 2 px of the report's), and one beat
+later (+10.56) the hard cut to the real report, the words unmoved. "Phản ánh gốc" dropped; the report centred. 7.2: the
+new label; the checkbox line and the button moved up against the title; the lock note gone.
+
+**Timeline:** L24 pinned at 9 beats (`beats` in `docs/onscreen.json`, honoured by `tools/timeline.py`); its text now needs
+4.37 s (5.36 s with the dropped label) and holds 5.0 s plus the gap. The new label has the old one's 9 syllables. The
+rebuilt `docs/timeline.json` differs from the old one only in L24's `read` (5.36 → 4.37); every time is identical.
+
+**Sound:** the cues are the old ones less one (the lock note's slide, 109.33 s); the bubble's tick (+10.0) and the match
+cut's snap and warm chord (+10.56) are the old cue, so the callback and its tuning are unchanged (`tunecheck` identical).
+The remix differs from the previous one by -68.6 dB (median, per second) after a -0.005 dB gain match, with three
+exceptions, all in ch07: around the removed slide (109-110 s, its neighbours re-levelled) and in 7.4-7.6 (118.8-120.4 s
+and 124.2 s), where `Film.finalize()` set some effects -2.3 to +4.1 dB from before. Each class's EQ is matched to the
+average of its events, so taking one 'move' and one 'hit' out moves those averages by up to 1 dB in a few bands, and
+the iterative limiter then settles differently in that dense run (the four copies' slides and clicks, the count,
+"BÁO LỖI NGAY."'s slide). They all still sit 6-7 dB under the music. Checks: -14.00 LUFS, -1.22 dBTP (AAC -1.22); 443
+paper/UI events, max +2.9 dB over the music, 0 over +3.0, band guard max +13.9 dB; 0 of 47 pitched notes outside the
+chord; 300 of 300 hit cues with an onset within 12 ms; `synccheck` 68 of 68. **Not heard by the builder.**
+
+**Rounds** (`docs/review/ch07.md`, 7-9):
+
+| Round | Hook | VN | Read | Motion | Brand | Sync | Variety | Worst problems / fixes |
+|---|---|---|---|---|---|---|---|---|
+| 7 | 9 | 9 | 8 | 7 | 9 | 8 | 9 | The bubble's first frame trailed its beat by a frame (a 4e-15 s float tie; now `ctx.snap`); its 1.25× slam about the tail ran off the frame's right edge (now 1.2× about its bottom centre); the report's title and location share "Thang máy B"/"tầng 3" (the real UI's fields: put to the user) |
+| 8 | 9 | 9 | 8 | 9 | 9 | 9 | 9 | Kept: the UI's own "Thang máy B"/"tầng 3"; the 52 px labels small on the phone; the bare NAVY 16th before the bubble (the hook's own opening beat) |
+| 9 | 9 | 9 | 8 | 9 | 9 | 9 | 9 | Final, re-rendered from scratch: as round 8 |

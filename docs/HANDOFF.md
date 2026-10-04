@@ -1,36 +1,43 @@
-# Handoff: ch05 rebuilt on recordings of the real app (2026-10-04)
+# Handoff: ch07's payoff as a match cut; no text twice in one frame (2026-10-04)
 
 For the next session. Read `CLAUDE.md`, `docs/brief.md` and `docs/ANIMATION_GUIDE.md` first; their rules hold unless
 something below overrides them. Work is on branch **`film`**. There is no remote. **Never push.**
 
-**The task just done (the user, 2026-10-04): ch05 rebuilt with no cropped screenshots** (commits `3b04ff5`..`19fb90f`, docs after).
-A real person uses a real phone, step by step, then the manager a laptop, played from real-time recordings of the real app:
-- **Recordings** (`assets/recordings/`, committed, 51 MB): `app` is the resident's report in the Flutter web build (390 × 844, DPR 3,
-  pilot-resident-2: "+ Phản ánh", the hook's words typed, Tầng 3 → Thang máy B, "Gửi phản ánh", the confirmation, "Việc của tôi" with the new
-  report); `web` is Kawaibu's triage of report #7 in the workspace (1440 × 900, DPR 2: the AI suggestion, Vị trí, "Xác nhận phân loại", the case
-  page, a scroll to the chain). `node tools/record_app.mjs` re-records both against the design sandbox (it needs `~/Projects/LamTo` and its
-  lamto-db-1 container; it runs the API on a throwaway copy of `lamto_design`, drops it, and stops what it started); `--marks` recomputes the marks
-  read from the frames without the sandbox. A re-record has different timings and would need the scene's review loop again.
-- **Presentation** (`scenes/ch05.js` on `lib/footage.js` and `lib/props.js`): a cut-paper ORANGE phone held in a BLACK left hand, a BLACK right
-  index that taps exactly where and when the recording tapped (each tap remapped onto an 8th), a NAVY laptop and a cursor that follows the logged
-  path. Speed ramps fast-forward the typing and the still stretches; ripples and transitions play at real speed. Push-ins carry the app text the
-  viewer must read; paper sheets close round them; story captions sit on paper only.
-- **Gate picks (the user):** the cut-paper treatment (over a clean flat device), no photo step, pilot-resident-2's account. Told at the gate: the
-  web build cannot attach a photo (`dart:io`/`path_provider`; the sandbox's "photos" are 28-byte placeholders), no AI endpoint runs in the sandbox
-  (so report #7's seeded suggestion is recorded, as before), the new report is #13 and no screen shows its number.
-- **Rules** (CLAUDE.md): recordings of the real app count as real UI (the device frame, the hand and the cursor are overlays; nothing the recording
-  doesn't show is drawn); app text in a wide device shot may go under 28 px when what must be read gets a push-in or a story caption. The guide has
-  a "Recordings" section (8), `ctx.recording(name)` and the new cues `tap` and `key` (12); the lint rejects recording paths in scenes.
-- **Kept:** 8 bars (64.44-82.22 s), the timeline (byte-identical; `docs/onscreen.json` only renamed its UI glances), the grid, ch04's doors and
-  ch06's cover (checked frame by frame); ch01 pixel-identical with the new engine. All 15 texts pass `readcheck`.
-- **Sound:** ch05's cues rebuilt on the recording's events (taps and key clicks unpitched on straight 8ths, the bell on the app's confirmation,
-  tuned to the bed); the mix rebuilt; every check passes; outside ch05 the mix is unchanged to about -80 dB.
-- Rounds: `docs/review/ch05.md` (8-11) and `docs/review_log.md`, "ch05: the real app, recorded". The shotlist has the new plan under ch05's table.
+**The task just done (the user, 2026-10-04): ch07's payoff (7.3) reworked, and 7.2 with it, under a new rule** (commits `ba22b78`, `4fd7466`,
+`0586777`, docs after):
+- **The rule** (CLAUDE.md, Story text; the guide, section 6): the same text never appears twice in one frame. No phrase or statement shows twice at
+  once, counting the film's own type and the real UI's text (a UI that repeats itself is left out or cropped); one shared word is not a repeat
+  ("CÔNG BỐ" in a title and on the "Công bố đề xuất" button); the one exception is ch07's four identical hash copies (7.4-7.6).
+- **7.3, the match cut** (the user picked it from three options shown as stills: A match cut, B tear reveal, C wordless callback): after the
+  chain, the façade's window shuts on the old cut (+9.86); the hook's bubble slams in alone on the next beat (+10.0), set at the size, line break
+  and line pitch of the real report's title (53.2 px, solved in the page because optical sizing widens the type; both lines end within about 2 px
+  of the report's); one beat later (+10.56) the HARD CUT to the real report: the words stay put, only the paper around them changes. "Phản ánh gốc"
+  is dropped (the caption's "về phản ánh ban đầu" says it); the report sits centred.
+- **7.2:** the label now reads "ngay cả ban quản lý / cũng không sửa được" (the user picked it from two; the old one repeated the seal's "niêm
+  phong" and the UI's "không thể chỉnh sửa"); the lock note (7.2a) is left out, since its last words are the checkbox line's; the checkbox line and
+  the button moved up against the title.
+- **Kept:** ch07's 10 bars; every time in the timeline (L24 is pinned at its 9 beats with `beats` in `docs/onscreen.json`, which
+  `tools/timeline.py` now honours; `timeline.json` differs only in L24's `read`, 5.36 → 4.37); the grid; the real UI (no crop changed; only the lock note is left out). Outside the
+  changed beats ch07's frames are pixel-identical to `261897d` (27 sampled). All 16 texts pass `readcheck`.
+- **Sound:** the cues are the old ones less the lock note's slide (415 now); the bubble's tick (+10.0) and the match cut's snap and warm chord
+  (+10.56) are the old `bubble` cue, so the callback and its tuning are unchanged. Removing the slide re-levelled some of ch07's effects through
+  `Film.finalize()` (around 109-110 s, and -2.3 to +4.1 dB in 7.4-7.6's dense run; see Open issues); elsewhere it differs from the old mix by -68.6 dB
+  (median per second; -51 dB at most). Every check passes.
+- Rounds: `docs/review/ch07.md` (7-9) and `docs/review_log.md`, "ch07: the payoff as a match cut". The gate stills are in `out/tmp/ch07match/`
+  (`gate/options.png`, `label/wordings.png`); the preview, mix and reports from before are in `out/tmp/ch07match/before/`.
 
-**The task before that (the user, 2026-09-29): ch04's flip order** (commit `0698eaa`): each role flips to navy right after its own pain, before the
+**The task before that (the user, 2026-10-04): ch05 rebuilt on recordings of the real app** (commits `3b04ff5`..`19fb90f`, docs `261897d`): no
+cropped screenshots in ch05. Real-time recordings of the real app (`assets/recordings/`, 51 MB, made by `tools/record_app.mjs` against a throwaway
+copy of the design sandbox) play on a cut-paper ORANGE phone held in a BLACK hand that taps where and when the recording tapped, then on a NAVY
+laptop with the logged cursor; speed ramps on the recording's own events, push-ins and story captions on paper for what must be read. Gate picks:
+cut paper, no photo step (the web build cannot attach one), pilot-resident-2. CLAUDE.md treats recordings as real UI. 8 bars, the timeline and the
+grid kept; ch05's cues rebuilt (`tap`, `key`, the bell). Details: decision 11 below, `docs/review/ch05.md` (8-11) and `docs/review_log.md`,
+"ch05: the real app, recorded".
+
+**Before it (the user, 2026-09-29): ch04's flip order** (commit `0698eaa`): each role flips to navy right after its own pain, before the
 next pain lands; details in `docs/review_log.md`, "ch04: each role flips right after its own pain".
 
-**The task before it (the user, 2026-09-29): all the sound effects remade to fit the Mixkit bed**, ch01's hits from the approved sketch
+**And before that (the user, 2026-09-29): all the sound effects remade to fit the Mixkit bed**, ch01's hits from the approved sketch
 included. Every effect is on its cue time; the picture and the timeline are untouched. What changed, per chapter, with the checks and the
 scored rounds, is in `docs/review_log.md`, "Sound effects remake". Below: where things stand, what the effects now are and how to rebuild
 and check them, and what is left.
@@ -45,23 +52,24 @@ and check them, and what is left.
 | 4 Engine + ch01 | approved |
 | 5 Guide + ch02-ch11 | done: every chapter built, reviewed (8+ on all criteria) and committed separately. ch10 carries the team's faces (`47ba699`). |
 | 6 Rough cut review | done without a voice |
-| 7 Polish, sound, final render, deliverables | **Music: the Mixkit bed. Effects: remade to fit it. ch04's flip order fixed (`0698eaa`). ch05 rebuilt on recordings of the real app (2026-10-04). Next: the user's look and listen, then the final render and deliverables.** |
+| 7 Polish, sound, final render, deliverables | **Music: the Mixkit bed. Effects: remade to fit it. ch04's flip order fixed (`0698eaa`). ch05 rebuilt on recordings of the real app (2026-10-04). ch07's payoff a match cut, no text twice in one frame (2026-10-04). Next: the user's look and listen, then the final render and deliverables.** |
 
 Review files for the user:
-- `out/preview_1080p.mp4`: 1920×1080, 30 fps, CRF 23, 180.0 s, with the current mix (AAC 320 kbps, 48 kHz) and the new ch05 (2026-10-04;
-  rendered from the working tree at `19fb90f`, docs aside; 7 min 1 s, 10 workers); measured on the file: -14.0 LUFS (ebur128), true peak -1.2 dBFS;
-  loudnorm input -14.06 LUFS, -1.23 dBTP, LRA 6.8 LU; audio aligned with `film.wav` at 0 samples of lag (codec residual -41.4 dB). The preview before
-  the ch05 rework, with its mix and checks, is in `out/tmp/ch05rework/before/`.
-- `out/review/ch05.mp4`: ch05 at 960×540 with the current mix (2026-10-04). `out/roughcut_sound.mp4`: the 960×540 30 fps draft of the whole film with the
-  **previous** mix and the old ch05 (rendered at `0698eaa`; not re-rendered). `out/review/ch04.mp4` carries the current mix (with ch04's exit, +0.9 s);
-  the other per-chapter clips `out/review/chNN.mp4` still carry the **previous** mix. The preview and draft from before the flip-order change are in `out/tmp/flip/before/` (with that
+- `out/preview_1080p.mp4`: 1920×1080, 30 fps, CRF 23, 180.0 s, with the current mix (AAC 320 kbps, 48 kHz), the new ch05 and the new ch07 (2026-10-04;
+  rendered from the working tree at `0586777`, docs aside; 6 min 53 s, 10 workers); measured on the file: -14.0 LUFS (ebur128), true peak -1.2 dBFS;
+  loudnorm input -14.05 LUFS, -1.22 dBTP, LRA 6.8 LU; audio aligned with `film.wav` at 0 samples of lag (codec residual -37.7 dB over the whole film).
+  The preview before the ch07 rework, with its mix and checks, is in `out/tmp/ch07match/before/`; the one before the ch05 rework in `out/tmp/ch05rework/before/`.
+- `out/review/ch07.mp4`: ch07 at 960×540 with the current mix and 0.8 s of ch08's cover (2026-10-04). `out/review/ch05.mp4`: ch05 with the mix of
+  2026-10-04 before ch07's rework (outside ch07 the new mix differs from it by -51 dB at most). `out/roughcut_sound.mp4`: the 960×540 30 fps draft of the whole film with an
+  **older** mix and the old ch05 and ch07 (rendered at `0698eaa`; not re-rendered). `out/review/ch04.mp4` carries the mix of 2026-09-29 (with ch04's exit,
+  +0.9 s); the other per-chapter clips `out/review/chNN.mp4` still carry older mixes. The preview and draft from before the flip-order change are in `out/tmp/flip/before/` (with that
   mix's `film.wav`, `cues.json`, `score.json` and check reports); older ones (and the first remake build's, before the skyline fix) are in `out/tmp/old_mix/` for A/B.
 - `out/sound/film.wav` (48 kHz stereo float), `out/sound/cues.json`, `out/sound/score.json` (every note and effect, with each paper/UI event's level and poke-out),
   `out/sound/stems/*.wav` (each stem at its level in the master, plus `bed_ref.wav`, the music the effects are judged against).
 - Check reports: `out/sound/sfxcheck.txt`, `tunecheck.txt`, `soundcheck.txt`, `synccheck.txt`; the analysis image `out/sound/analysis.png`.
 - `out/sound/bed.wav` and `bed.json`: the arranged bed, its plan and joins. `out/review/bed_joins.png`: a spectrogram around each join.
 - The rounds and all measurements: `docs/review_log.md`, "Sound pass", "Music bed", "ch10: the team's faces", "Sound effects remake",
-  "ch04: each role flips right after its own pain", "ch05: the real app, recorded".
+  "ch04: each role flips right after its own pain", "ch05: the real app, recorded", "ch07: the payoff as a match cut".
 
 **Be honest with the user: the mix was checked by measurement and by reading the score against the bed's chord chart, never by ear.**
 
@@ -90,8 +98,13 @@ Review files for the user:
     cut paper over a clean flat device); no photo step (the web build cannot attach one); pilot-resident-2's account (a clean list); report #7 for the
     manager (no AI endpoint in the sandbox, so a new report gets no real suggestion); app text in wide device shots may go under 28 px when what must be
     read gets a push-in or a story caption (CLAUDE.md). 8 bars, timeline, grid, ch04's doors and ch06's cover unchanged.
+12. **No text twice in one frame (2026-10-04):** no phrase or statement shows twice at once, counting the film's own type and the real UI's
+    text; one shared word is not a repeat; the one exception is ch07's four identical hash copies (CLAUDE.md, the guide's section 6).
+13. **ch07's payoff and 7.2 (2026-10-04):** 7.3 is a match cut (the hook's bubble alone for a beat, then a hard cut to the real report, the words
+    unmoved; "Phản ánh gốc" dropped); 7.2's label is "ngay cả ban quản lý / cũng không sửa được" and its lock note is left out (its slide cue
+    with it); the timeline, music and cues stay as they were (L24 pinned at 9 beats).
 
-## What to ask the user (three judgement calls made without them)
+## What to ask the user (four judgement calls made without them)
 
 1. **"None poking out more than about 3 dB above the music"** was implemented as a *level* limit (loudness and the 250 Hz - 4 kHz mids, the larger of the two, +3 dB), with a
    single-band guard of +14 dB so crisp noise cannot splash. The effects end up a median 3 dB *under* the music in loudness and 10-14 dB over it in the thin upper bands. A strict
@@ -99,12 +112,19 @@ Review files for the user:
 2. **The stabs on "1" (ch06), "2" (ch07) and "ĐỘI KAWAIBU" (ch10) are gone:** the bed's own bass note and keys chord land within 14-35 ms of each, so every layer of the stab
    doubled the track. ch08's and ch09's keep the keys chord; ch01's is whole (the bed is dipped there). If the user wants them back: `Film.doubled()` in `tools/sound.py`.
 3. **The bed is F minor, not "F major with F minor colour"** (the earlier key-profile reading). The effects follow the measured chords.
+4. **ch07's real report repeats two names in its own fields** (found after the user's picks): its title says "Thang máy B kẹt cửa ở tầng 3, …" and its
+   location row "Goldmark City / Tầng 3 / Thang máy B · B-1204". They are the app's data in two fields of one screenshot, and the row was in the
+   option A still the user approved, so it stays. If the user reads the rule strictly here too, the façade's window can end just above the location
+   row (the report then shows its "Đã hoàn thành" badge and its title only); no crop changes.
 
-## 3:00 timing (unchanged)
+## 3:00 timing (unchanged; one beat pinned)
 
 - `docs/timeline.json` is built by `uv run python tools/timeline.py` (81 bars) from `docs/onscreen.json`; never edit
   it by hand. 108 BPM, 4/4 from t = 0, every chapter a whole number of bars.
 - Reading pace fixed at 0.82; only holds were trimmed to fit 3:00 (ch05, ch02, ch09, ch03 lost a bar each).
+- **Pinned:** L24 keeps 9 beats (`"beats": 9` in `docs/onscreen.json`, with its reason). Its text needs 4.37 s since "Phản ánh gốc" was dropped, so
+  it holds about a second longer than its reading needs; `tools/timeline.py` never makes a pinned beat shorter nor trims it. `docs/onscreen.json` also
+  logs rewordings (`changed`) and removals (`dropped`).
 - `node tools/readcheck.mjs chNN`: every text in all 11 chapters passes.
 - **If on-screen text ever changes,** the timeline re-flows: rebuild it, then re-run `readcheck`, the chapter
   review, `node tools/cues.mjs` and `tools/sound.py` (the music and every cue sit on the timeline). If a chapter
@@ -229,7 +249,7 @@ Under each chapter:
 Code, all deterministic (two runs give identical bytes): `tools/synth.py` (every synth), `tools/sound.py` (the mix), `tools/meter.py` (the measurements), and the data
 `docs/bed_harmony.json` (the chord the bed plays on each of its 200 beats) and `docs/bed_kit.md` (what its instruments are and do).
 
-1. **Cues** (the picture side): each chapter's `cues(state, ctx)` -> `node tools/cues.mjs` -> `out/sound/cues.json` (416 cues, 43 names since ch05's rework, `docs/ANIMATION_GUIDE.md` section 12).
+1. **Cues** (the picture side): each chapter's `cues(state, ctx)` -> `node tools/cues.mjs` -> `out/sound/cues.json` (415 cues since ch07's rework, 43 names, `docs/ANIMATION_GUIDE.md` section 12).
 2. **Handlers** (`fx_<name>` in `tools/sound.py`, run name by name over the cues; `EFFECTS` maps names to them). Two kinds:
    - **Paper and UI** (ticks, stamps, snips, slides, tears, flips, ...): `f.fx(q, class, sig, at, pan, rel)`. The synths (`tools/synth.py`) are noise only; **`tools/meter.tonality`**
      reads at most 0.026 on every class. `Film.finalize()` then, per class (`CLASSES`: hit, cut, move, tick, texture): matches the class's EQ to a designed spectrum (a tilt, a low cut,
@@ -258,7 +278,7 @@ All of it is deterministic. **While another session has uncommitted scene or eng
 (`git worktree add --detach ../LamToGoat-build HEAD`, then symlink `node_modules`). A broken chapter in the working tree stops `cues.mjs`, and a scene edited mid-render mixes versions.
 
 ```sh
-node tools/cues.mjs                                                     # out/sound/cues.json (416 cues)
+node tools/cues.mjs                                                     # out/sound/cues.json (415 cues)
 uv run python tools/bed.py                                              # out/sound/bed.wav + bed.json (if the bed changes)
 uv run python tools/bedharmony.py                                       # docs/bed_harmony.json (if the bed changes; hand overrides inside)
 uv run --with numpy --with scipy python tools/sound.py --stem-dir out/sound/stems --score out/sound/score.json   # out/sound/film.wav (about 1 min)
@@ -272,9 +292,9 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
 - **One chapter with sound:** `node render.mjs --chapters ch05 --audio out/sound/film.wav --out out/review/ch05.mp4` (960×540). `--audio` must be the whole-film mix (`render.mjs` cuts it by film time).
   `sound.py --chapters ch05` builds only that chapter (4 s), normalized on its own: for a quick listen, not for muxing.
 - **`tools/bedhits.py`** (`--scan`, `--cues`, `--selftest`): what the bed plays and when; `sound.py` imports its `hits()`. **`docs/bed_kit.md`** has its measurements and caveats.
-- Last measured on the mix: -14.00 LUFS, -1.21 dBTP (after the AAC 320k round trip: -1.24, -14.01 LUFS).
+- Last measured on the mix (2026-10-04, after ch07's rework): -14.00 LUFS, -1.22 dBTP (`sound.py`'s AAC 320k round trip: -1.22 dBTP; the preview file: -14.05 LUFS, -1.22 dBTP).
 - **After a scene edit that moves cues** (as ch04's flip order did): run `node tools/cues.mjs` and diff `out/sound/cues.json` against the old one (only the intended cues should move;
-  ch04's change moved 3 of 418; ch05's rework replaced its 34 with 32), then `tools/sound.py` and the four checks. The new `film.wav` should then differ from the old one only around the moved cues (match their gain first;
+  ch04's change moved 3 of 418; ch05's rework replaced its 34 with 32; ch07's removed one), then `tools/sound.py` and the four checks. The new `film.wav` should then differ from the old one only around the moved cues (match their gain first;
   the change was +0.004 dB elsewhere). The picture can be checked the same way: render the chapter from a clean worktree at the previous commit and compare frame by frame (an H.264
   encode adds lookahead noise of a few levels to the frames just before a change; lossless `frames.mjs` stills don't). Render the preview from a clean worktree at the new commit.
   `../LamToGoat-build` was used for this and removed afterwards (`git worktree add --detach ../LamToGoat-build HEAD`, symlink `node_modules`).
@@ -302,21 +322,23 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
 
 ## Next
 
-1. **The user's look at the new ch05** (`out/review/ch05.mp4`, `out/preview_1080p.mp4` 1:04-1:22): the phone and the laptop on the real app, the
+1. **The user's look at the new ch07** (`out/review/ch07.mp4`, `out/preview_1080p.mp4` 1:46.7-2:08.9): 7.2's new label and column (1:47.8-1:52.5),
+   the match cut (1:56.5 the window shuts, 1:56.7 the bubble, 1:57.2 the report), and ask question 4 above (the report's own "Thang máy B"/"tầng 3").
+2. **The user's look at the new ch05** (`out/review/ch05.mp4`, `out/preview_1080p.mp4` 1:04-1:22): the phone and the laptop on the real app, the
    speed ramps, the soft spots above (the confirmation up about 0.64 s, the refreshed list about 0.45 s), the arm's sweep to the back arrow.
-2. **The user's listen and notes** on the effects (and the five joins in the bed: 0:20.0, 0:37.8, 0:55.6, 2:28.9, 2:53.3). Ask the three questions above first. Places to listen:
+3. **The user's listen and notes** on the effects (and the five joins in the bed: 0:20.0, 0:37.8, 0:55.6, 2:28.9, 2:53.3). Ask the questions above first. Places to listen:
    ch01's cluster (5.56 s) and ch03's soft stab (42.5 s) sit on the intro's D pedal, whose synth lines are diffuse and whose drone is +36 and +14 cents off the grid, so they may beat;
    the effects are quiet against the music by design; ch06, ch07 and ch10's SLAMs are the bed's own hit; ch04's three chimes are now all `A4 F5` (the bed plays F at all three flips), and the
    middle one, the manager's, rings at 55.94 s, 0.38 s after the bed's join 3 (55.56 s) with a bed bass note 36 ms after it. Each fix goes through the same checks and a review-log round.
-3. **Final render:** `node render.mjs --final --audio out/sound/film.wav --out out/final.mp4` (1920×1080, 60 fps, CRF 16, preset slow; 10,800 frames, about 25-30 min with 8-10 workers).
+4. **Final render:** `node render.mjs --final --audio out/sound/film.wav --out out/final.mp4` (1920×1080, 60 fps, CRF 16, preset slow; 10,800 frames, about 25-30 min with 8-10 workers).
    - Measure the muxed file again: `ffmpeg -i out/final.mp4 -af ebur128=peak=true -f null -`, and `loudnorm=print_format=json`. The AAC encode is the same as the preview's, so it should read -14.0 LUFS and about -1.2 dBTP.
-4. `out/poster.png`: the candidate is ch11's final frame at 1920×1080. `out/contact.png`: a whole-film contact sheet.
-5. `README.md` credits:
+5. `out/poster.png`: the candidate is ch11's final frame at 1920×1080. `out/contact.png`: a whole-film contact sheet.
+6. `README.md` credits:
    - music: "Upbeat Jazz" by Francisco Alvear (Mixkit), arranged for the film; sound effects synthesized in code;
    - fonts: Bricolage Grotesque and IBM Plex Mono (OFL);
    - the team (Đội Kawaibu);
    - no voice credit.
-6. **Open question for the user:** the brief asks for `out/final.vi.srt`, but the film has no voice. Drop it, or ship a text track of the on-screen story text from `docs/onscreen.json`?
+7. **Open question for the user:** the brief asks for `out/final.vi.srt`, but the film has no voice. Drop it, or ship a text track of the on-screen story text from `docs/onscreen.json`?
 
 ## Tools
 
@@ -330,7 +352,7 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
 | `tools/textcheck.mjs chNN` | The 28 px floor. |
 | `tools/lint_scene.mjs` | Checks a scene against the guide's rules. |
 | `tools/stillness.py video` | Rhythm: holds, and gaps between visual events. |
-| `tools/timeline.py` | Builds the timeline. `--voice` is only for a future voice. |
+| `tools/timeline.py` | Builds the timeline. Honours a beat's pinned length (`beats` in `docs/onscreen.json`). `--voice` is only for a future voice. |
 | `tools/cues.mjs` | Collects the scenes' cues (`--out` for another path). |
 | `tools/bed.py` | Stretches the Mixkit track to 108 BPM and arranges it on the film's 81 bars (`PLAN`, `XF`, `RIDE`). Writes `out/sound/bed.wav` and `bed.json`. |
 | `tools/bedharmony.py` | The chord the bed plays on every beat (NNLS note decomposition, read by hand, tiers per bar) -> `docs/bed_harmony.json`; `--check`, `--cues`, `--review A B`. |
@@ -354,7 +376,7 @@ Two scratch scripts are not in git (`out/` is ignored): `out/tmp/music/bed_analy
 
 ## Open issues
 
-1. **Not heard by the builder.** The sound was checked only by measurement. See Next, item 1.
+1. **Not heard by the builder.** The sound was checked only by measurement. See Next, item 3.
 2. **The bed's license.** Mixkit's full legal text was not read (it is rendered by script). Its summary allows commercial use in online video with no attribution, and forbids
    redistributing the track itself. So the MP3 must not be published with this repository. Read the license before the final release, especially on modification: the film stretches, cuts and repeats the track.
 3. **The chord chart is a reading.** `docs/bed_harmony.json` was read from note decompositions by hand (tiers H/M/L per bar: 100 beats H, 80 M, 20 L). Its weakest bars are 2-5 (the D pedal, with nothing
@@ -376,3 +398,10 @@ Two scratch scripts are not in git (`out/` is ignored): `out/tmp/music/bed_analy
      with no visible list; the browser's tap highlight is turned off for the capture (it is not the app's).
    - The frames are committed (51 MB). A re-record (`node tools/record_app.mjs`) gives different timings; the scene derives every key from the logs,
      but the review loop must be run again.
+10. **The effects' level solver reaches across a chapter.** `Film.finalize()` matches each class's EQ to the average of all its events, then lowers events
+    with an iterative limiter. Taking one effect out (ch07's lock note slide) moved the 'move' and 'hit' averages by up to 1 dB in a few bands, and the
+    limiter then settled differently in 7.4-7.6's dense run: the copies' slides and clicks, the count and "BÁO LỖI NGAY."'s slide moved -2.3 to +4.1 dB
+    (`docs/review_log.md`, "ch07: the payoff as a match cut"). Every check passes; a listen would tell which balance is better. To keep a change local,
+    freeze the class spectra or limit per window.
+11. **The no-repeat rule (2026-10-04) has been applied to ch07 only.** The other chapters have not been audited against it. Text inside screenshots and
+    recordings needs eyes (no tool reads it), e.g. wherever the app shows a report's text and its location together, as ch07's report does (question 4).
