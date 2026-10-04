@@ -44,6 +44,10 @@
 - Every story beat's message (the old voice lines L01-L35) must be on screen, as display type or a caption strip
   in the film's style, never as subtitle text along the bottom. docs/onscreen.json lists each beat's text and logs
   what was added.
+- The same text never appears twice in one frame: no phrase or statement shows twice at once, counting the film's own
+  type and the real UI's text (a UI that repeats itself is left out or cropped). One shared word is not a repeat
+  ("CÔNG BỐ" in a title and on the "Công bố đề xuất" button). The one exception: ch07's four identical hash copies
+  (7.4-7.6), where the repetition is the picture.
 
 ## Voice (kept for a possible later voice; not in use)
 - The pipeline stays: docs/vo_lines.json, tools/vo.py, docs/vo_script.md, docs/vo_timings.json.

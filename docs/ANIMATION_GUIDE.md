@@ -221,6 +221,12 @@ the whole story.
     sentence), paper in the palette (BLACK on ORANGE, CREAM on BLACK or NAVY), a hand-placed tilt of ±1-3°.
   - Place it inside the frame's main group, where the shot's idea is. Never centre it along the bottom like a
     subtitle, and never put it in a corner.
+  - `docs/onscreen.json` logs later rewordings under `changed` and removals under `dropped`. A beat may carry `beats`,
+    a length the user pinned: `tools/timeline.py` never makes it shorter, so the timeline holds when its text shrinks.
+- **No text twice in one frame** (CLAUDE.md). No phrase or statement shows twice at once, counting your own type and
+  the real UI's text: a label never restates a UI line, a seal or another label, and a UI that repeats itself is left
+  out or cropped (ch07 leaves out the lock note, whose last words are the checkbox line's). One shared word is not a
+  repeat. The one exception is ch07's four identical hash copies (7.4-7.6), where the repetition is the picture.
 - **Sources.** A source caption ("Nguồn: CBRE, Savills") sits directly under the figure it sources, as part of that
   group, never in a frame corner: corner labels are banned.
 
@@ -428,7 +434,7 @@ on the scenes' own event times. Each chapter tells the sound where its events ar
 | `push` | The camera PUSHes in to close a chapter (ch07's badge) | the bed thins to a dark trace under one held low note (the bed's own bass) on its bass note until the chapter ends |
 | `drop` | ch01 only: the "500" falls out of frame | a falling swoosh; the bed dips out until ch02 and one bass note, the chord's fifth falling to its root (A1 to D1 over the D pedal), falls under the tear to the stab |
 | `complaint` | The hook's complaint bubble slams in | a round pop |
-| `bubble` | A chat bubble arrives; the last of a run is muffled. With `land`: the hook's bubble returns and snaps flush (ch07) | a tick; with `land`, a snap and a warm chord (four of the chord's notes on the keys) on the landing |
+| `bubble` | A chat bubble arrives; the last of a run is muffled. With `land`: the hook's bubble returns alone (ch07), and `land` is the match cut to the real report | a tick; with `land`, a snap and a warm chord (four of the chord's notes on the keys) on the landing |
 | `caption` | A caption strip slams onto the paper | a paper stamp |
 | `slam` | DISPLAY type SLAMs | a paper stamp |
 | `stamp` | A seal or stamp tag is struck down | a deep stamp |
