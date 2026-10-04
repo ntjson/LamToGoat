@@ -913,7 +913,7 @@ def fx_complaint(f, q, k, run):
 
 
 def fx_bubble(f, q, k, run):
-    if "land" in q:  # the hook's bubble comes back and snaps flush: its tick, then a warm chord
+    if "land" in q:  # the hook's bubble comes back alone (its tick); the match cut to the real report (snap, warm chord)
         f.fx(q, "tick", tap(2400, 0.0035, 0.3, seed=f.seed(q, k)), q["t"], pan=q.get("pan", -0.3))
         f.fx(q, "hit", snap_fx(0.6, seed=f.seed(q, k, 1)), q["land"], pan=q.get("pan", -0.3), rel=-1.5)
         pitched_warm(f, q, k)

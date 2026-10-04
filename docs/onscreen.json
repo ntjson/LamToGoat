@@ -1,5 +1,5 @@
 {
- "note": "On-screen text per story beat (the ids of the old voice lines L01-L35), what the viewer must read while the beat holds. tools/timeline.py turns it into reading time. kind: disp (DISPLAY), label (LABEL ≥ 40 px), cap (caption ≤ 36 px), mono, ui (a screenshot: glanced, not read). how: read, skim (half), glance (fixed), known (seen before). 'added' lists text added when the voice was dropped (2026-09-28): each line's message must be on screen.",
+ "note": "On-screen text per story beat (the ids of the old voice lines L01-L35), what the viewer must read while the beat holds. tools/timeline.py turns it into reading time. kind: disp (DISPLAY), label (LABEL ≥ 40 px), cap (caption ≤ 36 px), mono, ui (a screenshot: glanced, not read). how: read, skim (half), glance (fixed), known (seen before). 'added' lists text added when the voice was dropped (2026-09-28): each line's message must be on screen. 'changed' logs text reworded later, 'dropped' text taken off screen, each with its date and reason. 'beats' pins a beat's length (tools/timeline.py never makes it shorter): the user kept the timeline when a beat's text got shorter (2026-10-04).",
  "lines": {
   "L01": {
    "items": [
@@ -510,7 +510,7 @@
      "read"
     ],
     [
-     "khoản chi được niêm phong, / không thể chỉnh sửa",
+     "ngay cả ban quản lý / cũng không sửa được",
      "label",
      "read"
     ],
@@ -520,16 +520,30 @@
      "read"
     ],
     [
-     "web: lock note, checkbox, publish button",
+     "web: checkbox, publish button",
      "ui",
      "glance"
     ]
    ],
    "added": [
     [
-     "khoản chi được niêm phong, / không thể chỉnh sửa",
+     "ngay cả ban quản lý / cũng không sửa được",
      "label",
      "BLACK LABEL under 'SAU KHI / CÔNG BỐ'"
+    ]
+   ],
+   "changed": [
+    [
+     "khoản chi được niêm phong, / không thể chỉnh sửa",
+     "ngay cả ban quản lý / cũng không sửa được",
+     "2026-10-04 (the user): no phrase twice in one frame. 'niêm phong' is the seal's and 'không thể chỉnh sửa' the checkbox line's; the label now says who can't edit (the workspace locks a published proposal; README: published evidence is never edited in place). Same length, so the same reading time."
+    ]
+   ],
+   "dropped": [
+    [
+     "web: the lock note (7.2a)",
+     "ui",
+     "2026-10-04 (the user): it ends '… không thể chỉnh sửa.' as the checkbox line does; a glance, so the reading time is unchanged"
     ]
    ],
    "why": "'không thể chỉnh sửa' was only in the UI's small text"
@@ -548,11 +562,6 @@
     ],
     [
      "từ khoản chi / về phản ánh ban đầu",
-     "label",
-     "read"
-    ],
-    [
-     "Phản ánh gốc",
      "label",
      "read"
     ],
@@ -579,7 +588,16 @@
      "CREAM LABEL under 'LẦN / NGƯỢC'"
     ]
    ],
-   "why": "'LẦN NGƯỢC' said the verb; who traces, and from what to what, was only spoken"
+   "dropped": [
+    [
+     "Phản ánh gốc",
+     "label",
+     "2026-10-04 (the user): it named the report as the caption's 'về phản ánh ban đầu' does; the match cut with the hook's bubble now says which report it is"
+    ]
+   ],
+   "why": "'LẦN NGƯỢC' said the verb; who traces, and from what to what, was only spoken",
+   "beats": 9,
+   "beats_why": "2026-10-04 (the user): the timeline, music and cues stay as they are. Without 'Phản ánh gốc' the text needs 4.37 s instead of 5.36 s, so the beat holds about a second more than its reading needs."
   },
   "L25": {
    "items": [

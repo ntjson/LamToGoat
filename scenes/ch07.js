@@ -1,19 +1,22 @@
 // ch07 USP 2: after publication (shots 7.1-7.7). Layer two of the fund's protection, shown through the product's own
-// screens: a published expense is sealed and can't be edited; a resident traces the verified expense back to the report
-// it came from (the hook's lost complaint, word for word); the record's hash is kept at four independent places; an
-// edit is caught at once, and nobody can erase the trace. The film has no voice: every beat is anchored to the story
-// beats L23-L27 on the music's grid (ctx.line / ctx.syl; moves that land start early by their spring's first-arrival
-// time), each beat's text lands early and holds to the beat's end; nothing uses film-absolute seconds.
+// screens: a published expense is sealed and not even the management can edit it; a resident traces the verified
+// expense back to the report it came from (the hook's lost complaint, word for word); the record's hash is kept at four
+// independent places; an edit is caught at once, and nobody can erase the trace. The film has no voice: every beat is
+// anchored to the story beats L23-L27 on the music's grid (ctx.line / ctx.syl; moves that land start early by their
+// spring's first-arrival time), each beat's text lands early and holds to the beat's end; nothing uses film-absolute
+// seconds. The same phrase or statement never shows twice in one frame, the UI's text included (CLAUDE.md); the four
+// identical hash copies of 7.4-7.6 are the one exception, since the repetition is the picture.
 //
 // 7.1  (underlap) CREAM paper tears diagonally across ch06's held BLACK frame in two pulls; the NAVY "2" slams on the
 //      cream and a NAVY "layer two" bar shoots in under it (ch06 opened layer one with an ORANGE bar).
-// 7.2  "SAU KHI / CÔNG BỐ" rises out from behind the bar, then "khoản chi được niêm phong, / không thể chỉnh sửa" under
-//      it; the lock note, the checkbox line and the publish button slide in; the NAVY oval seal "NIÊM PHONG" stamps
-//      beside the button; an ORANGE bracket snaps under the UI's "không thể chỉnh sửa".
+// 7.2  "SAU KHI / CÔNG BỐ" rises out from behind the bar, then "ngay cả ban quản lý / cũng không sửa được" under it;
+//      the checkbox line and the publish button slide in; the NAVY oval seal "NIÊM PHONG" stamps beside the button; an
+//      ORANGE bracket snaps under the UI's "không thể chỉnh sửa", the only place that phrase is on screen.
 // 7.3  A NAVY façade rises; its window opens like lift doors onto the verified expense (7.3a). "Cư dân / LẦN / NGƯỢC /
 //      từ khoản chi / về phản ánh ban đầu" rise out of slits in the façade; the screen scrolls to the accountability
-//      chain (7.3b) and a CREAM bracket climbs step 4 → 1; HARD CUT to the original report (7.3c); the hook's bubble
-//      rises and snaps flush under it.
+//      chain (7.3b) and a CREAM bracket climbs step 4 → 1. The window shuts (HARD CUT) and, a 16th later on the beat,
+//      the hook's bubble SLAMs in alone as in ch01, its words where the report's title will be; one beat on, the
+//      match cut: HARD CUT to the original report (7.3c), the words unmoved, only the paper around them changed.
 // 7.4  ORANGE and CREAM close in like doors; "MÃ BĂM" slams; the verified card slides up; four NAVY copies of the hash
 //      slide in and "4 nơi độc lập" counts with them.
 // 7.5  A RED torn copy "4b70…e8" slips in crooked under the stack.
@@ -37,9 +40,10 @@ const SLY = { f: 1.05, z: 0.85 }; // the edited copy slipping in
 const LAYER = { f: 1.6, z: 0.8 }; // the layer bar shooting in along the frame
 const COUNT = { f: 1.3, z: 0.9 }; // the director's odometer preset (no visible overshoot)
 
-// The resident's report, word for word from the product (android-light-06-issue-detail), laid out as in ch01's bubble.
-const COMPLAINT = ['Thang máy B kẹt cửa ở tầng 3,', 'phải bấm nhiều lần mới mở được.'];
-const CFONT = 72;
+// The resident's report, word for word from the product (android-light-06-issue-detail), broken where the real report
+// breaks its title (7.3c), so the hook's bubble can lay its words on the report's (ch01 breaks it after "tầng 3,").
+const TITLE = ['Thang máy B kẹt cửa ở tầng 3, phải bấm', 'nhiều lần mới mở được.'];
+const CFONT = 72; // ch01's size for them
 // The deck's hashes ("Công nghệ cốt lõi"): the anchored record and the edited one.
 const HASH = '9f2a…c1';
 const EDIT = '4b70…e8';
@@ -49,6 +53,7 @@ const EDIT = '4b70…e8';
 const WORDS_72B = [1479, 1982]; // 7.2b, "không thể chỉnh sửa": ink from the k to the a (the period excluded)
 const DESC_72B = 103; // 7.2b: lowest descender of that line (the g of "không")
 const STEPS_73B = [364.5, 577.5, 850.5, 991.5]; // 7.3b: centres of the step numbers 1, 2, 3, 4
+const TITLE_73C = { x: [48, 1089], base: [193, 274] }; // 7.3c: the title's ink from the T to the m of "bấm"; its two baselines
 const BADGE_76 = [3082, 159.5]; // 7.6: centre of the "Phát hiện sai lệch toàn vẹn" pill
 
 const OV = 7; // a window's paper overlaps the UI by 4-7 px (4 px plus the cut's 3 px jitter, as kit.aperture)
@@ -222,8 +227,7 @@ export default {
     T.two = L23.start; // 7.1 the "2" SLAMs on the cream, on the beat's first grid point
     T.bar = s23(2) - arrive(LAYER); // the NAVY layer bar shoots in under it
     T.title = s23(3) - SL; // 7.2 "SAU KHI / CÔNG BỐ" rises out from behind the bar
-    T.sub = s23(5) - SL; // "khoản chi được niêm phong, / không thể chỉnh sửa" rises under it
-    T.note = s23(6) - SL; // the lock note slides in
+    T.sub = s23(5) - SL; // "ngay cả ban quản lý / cũng không sửa được" rises under it
     T.check = s23(7) - SL; // the checkbox line
     T.btn = s23(8) - SL; // the publish button
     T.seal = s23(9); // the seal STAMPs beside the button
@@ -238,9 +242,9 @@ export default {
     T.scrolled = T.scroll + settle(SCROLL, 1000);
     const c0 = atLeast(s24(6), T.scrolled); // the bracket ticks step 4, then climbs one step per 8th note
     T.climb = [0, 1, 2, 3].map((i) => c0 + 2 * i * ctx.grid);
-    T.cut3 = atLeast(s24(9), T.climb[3] + 2 * ctx.grid); // HARD CUT to the original report
-    T.bub = T.cut3 + ctx.grid; // the hook's bubble rises...
-    T.flush = atLeast(s24(11), T.bub + 2 * ctx.grid); // ...and snaps flush
+    T.cut3 = atLeast(s24(9), T.climb[3] + 2 * ctx.grid); // HARD CUT: the window shuts on the chain
+    T.bub = ctx.snap(T.cut3 + ctx.grid); // the hook's bubble SLAMs in alone (snapped: it shows on its own frame)...
+    T.match = atLeast(s24(11), T.bub + ctx.beat); // ...and a beat later, at rest, the match cut to the original report
     T.wipe = L24.end; // 7.4 the two fields close in, on the beat's end
     T.landed = T.wipe + settle(WIPE, 1400); // both at rest: they move to ctx.root and 7.3 is put away
     T.mabam = atLeast(s25(0), T.landed); // "MÃ BĂM" SLAMs
@@ -258,7 +262,7 @@ export default {
     if (T.landed > T.mabam) console.warn('ch07: the fields land after "MÃ BĂM"');
     // Landing times of the moves above (for the sound's cues).
     const land = {
-      bar: T.bar + arrive(LAYER), title: T.title + SL, sub: T.sub + SL, note: T.note + SL, check: T.check + SL, btn: T.btn + SL,
+      bar: T.bar + arrive(LAYER), title: T.title + SL, sub: T.sub + SL, check: T.check + SL, btn: T.btn + SL,
       fac: T.fac + SL, cu: T.cu + SL, lan: T.lan + SL, nguoc: T.nguoc + SL, tu: T.tu + SL, card: T.card + SL,
       strips: T.strips.map((x) => x + SL), roll: T.roll + arrive(COUNT), red: T.red + arrive(SLY), bao: T.bao + SL,
       tear: T.tear + arrive(TEAR1),
@@ -307,9 +311,10 @@ export default {
     const i2 = ink('2', 'disp', 620, 1);
     const TX = Math.round(X2 + (i2.right - i2.left) + 80);
     const slot = el(g72, '', { width: `${W}px`, height: `${BY + BH - 6}px`, overflow: 'hidden' });
-    // Flush left at TX, bottom-up: the label "khoản chi được niêm phong, / không thể chỉnh sửa" (BLACK LABEL 52) with its
-    // last baseline on the numeral's, and "SAU KHI / CÔNG BỐ" 36 px over the label's marks. Both rise from behind the bar.
-    const SUB = ['khoản chi được niêm phong,', 'không thể chỉnh sửa'];
+    // Flush left at TX, bottom-up: the label "ngay cả ban quản lý / cũng không sửa được" (BLACK LABEL 52) with its last
+    // baseline on the numeral's, and "SAU KHI / CÔNG BỐ" 36 px over the label's marks. Both rise from behind the bar.
+    // The label says what the seal and the UI don't (who can't edit), so no phrase on screen repeats another.
+    const SUB = ['ngay cả ban quản lý', 'cũng không sửa được'];
     const SUB_LH = 1.2;
     const iS1 = ink(SUB[0], 'label', 52, SUB_LH);
     const iS2 = ink(SUB[1], 'label', 52, SUB_LH);
@@ -333,17 +338,13 @@ export default {
     two.el.style.transformOrigin = `${Math.round((i2.left + i2.right) / 2)}px ${Math.round(i2.base)}px`;
 
     const XR = 1830; // the UI pieces sit flush right
-    const pNote = await plate(ctx, '7.2a', { backing: C.navy, seed: SEED + 10 });
     const pCheck = await plate(ctx, '7.2b', { backing: C.navy, seed: SEED + 11 });
     const pBtn = await plate(ctx, '7.2c', { backing: C.navy, seed: SEED + 12 });
-    // The column starts 150 px down, higher if the checkbox line (the widest piece) would come within 44 px of the title.
-    const GAP_NC = 44; // lock note -> checkbox line
-    let colY = 150;
-    if (titleInk.right > XR - pCheck.w - 30) colY = Math.min(colY, titleInk.top - 44 - (pNote.h + GAP_NC + pCheck.h + 14));
-    const NOTE = { x: XR - pNote.w, y: Math.round(colY) };
-    const CHECK = { x: XR - pCheck.w, y: NOTE.y + pNote.h + GAP_NC };
-    const BTN = { x: XR - pBtn.w, y: CHECK.y + pCheck.h + 74 };
-    place(pNote.el, NOTE.x, NOTE.y);
+    // The checkbox line and the publish button in the upper right, against the numeral and the title in the lower left:
+    // the button's row stands on the title's caps (its backing 24 px over them), the checkbox line 74 px over the button.
+    // (The lock note, 7.2a, is left out: it ends "… không thể chỉnh sửa." as the checkbox line does.)
+    const BTN = { x: XR - pBtn.w, y: Math.round(titleInk.top - 24 - 14 - pBtn.h) };
+    const CHECK = { x: XR - pCheck.w, y: BTN.y - 74 - pCheck.h };
     place(pCheck.el, CHECK.x, CHECK.y);
     place(pBtn.el, BTN.x, BTN.y);
     const sealP = seal(g72, 'NIÊM PHONG', { size: 48, seed: SEED + 20 });
@@ -372,7 +373,8 @@ export default {
     const pC = await plate(ctx, '7.3c');
     const WB = { x: W - 70 - pB.w, y: Math.round((H - pB.h) / 2), w: pB.w, h: pB.h };
     const WA = { x: WB.x + Math.round((cA.crop[0] - cB.crop[0]) * s3), y: Math.round((H - pA.h) / 2), w: pA.w, h: pA.h };
-    const WC = { x: W - 90 - pC.w, y: 200, w: pC.w, h: pC.h };
+    // The report sits flush right, centred on the frame.
+    const WC = { x: W - 90 - pC.w, y: Math.round((H - pC.h) / 2), w: pC.w, h: pC.h };
     place(pA.el, WA.x, WA.y);
     place(pB.el, WB.x, WB.y);
     place(pC.el, WC.x, WC.y);
@@ -432,29 +434,38 @@ export default {
       riser('NGƯỢC', 'disp cut-text', 150, 1.1, lanTop + rel.nguoc, iN, iN),
       riser('từ khoản chi / về phản ánh ban đầu', 'label', 52, 1.2, Math.round(lanTop + rel.tu), iU1, iU2),
     ];
-    // "Phản ánh gốc" over the report, and the hook's bubble under it.
-    const goc = text(top, 'label', 'Phản ánh gốc', { size: 52 });
-    grainText(goc.el, C.cream);
-    const iG = ink('Phản ánh gốc', 'label', 52, 1.2);
-    place(goc.el, WC.x, WC.y - 26 - iG.bottom);
-    // The bubble, built exactly as ch01's complaint (makeSheet/COMPLAINT): same size, paddings, tail and cut.
-    const probe = el(top, 'label', { fontSize: `${CFONT}px`, lineHeight: 1.22, whiteSpace: 'nowrap' }, COMPLAINT.join('<br>'));
-    const cw = Math.round(probe.getBoundingClientRect().width + 100);
-    const ch = Math.round(CFONT * 1.22 * 2 + 2 * 40 + 28);
+    // The hook's bubble, cut as ch01's complaint (seed 11, its tail, its paddings and corner in proportion) but set at
+    // the size, line break and line pitch of the report's own title, so its words lie on the report's: the first line
+    // exactly as wide as the report's, the baselines on the report's, the ink starting where the report's does. Widths
+    // are measured in the page, where optical sizing applies (the canvas in ink() ignores it): a few steps converge.
+    const sC = ctx.crop('7.3c').scale;
+    const lineW = (size) => {
+      const p = el(top, 'label', { fontSize: `${size}px`, whiteSpace: 'nowrap' }, TITLE[0]);
+      const w = p.getBoundingClientRect().width;
+      p.remove();
+      return w;
+    };
+    let bfs = CFONT;
+    for (let i = 0; i < 6; i++) bfs *= ((TITLE_73C.x[1] - TITLE_73C.x[0]) * sC) / lineW(bfs);
+    const bk = bfs / CFONT; // ch01's bubble at this size
+    const blh = ((TITLE_73C.base[1] - TITLE_73C.base[0]) * sC) / bfs;
+    const probe = el(top, 'label', { fontSize: `${bfs}px`, lineHeight: blh, whiteSpace: 'nowrap' }, TITLE.join('<br>'));
+    const bubW = Math.round(probe.getBoundingClientRect().width + 100 * bk);
     probe.remove();
+    const bubH = Math.round(bfs * blh * 2 + 80 * bk + 28 * bk);
     const bub = el(top, 'grained', {
-      width: `${cw}px`, height: `${ch}px`, backgroundColor: C.cream,
-      clipPath: clip(rough(bubble(cw, ch, { tail: 'left', th: 28 }), { seed: 11, amp: 3 })),
+      width: `${bubW}px`, height: `${bubH}px`, backgroundColor: C.cream, transformOrigin: `${(bubW / 2).toFixed(1)}px ${bubH}px`,
+      clipPath: clip(rough(bubble(bubW, bubH, { r: 26 * bk, tail: 'left', tw: 34 * bk, th: 28 * bk }), { seed: 11, amp: 3 })),
     });
-    el(bub, 'label', { left: '50px', top: '40px', fontSize: `${CFONT}px`, lineHeight: 1.22, color: C.black, whiteSpace: 'nowrap' }, COMPLAINT.join('<br>'));
-    const bk = WC.w / cw; // uniformly scaled so it is exactly as wide as the report: flush on both sides
-    const BUB = { x: WC.x, y: WC.y + WC.h + 48 };
-    bub.style.transformOrigin = `40px ${ch}px`;
-    place(bub, BUB.x - 40 * (1 - bk), BUB.y - ch * (1 - bk));
-    // It rises tilted as in the chat, then snaps straight and flush: one spring per change of target.
-    const bubY = track(H - WC.y, [[T.bub, 26, 'slide'], [T.flush, 0, 'snap']]);
-    const bubX = track(-34, [[T.flush, 0, 'snap']]);
-    const bubRot = track(-4, [[T.bub, -1.5, 'slide'], [T.flush, 0, 'snap']]);
+    el(bub, 'label', {
+      left: `${(50 * bk).toFixed(2)}px`, top: `${(40 * bk).toFixed(2)}px`, fontSize: `${bfs.toFixed(3)}px`, lineHeight: blh.toFixed(4),
+      color: C.black, whiteSpace: 'nowrap',
+    }, TITLE.join('<br>'));
+    const iB1 = ink(TITLE[0], 'label', bfs, blh);
+    Object.assign(bub.style, {
+      left: `${(WC.x + TITLE_73C.x[0] * sC - (50 * bk + iB1.left)).toFixed(2)}px`,
+      top: `${(WC.y + TITLE_73C.base[0] * sC - (40 * bk + iB1.base)).toFixed(2)}px`,
+    });
 
     // ---- 7.4-7.7: two fields (ORANGE cut diagonally at left, CREAM at right). They close in on ctx.top over 7.3,
     // then swap to identical copies on ctx.root, where the rest of the frame lives.
@@ -518,9 +529,9 @@ export default {
 
     return {
       T, land, ground, tearSheet, dir, TEAR_D, tearPos,
-      g72, bar, two: two.el, title: title.el, titleRise, sub: sub.el, subRise, pNote, pCheck, pBtn, NOTE, CHECK, BTN, seal: sealP.el, brk72, bw,
+      g72, bar, two: two.el, title: title.el, titleRise, sub: sub.el, subRise, pCheck, pBtn, CHECK, BTN, seal: sealP.el, brk72, bw,
       cA, cB, s3, pA, pS, pB, pC, WA, WB, WC, fTop, fBot, fLeft, fRight, fRise, RISE,
-      brBar, brBarPaper, BRX, yStep, ticks, climb, slots, goc: goc.el, bub, bk, bubX, bubY, bubRot,
+      brBar, brBarPaper, BRX, yStep, ticks, climb, slots, bub,
       creamTop, orangeTop, gCream, gOrange, IN, mabam: mabam.el, sua: sua.el, bao: bao.el, four, noi: noi.el, copies, red,
       pV, pM, pZ, PUSH_TO, cardRise, trace,
     };
@@ -552,29 +563,32 @@ export default {
       if (vis(s.sub, t >= T.sub)) s.sub.style.transform = `translateY(${f2(spring(t, T.sub, s.subRise, 0, 'slide'))}px)`;
       if (vis(s.seal, t >= T.seal)) s.seal.style.transform = `rotate(${f2(spring(t, T.seal, -14, -6, 'slam'))}deg) scale(${spring(t, T.seal, 1.6, 1, 'slam').toFixed(4)})`;
     }
-    for (const [p, t0, P] of [[s.pNote, T.note, s.NOTE], [s.pCheck, T.check, s.CHECK], [s.pBtn, T.btn, s.BTN]]) {
+    for (const [p, t0, P] of [[s.pCheck, T.check, s.CHECK], [s.pBtn, T.btn, s.BTN]]) {
       if (vis(p.el, t >= t0 && t < T.doors)) p.el.style.transform = `translateX(${f2(spring(t, t0, W + 40 - P.x, 0, 'slide'))}px)`;
     }
     if (vis(s.brk72, t >= T.brk)) s.brk72.style.width = `${f2(s.bw * Math.min(1, step(t - T.brk, { f: 2.2, z: 1 })))}px`;
 
-    // 7.3 The façade rises (one sheet, doors shut), then becomes four strips around the window; the doors open.
+    // 7.3 The façade rises (one sheet, doors shut), then becomes four strips around the window; the doors open. From
+    // the cut out of the chain to the match cut the window is shut (the same sheet, at rest) and the bubble is alone.
     const rising = t >= T.fac && t < T.doors;
-    if (vis(s.fRise.el, rising)) slidePaper(s.fRise, 0, spring(t, T.fac, s.RISE, 0, 'slide'));
     const on73 = t >= T.doors && t < T.landed;
+    const alone = on73 && t >= T.cut3 && t < T.match;
+    if (vis(s.fRise.el, rising || alone)) slidePaper(s.fRise, 0, rising ? spring(t, T.fac, s.RISE, 0, 'slide') : 0);
     const u = t < T.scroll ? 0 : t >= T.scrolled ? 1 : step(t - T.scroll, SCROLL);
     const cut = t >= T.cut3;
     const lerpR = (a, b) => ({ x: lerp(a.x, b.x, u), y: lerp(a.y, b.y, u), w: lerp(a.w, b.w, u), h: lerp(a.h, b.h, u) });
     const win = cut ? s.WC : lerpR(s.WA, s.WB);
     const open = t < T.doors ? 0 : step(t - T.doors, DOORS);
     const shut = (1 - open) * (win.w / 2 + 14);
-    for (const p of [s.fTop, s.fBot, s.fLeft, s.fRight]) vis(p.el, on73);
+    for (const p of [s.fTop, s.fBot, s.fLeft, s.fRight]) vis(p.el, on73 && !alone);
     if (on73) {
       slidePaper(s.fTop, 0, win.y);
       slidePaper(s.fBot, 0, win.y + win.h);
       slidePaper(s.fLeft, win.x + shut, 0);
       slidePaper(s.fRight, win.x + win.w - shut, 0);
     }
-    // Behind the window: 7.3a at rest, the scroll (the same screenshot, between the two crops), 7.3b at rest, 7.3c.
+    // Behind the window: 7.3a at rest, the scroll (the same screenshot, between the two crops), 7.3b at rest, then
+    // (after the bubble's beat) 7.3c.
     vis(s.pA.el, on73 && !cut && t < T.scroll);
     vis(s.pB.el, on73 && !cut && t >= T.scrolled);
     const scrolling = vis(s.pS.el, on73 && !cut && t >= T.scroll && t < T.scrolled);
@@ -588,7 +602,7 @@ export default {
       Object.assign(s.pS.win.style, { width: `${f2(win.w)}px`, height: `${f2(win.h)}px` });
       Object.assign(s.pS.img.style, { left: `${f2(-rx * s3)}px`, top: `${f2(-ry * s3)}px` });
     }
-    vis(s.pC.el, on73 && cut);
+    vis(s.pC.el, on73 && t >= T.match);
     // The CREAM bracket climbs the chain: a tick at step 4, then the bar snaps up one step per 8th note.
     const climbing = on73 && !cut && t >= T.climb[0];
     vis(s.brBar, climbing);
@@ -607,9 +621,11 @@ export default {
       vis(sl.slot, on73 && t >= lanOn[i]);
       if (on73 && t >= lanOn[i]) sl.el.style.transform = `translateY(${f2(spring(t, lanOn[i], sl.drop, 0, 'slide'))}px)`;
     });
-    if (vis(s.goc, on73 && cut)) s.goc.style.transform = `translateX(${f2(spring(t, T.cut3, -40, 0, 'snap'))}px)`;
-    if (vis(s.bub, on73 && t >= T.bub)) {
-      s.bub.style.transform = `translate(${f2(s.bubX(t))}px, ${f2(s.bubY(t))}px) rotate(${f2(s.bubRot(t))}deg) scale(${s.bk.toFixed(4)})`;
+    // The hook's bubble SLAMs in alone as the complaint did in ch01's chat (big and tilted), straight at rest so its
+    // words lie exactly on the report's at the match cut. It sits near the frame's right edge, so it grows from its
+    // bottom centre (1.2×), not from its tail as in ch01: its first frames stay inside the frame.
+    if (vis(s.bub, alone && t >= T.bub)) {
+      s.bub.style.transform = `rotate(${f2(spring(t, T.bub, -6, 0, 'snap'))}deg) scale(${spring(t, T.bub, 1.2, 1, 'slam').toFixed(4)})`;
     }
 
     // 7.4 The fields close in over 7.3 (ctx.top), then continue as identical copies on ctx.root.
@@ -674,7 +690,6 @@ export default {
       { t: T.bar, name: 'bar', land: L.bar },
       { t: T.title, name: 'rise', land: L.title },
       { t: T.sub, name: 'rise', land: L.sub },
-      { t: T.note, name: 'slide', land: L.note },
       { t: L.check, name: 'click' }, // the checkbox line clicks into place
       { t: T.btn, name: 'slide', land: L.btn },
       { t: T.seal, name: 'stamp' },
@@ -687,8 +702,8 @@ export default {
       { t: T.tu, name: 'rise', land: L.tu },
       { t: T.scroll, name: 'scroll' },
       ...T.climb.map((t, i) => ({ t, name: 'climb', i })),
-      { t: T.cut3, name: 'cut' },
-      { t: T.bub, name: 'bubble', land: T.flush },
+      { t: T.cut3, name: 'cut' }, // the window shuts on the chain
+      { t: T.bub, name: 'bubble', land: T.match }, // the hook's bubble returns (its tick); the match cut (snap, warm chord)
       { t: T.wipe, name: 'doors' },
       { t: T.mabam, name: 'slam' },
       { t: T.card, name: 'slide', land: L.card },
