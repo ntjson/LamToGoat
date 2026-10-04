@@ -1,18 +1,34 @@
-# Handoff: ch04's flip order, and the sound effects remade to fit the bed (2026-09-29)
+# Handoff: ch05 rebuilt on recordings of the real app (2026-10-04)
 
 For the next session. Read `CLAUDE.md`, `docs/brief.md` and `docs/ANIMATION_GUIDE.md` first; their rules hold unless
 something below overrides them. Work is on branch **`film`**. There is no remote. **Never push.**
 
-**The task just done (the user, 2026-09-29): ch04's flip order** (commit `0698eaa`). Each role now flips to navy right after its own pain has
-been read, before the next role's pain lands: pain 1, flip 1, pain 2, flip 2, pain 3, flip 3. Before, the manager's panel (Ban quản lý) waited
-for `s14(3)`, after the residents' pain, and the last two flipped back to back. The manager's flip moved into L13 (edge-on 11.49 s chapter-local,
-film 55.94 s, grid unit 83, one 16th before L13 ends: `L13.end - ctx.grid`), and the residents' second pain tag moved from `s14(2)` to `s14(3)` (the beat
-the flip left, 14.55 s) so their pain does not sit still for 2.6 s. The board's flip (7.74 s) and the residents' (16.49 s) did not move; the
-timeline, the chapter's length and the grid are untouched, and all 15 of ch04's texts pass `readcheck` (the tightest: "không ai theo dõi", 1.40 s
-readable for 1.24 s needed). Three of the 418 cues moved (the manager's flip and chime, the residents' second pin); the mix was rebuilt and its
-checks pass; the preview and the 960×540 draft were re-rendered. The scored rounds, the reading table and the sound checks are in `docs/review_log.md`,
-"ch04: each role flips right after its own pain", and `docs/review/ch04.md` (rounds 7-8); `docs/shotlist.md` has a note under ch04's table (its first plan
-had panel 2 flip after panel 3 stepped forward).
+**The task just done (the user, 2026-10-04): ch05 rebuilt with no cropped screenshots** (commits `3b04ff5`..`19fb90f`, docs after).
+A real person uses a real phone, step by step, then the manager a laptop, played from real-time recordings of the real app:
+- **Recordings** (`assets/recordings/`, committed, 51 MB): `app` is the resident's report in the Flutter web build (390 × 844, DPR 3,
+  pilot-resident-2: "+ Phản ánh", the hook's words typed, Tầng 3 → Thang máy B, "Gửi phản ánh", the confirmation, "Việc của tôi" with the new
+  report); `web` is Kawaibu's triage of report #7 in the workspace (1440 × 900, DPR 2: the AI suggestion, Vị trí, "Xác nhận phân loại", the case
+  page, a scroll to the chain). `node tools/record_app.mjs` re-records both against the design sandbox (it needs `~/Projects/LamTo` and its
+  lamto-db-1 container; it runs the API on a throwaway copy of `lamto_design`, drops it, and stops what it started); `--marks` recomputes the marks
+  read from the frames without the sandbox. A re-record has different timings and would need the scene's review loop again.
+- **Presentation** (`scenes/ch05.js` on `lib/footage.js` and `lib/props.js`): a cut-paper ORANGE phone held in a BLACK left hand, a BLACK right
+  index that taps exactly where and when the recording tapped (each tap remapped onto an 8th), a NAVY laptop and a cursor that follows the logged
+  path. Speed ramps fast-forward the typing and the still stretches; ripples and transitions play at real speed. Push-ins carry the app text the
+  viewer must read; paper sheets close round them; story captions sit on paper only.
+- **Gate picks (the user):** the cut-paper treatment (over a clean flat device), no photo step, pilot-resident-2's account. Told at the gate: the
+  web build cannot attach a photo (`dart:io`/`path_provider`; the sandbox's "photos" are 28-byte placeholders), no AI endpoint runs in the sandbox
+  (so report #7's seeded suggestion is recorded, as before), the new report is #13 and no screen shows its number.
+- **Rules** (CLAUDE.md): recordings of the real app count as real UI (the device frame, the hand and the cursor are overlays; nothing the recording
+  doesn't show is drawn); app text in a wide device shot may go under 28 px when what must be read gets a push-in or a story caption. The guide has
+  a "Recordings" section (8), `ctx.recording(name)` and the new cues `tap` and `key` (12); the lint rejects recording paths in scenes.
+- **Kept:** 8 bars (64.44-82.22 s), the timeline (byte-identical; `docs/onscreen.json` only renamed its UI glances), the grid, ch04's doors and
+  ch06's cover (checked frame by frame); ch01 pixel-identical with the new engine. All 15 texts pass `readcheck`.
+- **Sound:** ch05's cues rebuilt on the recording's events (taps and key clicks unpitched on straight 8ths, the bell on the app's confirmation,
+  tuned to the bed); the mix rebuilt; every check passes; outside ch05 the mix is unchanged to about -80 dB.
+- Rounds: `docs/review/ch05.md` (8-11) and `docs/review_log.md`, "ch05: the real app, recorded". The shotlist has the new plan under ch05's table.
+
+**The task before that (the user, 2026-09-29): ch04's flip order** (commit `0698eaa`): each role flips to navy right after its own pain, before the
+next pain lands; details in `docs/review_log.md`, "ch04: each role flips right after its own pain".
 
 **The task before it (the user, 2026-09-29): all the sound effects remade to fit the Mixkit bed**, ch01's hits from the approved sketch
 included. Every effect is on its cue time; the picture and the timeline are untouched. What changed, per chapter, with the checks and the
@@ -29,20 +45,23 @@ and check them, and what is left.
 | 4 Engine + ch01 | approved |
 | 5 Guide + ch02-ch11 | done: every chapter built, reviewed (8+ on all criteria) and committed separately. ch10 carries the team's faces (`47ba699`). |
 | 6 Rough cut review | done without a voice |
-| 7 Polish, sound, final render, deliverables | **Music: the Mixkit bed. Effects: remade to fit it. ch04's flip order fixed (`0698eaa`). Next: the user's listen and notes, then the final render and deliverables.** |
+| 7 Polish, sound, final render, deliverables | **Music: the Mixkit bed. Effects: remade to fit it. ch04's flip order fixed (`0698eaa`). ch05 rebuilt on recordings of the real app (2026-10-04). Next: the user's look and listen, then the final render and deliverables.** |
 
 Review files for the user:
-- `out/preview_1080p.mp4`: 1920×1080, 30 fps, CRF 23, 180.0 s, with the current mix (AAC 320 kbps, 48 kHz), ch10's faces and ch04's new flip order. Rendered from a
-  clean worktree at `0698eaa` (6 min 46 s, 10 workers); measured on the file: -14.0 LUFS (ebur128), true peak -1.2 dBFS; loudnorm input -14.05 LUFS, -1.24 dBTP, LRA 6.8 LU;
-  audio aligned with `film.wav` at 0 samples of lag (codec residual -37.7 dB).
-- `out/roughcut_sound.mp4`: the 960×540 30 fps draft with the same mix (re-rendered at `0698eaa`). `out/review/ch04.mp4` carries the current mix (with ch04's exit, +0.9 s);
+- `out/preview_1080p.mp4`: 1920×1080, 30 fps, CRF 23, 180.0 s, with the current mix (AAC 320 kbps, 48 kHz) and the new ch05 (2026-10-04;
+  rendered from the working tree at `19fb90f`, docs aside; 7 min 1 s, 10 workers); measured on the file: -14.0 LUFS (ebur128), true peak -1.2 dBFS;
+  loudnorm input -14.06 LUFS, -1.23 dBTP, LRA 6.8 LU; audio aligned with `film.wav` at 0 samples of lag (codec residual -41.4 dB). The preview before
+  the ch05 rework, with its mix and checks, is in `out/tmp/ch05rework/before/`.
+- `out/review/ch05.mp4`: ch05 at 960×540 with the current mix (2026-10-04). `out/roughcut_sound.mp4`: the 960×540 30 fps draft of the whole film with the
+  **previous** mix and the old ch05 (rendered at `0698eaa`; not re-rendered). `out/review/ch04.mp4` carries the current mix (with ch04's exit, +0.9 s);
   the other per-chapter clips `out/review/chNN.mp4` still carry the **previous** mix. The preview and draft from before the flip-order change are in `out/tmp/flip/before/` (with that
   mix's `film.wav`, `cues.json`, `score.json` and check reports); older ones (and the first remake build's, before the skyline fix) are in `out/tmp/old_mix/` for A/B.
 - `out/sound/film.wav` (48 kHz stereo float), `out/sound/cues.json`, `out/sound/score.json` (every note and effect, with each paper/UI event's level and poke-out),
   `out/sound/stems/*.wav` (each stem at its level in the master, plus `bed_ref.wav`, the music the effects are judged against).
 - Check reports: `out/sound/sfxcheck.txt`, `tunecheck.txt`, `soundcheck.txt`, `synccheck.txt`; the analysis image `out/sound/analysis.png`.
 - `out/sound/bed.wav` and `bed.json`: the arranged bed, its plan and joins. `out/review/bed_joins.png`: a spectrogram around each join.
-- The rounds and all measurements: `docs/review_log.md`, "Sound pass", "Music bed", "ch10: the team's faces", "Sound effects remake".
+- The rounds and all measurements: `docs/review_log.md`, "Sound pass", "Music bed", "ch10: the team's faces", "Sound effects remake",
+  "ch04: each role flips right after its own pain", "ch05: the real app, recorded".
 
 **Be honest with the user: the mix was checked by measurement and by reading the score against the bed's chord chart, never by ear.**
 
@@ -66,6 +85,11 @@ Review files for the user:
 10. **ch04's flip order (2026-09-29):** each role flips to navy right after its own pain has been read and before the next role's pain lands (pain 1, flip 1, pain 2,
     flip 2, pain 3, flip 3), the manager's flip inside L13. Chapter length, timeline and grid unchanged; every text still passes `readcheck`. This replaces the shotlist's
     first plan (panel 2 flipping after panel 3 stepped forward).
+11. **ch05 on recordings of the real app (2026-10-04):** no cropped screenshots in ch05; real-time recordings of the real app
+    (`assets/recordings/`, `tools/record_app.mjs`) count as real UI, the cut-paper phone, hands, laptop and cursor are overlays (the user picked
+    cut paper over a clean flat device); no photo step (the web build cannot attach one); pilot-resident-2's account (a clean list); report #7 for the
+    manager (no AI endpoint in the sandbox, so a new report gets no real suggestion); app text in wide device shots may go under 28 px when what must be
+    read gets a push-in or a story caption (CLAUDE.md). 8 bars, timeline, grid, ch04's doors and ch06's cover unchanged.
 
 ## What to ask the user (three judgement calls made without them)
 
@@ -85,8 +109,8 @@ Review files for the user:
 - **If on-screen text ever changes,** the timeline re-flows: rebuild it, then re-run `readcheck`, the chapter
   review, `node tools/cues.mjs` and `tools/sound.py` (the music and every cue sit on the timeline). If a chapter
   moves, re-fit `tools/bed.py`'s `PLAN`: the track's lift must still land on ch05's downbeat.
-- The accepted ch05 soft spot stands: the confirmation screen is open about 0.64 s (73.24-73.89 s); the small bell
-  rings on `T.conf`.
+- ch05's soft spots (since the rework): the app's confirmation is up about 0.64 s (73.06-73.69 s; the bell rings on `T.conf`, 73.06 s);
+  "Việc của tôi" with the new report holds about 0.45 s (73.89-74.30 s) before the pan to the laptop.
 
 
 ## The music bed
@@ -205,7 +229,7 @@ Under each chapter:
 Code, all deterministic (two runs give identical bytes): `tools/synth.py` (every synth), `tools/sound.py` (the mix), `tools/meter.py` (the measurements), and the data
 `docs/bed_harmony.json` (the chord the bed plays on each of its 200 beats) and `docs/bed_kit.md` (what its instruments are and do).
 
-1. **Cues** (the picture side; unchanged): each chapter's `cues(state, ctx)` -> `node tools/cues.mjs` -> `out/sound/cues.json` (418 cues, 42 names, `docs/ANIMATION_GUIDE.md` section 12).
+1. **Cues** (the picture side): each chapter's `cues(state, ctx)` -> `node tools/cues.mjs` -> `out/sound/cues.json` (416 cues, 43 names since ch05's rework, `docs/ANIMATION_GUIDE.md` section 12).
 2. **Handlers** (`fx_<name>` in `tools/sound.py`, run name by name over the cues; `EFFECTS` maps names to them). Two kinds:
    - **Paper and UI** (ticks, stamps, snips, slides, tears, flips, ...): `f.fx(q, class, sig, at, pan, rel)`. The synths (`tools/synth.py`) are noise only; **`tools/meter.tonality`**
      reads at most 0.026 on every class. `Film.finalize()` then, per class (`CLASSES`: hit, cut, move, tick, texture): matches the class's EQ to a designed spectrum (a tilt, a low cut,
@@ -234,7 +258,7 @@ All of it is deterministic. **While another session has uncommitted scene or eng
 (`git worktree add --detach ../LamToGoat-build HEAD`, then symlink `node_modules`). A broken chapter in the working tree stops `cues.mjs`, and a scene edited mid-render mixes versions.
 
 ```sh
-node tools/cues.mjs                                                     # out/sound/cues.json (418 cues)
+node tools/cues.mjs                                                     # out/sound/cues.json (416 cues)
 uv run python tools/bed.py                                              # out/sound/bed.wav + bed.json (if the bed changes)
 uv run python tools/bedharmony.py                                       # docs/bed_harmony.json (if the bed changes; hand overrides inside)
 uv run --with numpy --with scipy python tools/sound.py --stem-dir out/sound/stems --score out/sound/score.json   # out/sound/film.wav (about 1 min)
@@ -250,7 +274,7 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
 - **`tools/bedhits.py`** (`--scan`, `--cues`, `--selftest`): what the bed plays and when; `sound.py` imports its `hits()`. **`docs/bed_kit.md`** has its measurements and caveats.
 - Last measured on the mix: -14.00 LUFS, -1.21 dBTP (after the AAC 320k round trip: -1.24, -14.01 LUFS).
 - **After a scene edit that moves cues** (as ch04's flip order did): run `node tools/cues.mjs` and diff `out/sound/cues.json` against the old one (only the intended cues should move;
-  ch04's change moved 3 of 418), then `tools/sound.py` and the four checks. The new `film.wav` should then differ from the old one only around the moved cues (match their gain first;
+  ch04's change moved 3 of 418; ch05's rework replaced its 34 with 32), then `tools/sound.py` and the four checks. The new `film.wav` should then differ from the old one only around the moved cues (match their gain first;
   the change was +0.004 dB elsewhere). The picture can be checked the same way: render the chapter from a clean worktree at the previous commit and compare frame by frame (an H.264
   encode adds lookahead noise of a few levels to the frames just before a change; lossless `frames.mjs` stills don't). Render the preview from a clean worktree at the new commit.
   `../LamToGoat-build` was used for this and removed afterwards (`git worktree add --detach ../LamToGoat-build HEAD`, symlink `node_modules`).
@@ -278,19 +302,21 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
 
 ## Next
 
-1. **The user's listen and notes** on the effects (and the five joins in the bed: 0:20.0, 0:37.8, 0:55.6, 2:28.9, 2:53.3). Ask the three questions above first. Places to listen:
+1. **The user's look at the new ch05** (`out/review/ch05.mp4`, `out/preview_1080p.mp4` 1:04-1:22): the phone and the laptop on the real app, the
+   speed ramps, the soft spots above (the confirmation up about 0.64 s, the refreshed list about 0.45 s), the arm's sweep to the back arrow.
+2. **The user's listen and notes** on the effects (and the five joins in the bed: 0:20.0, 0:37.8, 0:55.6, 2:28.9, 2:53.3). Ask the three questions above first. Places to listen:
    ch01's cluster (5.56 s) and ch03's soft stab (42.5 s) sit on the intro's D pedal, whose synth lines are diffuse and whose drone is +36 and +14 cents off the grid, so they may beat;
    the effects are quiet against the music by design; ch06, ch07 and ch10's SLAMs are the bed's own hit; ch04's three chimes are now all `A4 F5` (the bed plays F at all three flips), and the
    middle one, the manager's, rings at 55.94 s, 0.38 s after the bed's join 3 (55.56 s) with a bed bass note 36 ms after it. Each fix goes through the same checks and a review-log round.
-2. **Final render:** `node render.mjs --final --audio out/sound/film.wav --out out/final.mp4` (1920×1080, 60 fps, CRF 16, preset slow; 10,800 frames, about 25-30 min with 8-10 workers).
+3. **Final render:** `node render.mjs --final --audio out/sound/film.wav --out out/final.mp4` (1920×1080, 60 fps, CRF 16, preset slow; 10,800 frames, about 25-30 min with 8-10 workers).
    - Measure the muxed file again: `ffmpeg -i out/final.mp4 -af ebur128=peak=true -f null -`, and `loudnorm=print_format=json`. The AAC encode is the same as the preview's, so it should read -14.0 LUFS and about -1.2 dBTP.
-3. `out/poster.png`: the candidate is ch11's final frame at 1920×1080. `out/contact.png`: a whole-film contact sheet.
-4. `README.md` credits:
+4. `out/poster.png`: the candidate is ch11's final frame at 1920×1080. `out/contact.png`: a whole-film contact sheet.
+5. `README.md` credits:
    - music: "Upbeat Jazz" by Francisco Alvear (Mixkit), arranged for the film; sound effects synthesized in code;
    - fonts: Bricolage Grotesque and IBM Plex Mono (OFL);
    - the team (Đội Kawaibu);
    - no voice credit.
-5. **Open question for the user:** the brief asks for `out/final.vi.srt`, but the film has no voice. Drop it, or ship a text track of the on-screen story text from `docs/onscreen.json`?
+6. **Open question for the user:** the brief asks for `out/final.vi.srt`, but the film has no voice. Drop it, or ship a text track of the on-screen story text from `docs/onscreen.json`?
 
 ## Tools
 
@@ -317,8 +343,11 @@ node render.mjs --scale 1 --fps 30 --crf 23 --audio out/sound/film.wav --out out
 | `tools/soundcheck.py` | Analysis image; loudness per chapter, the bed's grid, harmony against the chart, and an onset for every hit cue (`--stem-dir` for the effects' own stems). |
 | `tools/synccheck.mjs` | Every appearance cue starts on its frame; sync sheets of the stabs, alarms, slams, stamps and cuts. |
 | `tools/team.py` | `extract`: the five team photos from the deck into `assets/team/`. `cut`: the busts ch10 shows. |
+| `tools/record_app.mjs` | Records the real app for ch05 (`app`: the Flutter web build as pilot-resident-2; `web`: the workspace as Kawaibu) against a throwaway copy of the design sandbox's database, logs every tap, key, cursor move, click and scroll, restores the sandbox. `--only app\|web`; `--marks` (no sandbox). |
+| `lib/footage.js` | Plays a recording on a screen (`screen`, frames decoded only when shown), film → recording time (`remap`, `unmap`), `settled`, `cursorAt`. |
+| `lib/props.js` | The cut-paper phone, the hand holding it, the tapping hand, the laptop and the cursor (overlays on `ctx.top`). |
 | `tools/facecheck.mjs chNN` | Every frame: no text or face under a face; each face's height in frame at rest (the 300 px floor). |
-| `lib/engine.js` | `?only=&soft=` loads a subset; `?timeline=/path.json` uses another timeline; collects `window.__cues`; `ctx.portrait(k)` serves `docs/team.json`. |
+| `lib/engine.js` | `?only=&soft=` loads a subset; `?timeline=/path.json` uses another timeline; collects `window.__cues`; `ctx.portrait(k)` serves `docs/team.json`; `ctx.recording(name)` serves `assets/recordings/<name>.json`. |
 
 Two scratch scripts are not in git (`out/` is ignored): `out/tmp/music/bed_analysis.py` (the tempo fit, stretch, downbeats and bar similarity used to find the form) and
 `out/tmp/music/seams.py` (the joins' measurements). The remake's analysis scripts, figures and the old mix (for comparison) are in `out/tmp/remake/` and `out/tmp/old_mix/`.
@@ -338,3 +367,12 @@ Two scratch scripts are not in git (`out/` is ignored): `out/tmp/music/bed_analy
 8. **ch10's faces:**
    - Photos 1, 2 and 4 are small in the deck (240 px, 240 px and 324 px wide). They are enlarged 1.48-1.75×, so they look soft at 100 %. Sharper originals from the team would fix that; re-take `tools/team.py`'s per-photo measurements.
    - The layout is at its limits. Before the lock, at the push, the right column is 18-28 px from the frame's edge, and Hưng's crown is about 20 px from the L34 line. `build()` throws if either ever stops fitting.
+9. **ch05's recordings:**
+   - No photo is attached in the recording: the Flutter web build cannot (the app's photo store uses `dart:io`/`path_provider`), and the sandbox's
+     "report photos" are text placeholders. A phone build (Android/iOS) and a real photo would allow a re-record with the photo step.
+   - Report #7's AI suggestion is the one the sandbox's seed stored ("design-sample"); no AI endpoint runs there. The resident's new report (#13) is a
+     different report from #7, as in the old ch05.
+   - Headless Chromium draws the native location list outside the page, so the recording shows the field's value stepping through the options
+     with no visible list; the browser's tap highlight is turned off for the capture (it is not the app's).
+   - The frames are committed (51 MB). A re-record (`node tools/record_app.mjs`) gives different timings; the scene derives every key from the logs,
+     but the review loop must be run again.

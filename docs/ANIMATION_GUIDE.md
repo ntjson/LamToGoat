@@ -63,6 +63,8 @@ export default {
   - `ctx.crop(shot)` → the `docs/crops.json` entry for a UI shot (`'5.5a'`).
   - `ctx.portrait(k)` → the `docs/team.json` entry for team member `k` (0-4, band order): the cut-out's file, its
     size and cut outline in stage px, where its face is (section 8, "Team photos").
+  - `await ctx.recording(name)` → the log of a recording of the real app (`'app'`, `'web'`; section 8, "Recordings"):
+    its frames with their times, taps, keys, cursor, clicks, boxes and marks, and `base`, where its frames live.
   - `ctx.image(src)` → Promise of a decoded image.
   - `ctx.root` / `ctx.top`: your two layers (next list).
 - **Layers.**
@@ -195,7 +197,9 @@ the whole story.
 
 ## 6. Text
 
-- **Size floor.** Nothing under 28 px at 1080p, ever, including captions and tick labels.
+- **Size floor.** Nothing under 28 px at 1080p, ever, including captions and tick labels. The one exception is app
+  text inside a recording in a wide device shot (section 8, "Recordings"): it may be smaller, as long as anything the
+  viewer must read gets a push-in to 28 px or more, or a story caption.
   - The frame's key message is DISPLAY 100 px or larger, so it reads at 360 px wide (the phone sheet).
   - Supporting labels are 40 px or larger.
   - 28-36 px only for sources and small captions.
@@ -227,7 +231,7 @@ Every boundary has one owner. There are two mechanisms:
 - **Cover (`underlap`).** The incoming chapter sets `underlap: s`; for its first `s` seconds the previous chapter
   keeps painting underneath (at `t` past its end, holding its final frame) and the incoming chapter's paper covers
   it. At `t = underlap` the previous chapter disappears, so the cover must be complete by then.
-  - Covering ch05 or ch07 (UI plates on their top layer): use `cover(ctx, color)` and call
+  - Covering ch05 or ch07 (UI on their top layer: ch05's recordings and props, ch07's plates): use `cover(ctx, color)` and call
     `place(x, y, t < underlap)`. It travels on `ctx.top` while the previous chapter paints, then swaps to an
     identical copy on `ctx.root` (the swap is invisible; measured ≤ 1/255).
   - Anything else of yours that must appear before `underlap` also belongs on `ctx.top` (grained).
@@ -248,14 +252,14 @@ Every boundary has one owner. There are two mechanisms:
 | ch02 → ch03 | 3.1 | ch02 `exit: EXIT.ch02` (= `FLIP_EDGE`, 0.167 s) and ch03 | **ch02** ends on a CREAM ground with the report sheet exactly at `SHEET`: centre (960, 560), 1120 × 680, −3°. Everything else of 2.6 is either on the sheet or gone by `ctx.dur`. In its exit ch02 flips the sheet with `flip(t, ctx.dur)` about the sheet's vertical centre line, drawing the front only while `!back`. **ch03** has a CREAM ground from `t = 0` and its NAVY card at `SHEET`. It draws the card with `flip(t, 0)`, visible only when `back`, and may move or resize it afterwards. |
 | ch03 → ch04 | 4.1 | ch04, `underlap` | A BLACK curtain drops from the top over ch03's held last frame. |
 | ch04 → ch05 | 5.1 | ch04 `exit: EXIT.ch04` (0.8 s) | **ch04** ends with three NAVY panels (answers on them) on its BLACK ground. In the exit, the frame parts like doors into three columns, each column being a panel with its strip of ground: left out left, right out right, centre down, on `drop`/`slide`. **ch05** has a CREAM ground from `t = 0` and nothing else in frame until `EXIT.ch04`. |
-| ch05 → ch06 | 6.1 | ch06, `underlap` + `cover()` | BLACK slides down over ch05's held last frame, including its plates, then the numeral SLAMs. |
+| ch05 → ch06 | 6.1 | ch06, `underlap` + `cover()` | BLACK slides down over ch05's held last frame, including its top layer (the recording, its paper and captions), then the numeral SLAMs. |
 | ch06 → ch07 | 7.1 | ch07, `underlap` | ch06 ends on its BLACK ground (6.5) with no `ctx.top` content. ch07 tears it away: CREAM paper with a torn diagonal edge (jagged, cream fringe) sweeps across, then the "2" SLAMs. |
 | ch07 → ch08 | 8.1 | ch08, `underlap` + `cover()` | CREAM slides in from the right over ch07's held last frame (the pushed-in mismatch plate). |
 | ch08 → ch09 | 9.1 | ch08 `exit: EXIT.ch08` (0.6 s) | **ch08** grows the NAVY "LÀM TỔ" strip until it covers the whole frame. **ch09** is a full NAVY ground at `t = 0` and still is at `EXIT.ch08`; its content starts after. |
 | ch09 → ch10 | 10.1 | ch09 `exit: EXIT.ch09` (0.7 s) | **ch09**'s staircase and its CREAM ground slide out to the left together (the ground's right edge is hand-cut). **ch10** has a BLACK ground from `t = 0` and nothing else until `EXIT.ch09`. |
 | ch10 → ch11 | 11.1 | ch11, `underlap` | A CREAM field wipes over ch10's held last frame. |
 
-## 8. UI plates (ch05, ch07)
+## 8. UI plates (ch07) and recordings of the real app (ch05)
 
 - **Source.** Only real screenshots, only through `plate(ctx, shot, opts)`:
   - Rects and scales come from `docs/crops.json` (measured on the final web @4x, app @3x and explorer @5x set;
@@ -273,6 +277,34 @@ Every boundary has one owner. There are two mechanisms:
   `ctx.top` and `grained`.
 - **Test strings.** The crops already exclude the test-string description box and the explorer's step badges.
   Don't widen them.
+
+### Recordings of the real app (ch05)
+
+- **Source.** Real-time screen recordings of the real app, made by `tools/record_app.mjs` against the design sandbox
+  (it copies the sandbox's database to a throwaway one and drops it afterwards, so the sandbox ends as it started):
+  `assets/recordings/app/` (the resident's report in the Flutter web build, 390 × 844 at DPR 3) and
+  `assets/recordings/web/` (the manager's triage in the Django workspace, 1440 × 900 at DPR 2), each with its log
+  `assets/recordings/{app,web}.json`. Frames are the JPEGs a CDP screencast sent, with their capture times (about
+  20-30 fps while something moves, none while the screen is still); every tap, key, cursor move, click and scroll is
+  logged with its position and time on the same clock. `node tools/record_app.mjs --marks` recomputes the marks read
+  from the frames without the sandbox.
+- **Access.** A scene takes a recording through `await ctx.recording(name)` and plays it with `lib/footage.js`; it
+  never names the frames' paths (the lint rejects it).
+  - `screen(parent, rec)` builds a box of the recording's viewport size with one `<img>` per frame (fetched before the
+    first frame, decoded only when shown); `at(rt)` shows the frame for recording time `rt`.
+  - `remap(keys)` maps film time to recording time through `[[film, rec], ...]`; `unmap(keys)` places a logged event
+    on the film's timeline; `settled(rec, rt)` is the end of the burst of frames after `rt`; `cursorAt(path, rt)` is
+    the logged cursor.
+- **Real UI.** A recording counts as real UI (CLAUDE.md): crop it, mask it with paper, scale it (a push-in), time-remap
+  it (speed ramps, holds), never redraw or retouch it, never draw UI it doesn't show (no keyboard, no status bar).
+- **Speed ramps on the grid.** Put the remap's keys on the recording's own events: each tap or click on an 8th, the
+  stretch right after it at real speed until the screen settles (its ripple and its transition play as recorded), the
+  still stretches between compressed or held. Typing may be fast-forwarded between its first and last character.
+- **Overlays.** The device frame, the hand and the cursor (`lib/props.js`, cut paper on `ctx.top`) are overlays. The
+  hand's fingertip lands on each logged tap's point at its mapped time and presses for the logged touch; the cursor
+  follows the logged path through the remap. Neither covers what the viewer must read: the hand leans so its arm
+  clears what has just appeared, and leaves when it is done.
+- **Captions.** Story captions sit on paper (the ground, a closing sheet, a pocket), never on the UI.
 
 ### Team photos (ch10)
 
@@ -422,7 +454,7 @@ on the scenes' own event times. Each chapter tells the sound where its events ar
 | `pin` | A tag or label is pinned on | a pin |
 | `snap` | A short, stiff settle: a bracket, a flag, a tag | a snap |
 | `click` | A UI button is pressed, a clip clicks on | a click |
-| `bell` | A confirmation appears | a small bell on the chord's fifth (keys, bright) |
+| `bell` | A confirmation appears (ch05: the app's own "Phản ánh của bạn đã được ghi nhận.") | a small bell on the chord's fifth (keys, bright) |
 | `open` | A façade window opens onto a UI plate | a paper creak |
 | `band` | A band grows along a scale, from `t` to `land` | a rising tone (the keys' spectrum), the chord's root up a fifth |
 | `friction` | A tag drags along a bar and stops dead at `land` | a friction slide and a thud |
@@ -432,3 +464,5 @@ on the scenes' own event times. Each chapter tells the sound where its events ar
 | `flutter` | Strips fall away with a spin | paper flutter |
 | `sly` | The edited copy slips in crooked, landing at `land` | a sly paper slide and a scratch |
 | `cut` | A HARD CUT inside a shot | a small, dry paper tick |
+| `tap` | A fingertip touches the phone's glass (ch05: each logged tap, on an 8th) | a soft knock with a little click on top, unpitched |
+| `key` | Key clicks while words type in (ch05: on straight 8ths over the fast-forwarded typing) | a crisp, light tick, a little under the taps, unpitched |

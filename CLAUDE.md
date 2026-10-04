@@ -2,7 +2,12 @@
 
 ## Truth
 - Facts only from refs/pitchdeck.pdf and ~/Projects/LamTo/README.md. Never invent numbers or names.
-- Product UI only from assets/screens/{web,app}. Crop, mask and animate the real screenshots; never redraw UI.
+- Product UI only from assets/screens/{web,app} and from real-time recordings of the real app in assets/recordings/
+  (tools/record_app.mjs records them against the design sandbox, logs every tap, key, cursor move and click, and leaves
+  the sandbox as it found it). Crop, mask and animate the real screenshots; never redraw UI.
+- A recording counts as real UI: crop, mask, scale and time-remap it (speed ramps, holds), never redraw or retouch it.
+  The device frame, the hand and the cursor drawn around it are overlays: the hand taps exactly where and when the
+  recording tapped, and nothing is drawn that the recording doesn't show (no keyboard, no status bar).
 - Team photos only from assets/team/ (real photos, used with consent; tools/team.py extracts them from the deck).
   Never redraw, distort or AI-alter them beyond cutout and colour treatment.
 
@@ -24,10 +29,12 @@
 ## Look (your call: the deck is the source of facts, not of style)
 - Choose your own visual direction: palette, type, texture, camera language. Don't copy the slides.
 - Name each direction after a real style or reference, not adjectives. Propose 2-3 at gate 1, one rendered still each.
-- Fixed: the LamTo logo as-is (assets/brand) and the real product screenshots. Everything else is open.
+- Fixed: the LamTo logo as-is (assets/brand) and the real product screenshots and recordings. Everything else is open.
 - Fonts: any family with full Vietnamese support and a license that allows use in video (e.g. OFL).
   Keep the files in assets/fonts, load via @font-face, await document.fonts.ready before the first frame.
-- Nothing smaller than 28 px at 1080p; every frame must read on a phone.
+- Nothing smaller than 28 px at 1080p; every frame must read on a phone. Exception: app text inside a recording in a
+  wide device shot may be smaller, as long as anything the viewer must read gets a push-in (to 28 px or more) or a
+  story caption.
 - Banned: centered title on a gradient, everything fading in, corner labels and frame borders,
   glow on UI, particle bursts, walls of numbers that just sit there.
 - Numbers count up on springs. A new visual event every 3-4 s.

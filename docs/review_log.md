@@ -887,3 +887,53 @@ would land 0.14 s after the last bubble and 0.14 s before the chat's drift-off, 
 - `out/roughcut_sound.mp4` (960×540, 30 fps, 5,400 frames, 2 min 40 s) and `out/review/ch04.mp4` (with ch04's exit: 627 frames) were re-rendered with the same mix. The rough cut lines up at 0 samples
   (residual -37.7 dB, -14.0 LUFS); the ch04 clip starts at its first frame's film time (44.467 s, the first whole frame) and lines up at 0 samples (residual -35.0 dB).
 - The preview and draft from before the change, and that mix's `film.wav`, `cues.json`, `score.json` and check reports, are in `out/tmp/flip/before/`. Scores unchanged from round 2.
+
+## ch05: the real app, recorded (2026-10-04)
+
+**The task (the user):** rework ch05 with no cropped phone screenshots; it should feel like a real person using a real
+phone, step by step. Record the real resident app (the Flutter web build against the design sandbox) at 390 × 844, DPR 3,
+in real time: "Phản ánh", the hook's words typed, Tầng 3 → Thang máy B, a photo from the sandbox's report photos, submit,
+the confirmation, "Việc của tôi" with the new report; log every tap; play it on an original cut-paper phone with a hand
+that taps where and when the recording tapped; the same for the manager on a laptop with a cursor, from the AI
+suggestion to "Xác nhận phân loại" as Kawaibu; update CLAUDE.md for recordings and small app text; keep the 8 bars, the
+timeline, ch04's doors and ch06's cover; rebuild ch05's sound; storyboard and two designs before building.
+
+**What the sandbox showed (probed on a throwaway copy of `lamto_design`, then restored), told to the user at the gate:**
+- No photo can be attached in the web build: the app copies picked photos with `dart:io`/`path_provider`, which Flutter
+  web lacks (even a valid JPEG throws "No implementation found for method …"). The sandbox's "report photos" are 28-byte
+  text placeholders named `.jpg`.
+- No AI endpoint is configured, so a new report's triage job stays `PENDING`: report #7 (its suggestion seeded by
+  `seed_design.py`, "design-sample") is recorded, as before.
+- The pilot resident's "Việc của tôi" starts with four test-string reports; pilot-resident-2's is clean.
+- The new report is #13, and no recorded screen shows its number (ch07's "Phản ánh #2" is not contradicted).
+
+**The user's picks at the gate:** the cut-paper treatment (A, over a clean flat device), skip the photo step,
+pilot-resident-2. Storyboard: `out/tmp/ch05sb/storyboard.png` and `designs.png` (scratch, not in git).
+
+**The recordings** (`tools/record_app.mjs`, committed with their frames):
+- CDP screencast, Chromium launched with `--force-device-scale-factor` (without it the frames come at CSS size); a frame
+  each time the page repaints, about 20-30 fps under motion, none while still; JPEG as sent (q92 phone, q90 laptop).
+- app: 141 frames over 15.0 s, 1170 × 2532, 19 MB; 7 taps (held 90 ms through CDP touch events), 61 key inputs, marks.
+- web: 96 frames over 11.9 s, 2880 × 1800, 32 MB; 289 cursor points, 2 clicks, the scroll, the triage and case pages' boxes.
+- Chromium's mobile tap highlight (a translucent blue box it paints over the Flutter host on every touch) is turned off
+  for the capture; the app's own ripples and pressed states are in the frames. The native location list is not (headless
+  Chromium draws it outside the page); the field's value is seen stepping through the options as the keys move.
+- The script starts lamto-db-1 if it is stopped, copies `lamto_design` to `lamto_design_rec`, runs the design API on it
+  and a static server for the build, records, then stops both, drops the copy and stops the container again; the LamTo
+  working tree is checked unchanged. `lamto_design` itself was dumped before the first probe and compared after: identical
+  data (the dumps differ only in pg_dump's random `\restrict` key).
+
+**The build:** `scenes/ch05.js` on `lib/footage.js` (frames, remap) and `lib/props.js` (phone, hands, laptop, cursor).
+The remap puts each logged tap on an 8th and plays the stretch after it at real speed until the screen settles:
+"+ Phản ánh" 4.17, the box 5.28, "Chọn vị trí" 6.39, "Tầng 3" 6.94, "Thang máy B" 7.50, "Gửi phản ánh" 8.06, the
+confirmation 8.61 (bell), back 9.17, the refreshed list 9.44; on the laptop the cursor crosses "Thang máy", "Cao" and
+"240 phút" on the brackets' 11.11, 11.39 and 11.94, clicks the location on 13.61 (L18's first beat) and the button on
+14.72, and the case page lands on 15.0 with the stamp. Rounds in `docs/review/ch05.md` (8-11): the last frame's two
+windows and NAVY band, the cursor under the tags, the quick push, the sheets' boxes.
+
+**Sound:** new cues `tap` and `key` (unpitched, tick class) on the recording's events; the bell on the app's
+confirmation (tuned: 0.0 cents). Only ch05's cues changed (34 → 32); the remix differs from the previous one by about
+-80 dB outside ch05 after a 0.02 dB gain match. -14.00 LUFS, -1.21 dBTP (AAC -1.23); 445 paper/UI events, max +2.9 dB
+over the music; 47 pitched notes, 0 outside the chord; 300 of 300 hit cues with an onset within 12 ms; picture sync 68 of
+68 appearances on their cue (ch05 6 of 6). ch05: 40 events, median -3.7 dB, max +2.9 dB; taps -6.6 dB, keys -14.6 dB in
+the 100 ms loudness (short clicks measure low, like the film's other ticks). **Not heard by the builder.**

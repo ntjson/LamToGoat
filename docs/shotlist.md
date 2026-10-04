@@ -191,6 +191,21 @@ overlaps the UI by 4 px.
 | 5.5 | 74.6-78.9 | Web: report #7 card, then the AI suggestion card | HARD CUT to CREAM. Plate 1 SLIDEs in; at 76.2 s plate 2 slides up over it. Three ORANGE cut brackets SNAP under "Thang máy", "Cao" and "240 phút", placed below the text and never on it. | tag "AI GỢI Ý" DISPLAY 110 BLACK on ORANGE | slide, slide, 3 snaps |
 | 5.6 | 78.9-84.4 | Web: confirm panel (top), "Xác nhận phân loại" button, manager identity (avatar + name; "Kawaibu" in the new screenshots), case #2 accountability chain | The panel SLIDEs in from the right (79.4 s). The button and identity SNAP beneath it with a NAVY tag (80.8 s). The all-green chain SLIDEs along the bottom and reveals left to right, one step per tick (82.4 s). | tag "NGƯỜI QUYẾT ĐỊNH" DISPLAY 64 CREAM on NAVY; "mọi bước đều lưu vết" LABEL 52 | slide, stamp, 6 ticks |
 
+> **Changed 2026-10-04 (the user): ch05 is rebuilt from real-time recordings of the real app, no cropped screenshots.**
+> A real person using a real phone, step by step, then the manager on a laptop. The recordings are `assets/recordings/`
+> (`tools/record_app.mjs`, against the design sandbox); the phone, the hands, the laptop and the cursor are cut-paper overlays
+> (`lib/props.js`, the user's pick of the cut-paper treatment over a clean flat device). The rows above are the first plan.
+> Chapter length (8 bars), timeline, grid, ch04's doors and ch06's cover are unchanged; every text of L15-L18 is on screen.
+>
+> | Shot | Time (local) | Recording | Motion | On-screen text | SFX |
+> |---|---|---|---|---|---|
+> | 5.1 | 0.0-0.8 | none | ch04's doors part over CREAM (ch04's exit). | none | (ch04's doors) |
+> | 5.2 | 0.8-4.7 | app: "Việc của tôi" (pilot-resident-2's two reports) | The phone rises in, held in a left hand. Logo and promise slide in from the left; "kiểm chứng được" slams. The right index comes in and taps "+ Phản ánh" (4.17). | "Từ một phản ánh / đến khoản chi / ai cũng kiểm chứng được" LABEL 64 | slide, slides, slam, tap |
+> | 5.3 | 5.3-8.1 | app: the report form; the hook's words typed; "Chọn vị trí" → "Tầng 3" → "Thang máy B"; "Gửi phản ánh" | Tap on the box (5.28); push in while the words type in (fast-forward, no keyboard drawn); back out; one tap per beat from 6.39; "Gửi phản ánh" (8.06). No photo: the web build cannot attach one (decision 2026-10-04); the form's photo row shows. | "CƯ DÂN GỬI / PHẢN ÁNH" DISPLAY 120; "Ảnh · vị trí · 24/7" LABEL 56 NAVY, assembling | taps, 2 slams, 3 key clicks on 8ths |
+> | 5.4 | 8.1-9.9 | app: the confirmation; back to "Việc của tôi" with the new report on top | Push in on the screen's top half: "Phản ánh của bạn đã được ghi nhận." lands on 8.61; the finger taps back (9.17); the list shows the new report from 9.44. | (UI) | bell (tuned to the bed), tap |
+> | 5.5 | 9.9-13.1 | web: report #7 with its AI suggestion (the seeded design suggestion: no AI endpoint runs in the sandbox) | The phone and the text pan out, the laptop pans in; "AI GỢI Ý" slams; quick push into the suggestion; paper closes round it; ORANGE brackets snap under "Thang máy", "Cao", "240 phút" as the cursor passes each, each with its tag on a NAVY pocket; out as L17 ends. | "AI GỢI Ý" DISPLAY 110; "nhóm sự cố", "mức khẩn", "hạn xử lý" LABEL 56 | pan, slam, doors, 3 snaps, doors |
+> | 5.6 | 13.1-17.8 | web: Vị trí (Tầng 1 / Thang máy A), "Xác nhận phân loại", the case page, the scroll | The cursor clicks the location (13.61) and the button (14.72); as the real case page loads (15.0) "NGƯỜI QUYẾT ĐỊNH" stamps; the page scrolls; quick push; paper closes round "Kawaibu đã chấp nhận gợi ý như đã ghi." and the chain (Báo cáo ✓, Phân loại ✓); a NAVY band masks the page's "Tiến độ" between them. | "NGƯỜI QUYẾT ĐỊNH" DISPLAY 84 CREAM on NAVY; "mọi bước đều lưu vết" LABEL 72 CREAM on the band | click, click, stamp, scroll, doors, slide |
+
 ## ch06 USP 1: before approval (84.4-104.8)
 
 No UI screenshot exists for the price check, so this chapter is drawn paper only and never looks like an app screen.
@@ -316,6 +331,9 @@ probe glyph's cap height (or ascender-to-descender height); all are 28 px or mor
 
 7.7 pushes the 7.6 crop from 0.48 to 0.96, so the badge text reaches about 60 px; only the integrity card is ever in frame.
 
+Since 2026-10-04 ch05 no longer uses the 5.x crops: it plays real-time recordings of the app (`assets/recordings/`, see the
+note under ch05). The 5.x entries stay in `docs/crops.json` for reference.
+
 Not used, on purpose:
 - The flow-01/02 description box: it contains a test string ("Kiểm thử thiết kế mới 74329" in the final set).
 - The "So sánh giá" row of `desktop-proposal-published`: it says "Dự đoán AI không khả dụng — dùng giá tham chiếu mẫu",
@@ -338,3 +356,4 @@ Not used, on purpose:
 | 500 căn → 10 triệu/tháng, 59,2%; 200 triệu for 8 months; hòa vốn vận hành 08/2027; GĐ0–GĐ3 dates; 20–25 tòa, MRR 160–200 triệu | deck, "Đơn vị kinh tế", "Nhu cầu vốn", "Lộ trình" |
 | 5 members, roles, schools | deck, "Đội ngũ" |
 | 981.500.000 đ; 18.500.000 đ; Công ty TNHH Thang máy Việt Tiến; the manager name ("Kawaibu" in the new screenshots); report texts | the product's own (synthetic) demo data, shown in its screenshots |
+| ch05's screens: "Việc của tôi", the report form, Tầng 3 / Thang máy B, the confirmation, report #7 and its suggestion, Vụ việc #8, "Kawaibu đã chấp nhận gợi ý như đã ghi.", the chain | the real app recorded against its design sandbox's (synthetic) data (`assets/recordings/`, `tools/record_app.mjs`, 2026-10-04); report #7's suggestion is the one the sandbox's seed stored (no AI endpoint runs there) |
