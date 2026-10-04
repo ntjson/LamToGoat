@@ -22,6 +22,9 @@ Model
   never trimmed Shots whose length is set by their text (the busiest ones keep every frame, bar padding included),
                 the transition breaths, the breaths between shots, and the last chapter (its end hold). If no chapter
                 can free a bar this way, the tool stops.
+  pinned        A beat whose entry in docs/onscreen.json carries "beats" never gets shorter than that (and is never
+                trimmed): the user's way to keep the timeline when a beat's text gets shorter (L24, 2026-10-04). Its
+                "read" stays the truth, so it may hold longer than its text needs.
 Scenes subdivide a beat by syllables with ctx.syl(id, k); the engine snaps those times to the grid (16th notes).
 
 Usage: uv run python tools/timeline.py [--bars 81]
@@ -83,8 +86,12 @@ def plan(lines, onscreen, pace):
         after = (OPEN / 2 if nxt["ch"] != ln["ch"] else WITHIN) * BEAT if nxt else 0
         need = max(0.0, read - after) / BEAT  # reading floor in beats (the text stays up through the gap after it)
         beats = max(1, math.ceil(STEP * max(need, anim / BEAT) - 1e-9)) / STEP
+        pin = onscreen[ln["id"]].get("beats")  # the user's pin: never shorter than this
+        if pin:
+            beats = max(beats, float(pin))
         gap = OPEN if first[ln["ch"]] == i else WITHIN
-        out.append({**ln, "read": read, "anim": anim, "after": after, "need": need, "beats": beats, "gap": gap})
+        out.append({**ln, "read": read, "anim": anim, "after": after, "need": need, "beats": beats, "gap": gap,
+                    "pin": pin})
     for ch in list(dict.fromkeys(ln["ch"] for ln in out))[:-1]:
         pad_to_bar(out, ch)
     for x in out:
@@ -113,7 +120,7 @@ def squeeze(p, ch, target):
     that frees enough. Only animation-bound shots shrink, and never below their reading floor; text-bound shots keep
     their natural length. Returns (α, new beats per shot id) or (None, None)."""
     mine = [x for x in p if x["ch"] == ch]
-    soft = [x for x in mine if not text_bound(x)]
+    soft = [x for x in mine if not text_bound(x) and not x["pin"]]
     gaps = sum(x["gap"] for x in mine)
     for a100 in range(100, 29, -1):
         a = a100 / 100
@@ -229,6 +236,9 @@ def write_md(tl, onscreen):
             f"- Natural length: {tl['natural_bars']:g} bars, where every shot holds at least {ANIM:.0%} of its old "
             f"voice estimate (its choreography's design length). To fit {tl['bars']} bars, "
             + (f"{len(tl['trimmed'])} bar(s) were trimmed from holds only (see below)." if tl["trimmed"] else "nothing was trimmed."),
+            *[f"- **Pinned:** {ln['id']} keeps {ln['beats']:g} beats (`beats` in `docs/onscreen.json`); its text needs "
+              f"{ln['read']:.1f} s, so it holds longer than its reading needs." for ln in tl["lines"]
+              if onscreen.get(ln["id"], {}).get("beats")],
             "", "| Ch | Start | End | Bars |", "|---|---|---|---|"]
     for c in tl["chapters"]:
         rows.append(f"| {c['id']} | {c['start']:.2f} | {c['end']:.2f} | {c['bars']:g} |")
